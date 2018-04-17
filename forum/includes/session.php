@@ -478,6 +478,15 @@ class session
 						$row = $db->sql_fetchrow($result);
 						$db->sql_freeresult($result);
 						$this->data['is_ec_operator'] = ($row) ? true : false;
+    				$sql = 'SELECT *
+						FROM ' . USER_GROUP_TABLE . '
+						WHERE user_id = ' . $this->data['user_id']. '
+						AND group_id = 21
+						AND user_pending = 0';
+						$result = $db->sql_query($sql);
+						$row = $db->sql_fetchrow($result);
+						$db->sql_freeresult($result);
+						$this->data['is_sp_admin'] = ($row) ? true : false;
 //-SP						
 						$this->data['is_registered'] = ($this->data['user_id'] != ANONYMOUS && ($this->data['user_type'] == USER_NORMAL || $this->data['user_type'] == USER_FOUNDER)) ? true : false;
 						$this->data['is_bot'] = (!$this->data['is_registered'] && $this->data['user_id'] != ANONYMOUS) ? true : false;

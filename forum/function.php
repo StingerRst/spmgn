@@ -53,7 +53,7 @@ $tmp = file_get_contents($path_in_save);
 eval ($tmp);
 session_unset();
 }
-if (( !$user->data['is_organizer'] )&&(!$auth->acl_get('a_')))
+if (( !$user->data['is_organizer'] )&&( !$user->data['is_sp_admin'] )&&(!$auth->acl_get('a_')))
 {
 	trigger_error( 'NOT_AUTHORISED' );
 }

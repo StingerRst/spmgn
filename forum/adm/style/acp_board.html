@@ -1,0 +1,179 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<h1>{L_TITLE}</h1>
+
+<p>{L_TITLE_EXPLAIN}</p>
+<!-- IF S_DIGESTS -->
+<p>{L_DIGEST_VERSION_INFO}</p>
+<!-- ENDIF -->
+ 
+
+<!-- IF S_ERROR -->
+	<div class="errorbox">
+		<h3>{L_WARNING}</h3>
+		<p>{ERROR_MSG}</p>
+	</div>
+<!-- ENDIF -->
+
+<form id="acp_board" method="post" action="{U_ACTION}">
+
+<!-- BEGIN options -->
+	<!-- IF options.S_LEGEND -->
+		<!-- IF not options.S_FIRST_ROW -->
+			</fieldset>
+		<!-- ENDIF -->
+		<fieldset>
+			<legend>{options.LEGEND}</legend>
+	<!-- ELSE -->
+
+		<dl>
+			<dt><label for="{options.KEY}">{options.TITLE}:</label><!-- IF options.S_EXPLAIN --><br /><span>{options.TITLE_EXPLAIN}</span><!-- ENDIF --></dt>
+			<dd>{options.CONTENT}</dd>
+		</dl>
+
+	<!-- ENDIF -->
+<!-- END options -->
+
+<!-- IF S_AUTH -->
+	<!-- BEGIN auth_tpl -->
+		{auth_tpl.TPL}
+	<!-- END auth_tpl -->
+<!-- ENDIF -->
+
+<!-- IF S_EDIT_SUBSCRIBERS -->
+	<fieldset id="digests">
+    	<dl>
+        	<dt style="border-right-style:none"><label for="member">{L_DIGEST_SEARCH_FOR_MEMBER}:</label><br />{L_DIGEST_SEARCH_FOR_MEMBER_EXPLAIN}</dt>
+        	<dd style="text-align:left;"><input type="text" id="member" name="member" size="30" maxlength="255" value="{MEMBER}" /></dd>
+        </dl>
+        <hr />
+        <ul class="linklist">
+            <li class="rightside pagination">{TOTAL_USERS} &bull; <!-- IF PAGINATION --><a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{PAGE_NUMBER}</a> &bull; <span>{PAGINATION}</span><!-- ELSE -->{PAGE_NUMBER}<!-- ENDIF --></li>
+        </ul>
+        <table cellspacing="1" id="down">
+        <thead>
+            <tr>
+                <th>{L_USERNAME}</th>
+                <th style="text-align:center;">{L_DIGEST_FREQUENCY_SHORT}</th>
+                <th style="text-align:center;">{L_DIGEST_FORMAT_STYLING}</th>
+                <th style="text-align:center;">{L_DIGEST_HOUR_SENT} {L_DIGEST_BOARD_TIME}</th>
+                <th style="text-align:center;">{L_LAST_VISIT} {L_DIGEST_BOARD_TIME}</th>
+                <th style="text-align:center;">{L_DIGEST_HAS_UNSUBSCRIBED}</th>
+                <th style="text-align:center;">{L_DIGEST_LAST_SENT} {L_DIGEST_BOARD_TIME}</th>
+                <th style="text-align:center;">{L_DIGEST_CHANGE_SUBSCRIPTION}</th>
+            </tr>
+        </thead>
+        <tbody>
+        <!-- BEGIN digest_edit_subscribers -->
+            <!-- IF digest_edit_subscribers.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+                <td>{digest_edit_subscribers.USERNAME}</td>
+                <td style="text-align:center;">{digest_edit_subscribers.USER_DIGEST_TYPE}</td>
+                <td style="text-align:center;">{digest_edit_subscribers.USER_DIGEST_FORMAT}</td>
+                <td style="text-align:center;">{digest_edit_subscribers.USER_DIGEST_SEND_HOUR}</td>
+                <td style="text-align:center;">{digest_edit_subscribers.USER_LAST_VISIT}</td>
+                <td style="text-align:center;">{digest_edit_subscribers.USER_DIGEST_HAS_UNSUBSCRIBED}</td>
+                <td style="text-align:center;">{digest_edit_subscribers.USER_DIGEST_LAST_SENT}</td>
+                <td style="text-align:center;"><label>{digest_edit_subscribers.L_DIGEST_CHANGE_SUBSCRIPTION}: <input type="checkbox" class="radio" name="user-{digest_edit_subscribers.USER_SUBSCRIBE_UNSUBSCRIBE_FLAG}-{digest_edit_subscribers.USER_ID}" id="user-{digest_edit_subscribers.USER_SUBSCRIBE_UNSUBSCRIBE_FLAG}-{digest_edit_subscribers.USER_ID}" /></label></td>
+            </tr>
+        <!-- END digest_edit_subscribers -->
+        </tbody>
+        </table>
+        <p class="quick">
+            <label for="subscribe">{L_DIGEST_SHOW}:</label>
+            <select id="subscribe" name="subscribe">
+                <option value="a"{ALL_SELECTED}>{L_DIGEST_ALL}</option>
+                <option value="s"{SUBSCRIBE_SELECTED}>{L_DIGEST_SUBSCRIBED}</option>
+                <option value="u"{UNSUBSCRIBE_SELECTED}>{L_DIGEST_UNSUBSCRIBED}</option>
+                <option value="t"{STOPPED_SUBSCRIBING_SELECTED}>{L_DIGEST_STOPPED_SUBSCRIBING}</option>
+            </select>&nbsp;
+            <label for="sortby">{L_SORT_BY}:</label>
+            <select id="sortby" name="sortby">
+                <option value="u"{USERNAME_SELECTED}>{L_USERNAME}</option>
+                <option value="f"{FREQUENCY_SELECTED}>{L_DIGEST_FREQUENCY_SHORT}</option>
+                <option value="s"{FORMAT_SELECTED}>{L_DIGEST_FORMAT_STYLING}</option>
+                <option value="h"{HOUR_SELECTED}>{L_DIGEST_HOUR_SENT}</option>
+                <option value="l"{LASTVISIT_SELECTED}>{L_LAST_VISIT}</option>
+                <option value="b"{HAS_UNSUBSCRIBED_SELECTED}>{L_DIGEST_HAS_UNSUBSCRIBED}</option>
+                <option value="t"{LAST_SENT_SELECTED}>{L_DIGEST_LAST_SENT}</option>
+            </select>&nbsp;
+            <label for="sortorder">{L_DIGEST_SORT_ORDER}:</label>
+            <select id="sortorder" name="sortorder">
+                <option value="a"{ASCENDING_SELECTED}>{L_ASCENDING}</option>
+                <option value="d"{DESCENDING_SELECTED}>{L_DESCENDING}</option>
+            </select>&nbsp;
+            <input class="button2" type="submit" name="sort" id="sort" value="{L_DIGEST_REFRESH}" />
+        </p>
+        <ul class="linklist">
+            <li class="rightside pagination">
+            {TOTAL_USERS} &bull;
+             <!-- IF PAGINATION --><a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{PAGE_NUMBER}</a> &bull; <span>{PAGINATION}</span><!-- ELSE -->{PAGE_NUMBER}<!-- ENDIF --></li>
+        </ul>
+        <fieldset class="quick">
+            <p class="small"><a href="#" onclick="marklist('acp_board', 'user-', true);">{L_MARK_ALL}</a> &bull; <a href="#" onclick="marklist('acp_board', 'user-', false);">{L_UNMARK_ALL}</a></p>
+            {S_FORM_TOKEN}
+        </fieldset>
+<!-- ENDIF -->
+
+<!-- IF S_BALANCE_LOAD -->
+        <table cellspacing="1" id="down" style="table-layout: fixed;">
+            <tr>
+                <th style="text-align:center; width:10%;">{L_DIGEST_HOUR_SENT}</th>
+                <th style="text-align:center">0</th>
+                <th style="text-align:center; width:7.5%">1</th>
+                <th style="text-align:center; width:7.5%">2</th>
+                <th style="text-align:center; width:7.5%">3</th>
+                <th style="text-align:center; width:7.5%">4</th>
+                <th style="text-align:center; width:7.5%">5</th>
+                <th style="text-align:center; width:7.5%">6</th>
+                <th style="text-align:center; width:7.5%">7</th>
+                <th style="text-align:center; width:7.5%">8</th>
+                <th style="text-align:center; width:7.5%">9</th>
+                <th style="text-align:center; width:7.5%">10</th>
+                <th style="text-align:center; width:7.5%">11</th>
+            </tr>
+            <tr class="row1">
+                <td style="text-align:center; text-transform:uppercase; text-overflow:ellipsis;">{L_DIGEST_SUBSCRIBERS}</td>
+                <!-- BEGIN digest_balance_load -->
+                <!-- IF digest_balance_load.HOUR < 12 -->
+        		<td style="text-align:center;">{digest_balance_load.HOUR_COUNT}</td>
+                <!-- ENDIF -->
+                <!-- END digest_balance_load -->
+            </tr>
+            <tr>
+                <th style="text-align:center">{L_DIGEST_HOUR_SENT}</th>
+                <th style="text-align:center">12</th>
+                <th style="text-align:center">13</th>
+                <th style="text-align:center">14</th>
+                <th style="text-align:center">15</th>
+                <th style="text-align:center">16</th>
+                <th style="text-align:center">17</th>
+                <th style="text-align:center">18</th>
+                <th style="text-align:center">19</th>
+                <th style="text-align:center">20</th>
+                <th style="text-align:center">21</th>
+                <th style="text-align:center">22</th>
+                <th style="text-align:center">23</th>
+            </tr>
+            <tr class="row1">
+                <td style="text-align:center; text-transform:uppercase; text-overflow:ellipsis;">{L_DIGEST_SUBSCRIBERS}</td>
+                <!-- BEGIN digest_balance_load -->
+                <!-- IF digest_balance_load.HOUR >= 12 -->
+        		<td style="text-align:center;">{digest_balance_load.HOUR_COUNT}</td>
+                <!-- ENDIF -->
+                <!-- END digest_balance_load -->
+            </tr>
+        </table> 
+
+<!-- ENDIF -->
+
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</p>
+	{S_FORM_TOKEN}
+</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->
