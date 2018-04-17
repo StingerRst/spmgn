@@ -1,0 +1,65 @@
+ <head>
+  <style>
+	table#main {
+    table-layout: auto; /* Фиксированная ширина ячеек */
+    width: 100%; /* Ширина таблицы */
+	page-break-inside: avoid;
+	border:1px solid black;
+	border-collapse: collapse;
+	text-align: center;
+	font-size: 22pt;
+	hyphens: auto;
+	}
+    p {
+ 	 font-size: 11pt; /* Размер шрифта в пунктах */ 
+    }
+	td {word-break:break-all;border:1px solid black}
+	tr { height:30mm;}
+
+	@media print {
+	td {word-break:break-all;border:1px solid black}
+	tr { height:30mm;}
+	}
+  </style>
+ </head>
+
+<form  method="post" sid = {sid}>
+
+</form>
+<SCRIPT language="javascript">
+	var users = {USERS};
+	var rcount =5;
+	var i=1;
+	var l="";
+	var maxl=33;
+	for (var id in users)
+	{ 
+	l=l+users[id].username ;
+	if (i==1) {
+		document.write('<table id ="main">');
+		document.write('<tr>');
+	}
+	if (l.length > maxl) {
+		document.write('<td><b></b></td>');
+		document.write('</tr>');
+		document.write('</table>');
+		document.write('<table id ="main">');
+		document.write('<tr>');
+		l="";
+		i=1;
+	}
+	document.write('<td><p>'+ users[id].brand_label + '</br>');
+	document.write('<b><font size="+3">'+ users[id].username +'</font></b></br>');
+	document.write('Орг.: <b>{ORG}</b></p></td>');
+	if (i==rcount) {
+		document.write('</tr>');
+		document.write('</table>');
+		i=0;
+		l="";
+	}
+			
+	i= i+1;
+	}
+	document.write('</table>');
+	
+</SCRIPT>

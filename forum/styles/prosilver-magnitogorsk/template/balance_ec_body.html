@@ -1,0 +1,49 @@
+  <style>
+	table#main {
+    table-layout: fixed; /* Фиксированная ширина ячеек */
+    width: 100%; /* Ширина таблицы */
+	page-break-inside: avoid;
+	border:1px solid black;
+	border-collapse: collapse;
+	
+	}
+
+	td#i0 { width: 25%; word-break:break-all;border:1px solid black }
+	td#i1 { width: 8%;border:1px solid black}
+	td#i2 { width: 45%; word-break:break-all;border:1px solid black}
+	td#i3 { width: 7%;border:1px solid black}
+	td#i4 { width: 7.5%;border:1px solid black}
+	td#i5 { width: 7.5%;border:1px solid black}
+
+	@media print {
+	}
+  </style>
+  
+<H3>Баланс по ЕЦ на {DATE_PRINT} </H3>
+
+<form  method="post" sid = {sid}>
+<!-- IF .balance -->
+	<!-- BEGIN balance -->
+		<!-- IF  balance.NEW_USER -->
+			<table id ="main" >
+		<!-- ENDIF -->
+		<tr>  
+		<!-- IF  balance.NEW_USER -->
+			<td id="i0"  rowspan ="{balance.USER_COUNT}">
+			<p style="margin:3px 5x; font-size: 10pt"><b>{balance.USERNAME}</b><br><small>({balance.USER_REALNAME};&nbsp;{balance.USER_PHONE})</small></p></td>
+		<!-- ENDIF -->
+		<td id="i1" style=" font-size: 10pt" ; align="center">{balance.IN_EC_DATE}</td>
+		<td id="i2" style=" font-size: 10pt">{balance.ORG_NAME}&nbsp;/&nbsp;{balance.BRAND_LABEL}&nbsp;/&nbsp;{balance.PURCHASE_NAME}</td>
+		<td id="i3" style=" font-size: 10pt" ; align="center">{balance.DELIVERY}<!-- IF  balance.DELIVERY >= 1 -->&nbsp; р.<!-- ENDIF --></td>
+		<td id="i4" style=" font-size: 10pt" ; align="center"> <!-- IF  balance.DOSTAVKA == 1 --> ♦ &nbsp; <!-- ENDIF --> {balance.COST_COUNT}<!-- IF  balance.NAKL_TO_EC == 1 --> &nbsp; Н<!-- ENDIF --></td>
+		<TD id="i5" > &nbsp; </td> 
+		</tr>
+		<!-- IF  balance.LAST_RECORD -->
+		<tr>
+			<td colspan ="5"; style=" font-size: 1pt"> &nbsp; </td> 
+		</tr>		
+			</table>
+		<!-- ENDIF -->
+	<!-- END balance -->
+<!-- ENDIF -->
+</form>

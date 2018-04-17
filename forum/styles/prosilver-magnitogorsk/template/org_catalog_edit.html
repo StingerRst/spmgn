@@ -1,0 +1,1376 @@
+<!-- INCLUDE org_header.html -->
+<!-- IF S_USER_IS_ORGANIZER -->
+
+<div class="panel">
+   <div class="inner"><span class="corners-top"><span></span></span>
+
+   <div class="content">
+			<DIV id="debug">
+			</DIV>
+		
+		<!-- IF EDIT -->
+		<CENTER><H1><FONT color="#FF0000">************ Режим редактирования ************</FONT></H1></CENTER>
+		<!-- ELSE -->
+		<CENTER><H1><FONT color="#FF0000">************ Режим просмотра ************</FONT></H1></CENTER>
+		<!-- ENDIF -->
+		<BR>
+		<CENTER>
+		<TABLE BORDER="0">
+			<TR>
+				<!-- IF EDIT -->
+				<TD><A href="./org.php?i=1&mode=view&cat={CATALOG_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" class="button2">Режим просмотра</A></TD>
+				<!-- ELSE -->
+				<TD><A href="./org.php?i=1&mode=edit&cat={CATALOG_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" class="button2">Режим редактирования</A></TD>
+				<!-- ENDIF -->
+				<TD><A href="javascript:add_item();" class="button2">Добавить Запись</A></TD>
+				<TD><A href="javascript:delete_current_item();" class="button2"> Удалить Выбранную Запись </A></TD>
+			</TR>
+			<TR></TR>
+
+		</TABLE>
+		</CENTER>
+<!-- заголовок -->
+		
+				<TABLE width="100%">
+				<TR>
+		
+					<TD><b>Закупка:</b> <A  HREF="./org.php?i=1&p={PURCHASES_ID}&c={CATALOG_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">{PURCHASES_NAME}</A></TD>
+					<TD><b>Каталог:</b> {CATALOG_NAME}</TD>
+
+					<TD><b>Организатор:</b> <a href="memberlist.php?do_=188&amp;mode=viewprofile&amp;u={USER_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">{USERNAME}</a></TD>
+					<TD><b>Состояние:</b> {STATUS}</TD>
+				</TR>
+				</TABLE>
+
+		<!-- поиск  -->		
+		<script language"Javascript">
+			var defMsg = 'Поиск в каталоге…';
+		</script>
+
+		
+		
+		<br />
+		Поля для поиска:
+		<input type="checkbox" id="catalog_search_article" checked/>Артикул&nbsp;&nbsp;
+		<input type="checkbox" id="catalog_search_name" />Название&nbsp;&nbsp;
+		<input type="checkbox" id="catalog_search_desc" />Описание&nbsp;&nbsp;
+		<span id="catalog_search_vars">
+		</span>
+		<input type="checkbox" id="catalog_search_results" />Искать в найденном&nbsp;&nbsp;
+		<input name="keywords" id="catalog_search_keywords" type="text" size="20" maxlength="128" title="Ключевые слова" class="inputbox search tiny" value="Поиск в каталоге…" onclick="if(this.value==defMsg)this.value='';" onblur="if(this.value=='')this.value=defMsg;" /> 
+		<input type="button" class="button2" value="Поиск" onclick="javascript:update_catalog_filter();" />
+
+		<input type="button" class="button2" value="Сброс" onclick="javascript:reset_catalog_filter();" />
+		<br />
+		<div id="search_results"></div>
+
+		<!-- каталог -->
+		<P>
+			<CENTER>упорядочить:
+				<select onchange="javascript:change_sort();">
+					<option id="sort_by_name">по названию</option>
+
+					<option id="sort_by_price">по цене</option>
+					<option id="sort_by_id" selected>не сортировать</option>
+				</select>
+				<select onchange="javascript:change_sort();">
+					<option id="sort_by_asc" selected>по возрастанию</option>
+					<option id="sort_by_desc">по убыванию</option>
+				</select>
+
+			</CENTER>
+		</P>
+		
+		<DIV id="make_page_selectors_top">
+		</DIV>
+		<TABLE border="1" id="tbl1">
+		<TR id="row1">
+			<TD width="450" align="center" valign="top" id="selected_model">
+		<!-- 	здесь начинается левый раздел с подробной информацией о выбранной модели -->
+		<!-- 	здесь кончается левый раздел с подробной информацией о выбранной модели -->
+			</TD>
+
+			<TD width="450" id="col2">
+		<!-- 	здесь начинается правый раздел со списком моделей -->
+				<DIV id="right">	
+				</DIV>
+		<!-- 	здесь кончается правый раздел со списком моделей -->
+			</TD>
+		</TR>
+		</TABLE>
+		<DIV id="make_page_selectors_bottom">
+
+		</DIV>
+	</div>
+
+
+<SCRIPT language="Javascript">
+
+function esc_tags(s)
+{
+	s = s.toString();
+	s = s.replace(/</g,'&lt;');
+	s = s.replace(/>/g,'&gt;');
+	s = s.replace(/"/g,'&quot;');
+	return s;
+}
+function esc_tags2(s)
+{
+	s = s.toString();
+	s = s.replace(/</g,'&lt;');
+	s = s.replace(/>/g,'&gt;');
+	s = s.replace(/"/g,'&quot;');
+	s = s.replace(/\n/g,'<br>');
+	return s;
+}
+//var order_state_txt = new array( 'Новый Заказ', 'Зафиксировано', 'Включено в счет', 'Отказано','В пути','Принято в ЕЦ','Выдано' );
+
+//var order_state_clr = new array( "#00FF00", "#ff9900", "", "#FF0000", "#1E6CED","#9900СС", "#9D9D9D" );
+
+
+function format_money(val)
+{
+	return parseFloat(val).toFixed(2);
+}
+
+
+function getFloat( str )
+{
+	var n = new Number( str );
+	if (isNaN(n))
+	{
+		return new Number( str.replace(",",".")).toString();
+	}
+	else
+	{
+		return n.toString();
+	}
+}
+
+
+function limit_length(ctrl,maxLength)
+{
+	if (ctrl.value.length > maxLength)
+	{
+		alert("Извините, текст превышает установленную длину.");
+		ctrl.value = ctrl.value.substr(0,maxLength);
+	}
+}
+
+
+// order state
+var eNew = 0;
+var eFixed = 1;
+var eInscribed = 2;
+var eRefused = 3;
+var eArrived = 4;
+var eCenter = 5;
+var eReceived = 6;
+//****************edit mode *****************************************
+
+
+
+function delete_image( id, img_id)
+{
+	do_clock(id,1);
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "delete_item_image",
+			'item_id': id,
+			'image_id': img_id
+		},
+		// Function is called when an answer arrives. 
+		beforeSend : function () {
+		
+		},
+		success : function(result, errors) 
+		{
+			do_clock(id,-1);
+			if ("ok" == result)
+			{
+				delete items[id].image_urls[img_id];
+				for (var img_id_ in items[id].image_urls)
+				{
+					select_image( id, img_id_);
+					return;
+				}
+				var im = document.getElementById("img_" + id);
+				im.src = "./images/icons/noimage.png";
+			}
+			else
+			{
+				alert("Произошла ошибка при удалении изображения!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	}
+	);		
+}
+
+function add_image(id)
+{
+	var form = $("#postimg_"+id);
+
+	var im = document.getElementById("img_" + id);
+	var fp = document.getElementById("img_fp_" + id);
+	
+	// check if empty
+	if (""==fp.value)
+		return false;
+
+	do_clock(id,1);
+	var options = {
+		url : 'function.php{SID}',
+		data : {
+				'cmd': "add_item_image",
+				'item_id': id
+//				'img': fp,
+		},
+//		dataType: 'json',
+		beforeSend : function () {
+		},
+		success : function(result, errors) 
+		{
+			var ar = result.split(";");
+			var ok=ar[1];
+
+			do_clock(id,-1);
+			if ('ok' == ok)
+			{
+				// change image
+				var url = ar[2];
+				var img_id = ar[3];
+				if (null == items[id].image_urls)
+				{
+					items[id].image_urls = new Array();
+				}
+				items[id].image_urls[img_id] = url;
+				items[id].curImg = img_id;
+				select_image( id, img_id);
+			}
+			else
+			{
+				alert("Произошла ошибка при обновлении изображения!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	};
+	$(form).ajaxSubmit(options);
+}
+
+function add_image2(id)
+{
+
+	var im = document.getElementById("img_" + id);
+	var fp = document.getElementById("img_fp_" + id + "_url");
+	
+	// check if empty
+	if (""==fp.value)
+		return false;
+
+	do_clock(id,1);
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "add_item_image2",
+			'item_id': id,
+			'img': fp.value
+		},
+		success : function(result, errors) 
+		{
+			var ar = result.split(";");
+			var ok=ar[1];
+
+			do_clock(id,-1);
+			if ('ok' == ok)
+			{
+				// change image
+				var url = ar[2];
+				var img_id = ar[3];
+				if (null == items[id].image_urls)
+				{
+					items[id].image_urls = new Array();
+				}
+				items[id].image_urls[img_id] = url;
+				items[id].curImg = img_id;
+				select_image( id, img_id);
+			}
+			else
+			{
+				alert("Произошла ошибка при обновлении изображения!\n");
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+function onImageUploaded(success,item_id,image_id,image_url,responce)
+{  
+  item_id = "" + item_id.toString();
+  image_id = "" + image_id.toString();
+  image_url = "" + image_url.toString();
+  responce = "" + responce.toString();
+  if (success)
+  {
+	  window.setTimeout(
+	      function ()
+        {
+	        // change image
+	        if (null == items[item_id].image_urls)
+	        {
+		        items[item_id].image_urls = new Array();
+	        }
+	        items[item_id].image_urls[image_id] = image_url;
+	        items[item_id].curImg = image_id;
+	        select_image( item_id, image_id );
+	      },
+	      300
+	    );
+  }
+  else
+  {
+    alert("Произошла ошибка при обновлении изображения!");
+    // Write errors to the debug div.
+    document.getElementById("debug").innerHTML = responce;
+  }
+}
+
+function db_update_item(id)
+{
+	do_clock(id,1);
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "update_item",	
+			'item_id': id,	
+			'item': items[id]
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives. 
+		beforeSend : function () {
+		
+		},
+		success : function(result, errors) 
+		{
+			do_clock(id,-1);
+			if ("ok" == result.status)
+			{
+				// do nothing
+			}
+			else
+			{
+				alert("Произошла ошибка при обновлении записи в базе даных!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors; 
+			}
+		}
+	}
+	);		
+}
+
+function get_variants(s)
+{
+	var a = s.split(";");
+	for (var i=0; i<a.length; i++)
+	{
+		var s = a[i].replace(/^\s+/,"").replace(/\s+$/,"");
+		if (s=="")
+		{						
+			a.splice( i, 1);
+			i --;
+		}
+		else
+		{
+			a[i] = s;
+		}
+	}
+	return a;
+}
+
+function change_item(id)
+{			
+
+	var newVars = new Array();
+	newVars = items[id].vars;
+					
+	var vars = items[id].vars;
+	var opt_idx = 0;
+	var key = null;
+	for (key in vars)
+	{
+		var el = document.getElementById("edit_var_" + id + "_" + opt_idx);
+		opt_idx ++;
+		newVars[key] = get_variants(el.value);
+		if (0==newVars[key].length)
+		{
+			newVars[key] = ["*"];
+		}
+	}
+	
+	if (bundle_var)
+	{
+		var vars = get_variants(document.getElementById("edit_bundle_" + id).value);
+		if (vars.length)
+		{
+			// validate bundle
+			var v = new Object, b = new Object;
+			for (var i=0; i<newVars[bundle_var].length; i++)
+			{
+				v[newVars[bundle_var][i]] = true;
+			}
+			for (var i=0; i<vars.length; i++)
+			{
+				b[vars[i]] = true;
+			}
+			for (var k in v)
+			{
+				if (!(k in b))
+				{
+					alert('Внимание: ' + bundle_var + ' ' + k + ' присутствует в вариантах "' + bundle_var + '," но отсутствует в ряду! \nИзменения не будут сохранены!');
+					return;
+				}
+			}
+			for (var k in b)
+			{
+				if (!(k in v))
+				{
+					alert('Внимание: ' + bundle_var + ' ' + k + ' присутствует в ряду, но отсутствует в вариантах ' + '"' + bundle_var + '"! \nИзменения не будут сохранены!');
+					return;
+				}
+			}
+			items[id].bundle = new Object;
+			items[id].bundle[bundle_var] = vars;
+		}
+		else
+		{
+			items[id].bundle = null;
+		}
+	}
+	
+	items[id].vars = newVars;
+	
+	var ar = document.getElementById("edit_article_" + id);
+	items[id].article = ar.value;
+
+	var nm = document.getElementById("edit_name_" + id);
+	items[id].name = nm.value;
+
+	var pc = document.getElementById("edit_price_" + id);
+	{
+		var v = getFloat( pc.value );
+		if (isNaN(Number(v)))
+		{
+			pc.focus();
+			alert( pc.value + " не является числом! \nВведите, пожалуйста, число!" );
+			return;
+		}
+		items[id].price = v;
+	}
+
+	var of = document.getElementById("edit_org_fee_" + id);
+	{
+		var v = getFloat( of.value );
+		if (isNaN(Number(v)))
+		{
+			of.focus();
+			alert( of.value + " не является числом! \nВведите, пожалуйста, число!" );
+			return;
+		}
+		items[id].org_fee = v;
+	}
+	
+	var dc = document.getElementById("edit_desc_" + id);
+	items[id].desc = dc.value;
+	
+	items[id].hidden = document.getElementById("edit_hide_" + id).checked;
+	
+	// recreate item representation
+	document.getElementById("item_" + id).innerHTML = make_item(id);
+	
+	// update db
+	db_update_item( id);
+}
+
+function add_item()
+{
+	//do_clock(id,1);
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "add_new_item",	
+			'catalog_id': catalog_id,
+			'org_fee': catalog_org_fee
+		},
+		dataType: 'json',
+		beforeSend : function () {
+			
+		},
+		success : function(result, errors) 
+		{
+			//do_clock(id,-1);
+			//alert(result);
+			if ("ok" == result.status)
+			{
+				var item = result['item'];
+				items[item.id] = item;
+				n ++;
+				goto_page(Math.floor((n-1)/(rows*cols)) + 1);
+				select_item(item.id);
+			}
+			else
+			{
+				alert("Произошла ошибка при добавлении записи!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors; 
+			}
+		}
+	}
+	);		
+}
+
+function delete_current_item()
+{
+	if (!confirm("Удаление записи приведет также и к удалению ссылающихся на неё заказов.\nПродолжить?"))
+		return;
+	var id = current_item_id;
+	do_clock(id,1);
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+				'cmd': "delete_item",	
+				'item_id': id
+			},
+		// Function is called when an answer arrives. 
+		dataType: 'json',
+		beforeSend : function () {
+			
+		},
+		success : function(result, errors) 
+		{
+			do_clock(id,-1);
+			if ("ok" == result.status)
+			{
+				delete items[id];
+				n --;
+				
+				var p = page;
+				if (p > Math.floor((n-1)/(rows*cols))+1)
+					p --;
+				if (p < 1)
+					p = 1;
+				goto_page(p);
+				
+				var c = 0;
+				for (var item_id in items)
+				{
+					c ++;
+					if ((c/(rows*cols)+1)>=p)
+					{
+						select_item( item_id);
+						break;
+					}
+				}											
+			}
+			else
+			{
+				alert("Произошла ошибка при удалении записи!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors; 
+			}
+		}
+	}
+	);		
+}
+
+function edit_controls(id)
+{
+	var html = "";
+	
+	html += '<TABLE>';
+		
+	html += '<TR><TD align="right">';
+	html += '<B>Скрыть:</B></TD><TD>';
+	html += '<input id="edit_hide_' + id + '" type="checkbox"' + ("1"==items[id].hidden||"true"==items[id].hidden?' checked':'') + ' onclick="javascript:change_item(' + id + ');">';
+	html += '</TD></TR>';
+
+	html += '<TR><TD align="right">';
+	html += '<B>Название:</B></TD><TD>';
+	html += '<INPUT ID="edit_name_' + id + '" TYPE="TEXT" VALUE="' + esc_tags(items[id].name) + '" onChange="javascript:change_item(' + id + ');">';
+	html += '</TD></TR>';
+
+	html += '<TR><TD align="right">';
+	html += '<B>Цена:</B></TD><TD>';
+	html += '<INPUT ID="edit_price_' + id + '" TYPE="TEXT" VALUE="' + format_money(esc_tags(items[id].price)) + '" onChange="javascript:change_item(' + id + ');">';
+	html += '</TD></TR>';
+	
+	html += '<TR><TD align="right">';
+	html += '<B>Артикул:</B></TD><TD>';
+	html += '<INPUT ID="edit_article_' + id + '" TYPE="TEXT" VALUE="' + esc_tags(items[id].article) + '" onChange="javascript:change_item(' + id + ');">';
+	html += '</TD></TR>';
+	
+	html += '<TR><TD align="right">';
+	html += '<B>Орг %:</B></TD><TD>';
+	html += '<INPUT ID="edit_org_fee_' + id + '" TYPE="TEXT" VALUE="' + format_money(esc_tags(items[id].org_fee)) + '" onChange="javascript:change_item(' + id + ');">';
+	html += '</TD></TR>';
+
+	html += '<TR><TD align="right">';
+	html += '<B>Описание:</B></TD><TD>';
+	html += '<TEXTAREA style="width:95%" ID="edit_desc_' + id + '" ROWS="5" COLS="30" onChange="javascript:change_item(' + id + ');">' + items[id].desc + '</TEXTAREA>';
+	html += '</TD></TR>';
+	
+					
+	// make options
+	var vars = items[id].vars;
+	var opt_idx = 0;
+	for (var v in vars)
+	{
+		var z = "";
+		for (var vv in vars[v])
+		{
+			if (z!="")
+				z += "; ";
+			z += esc_tags(vars[v][vv]);
+		}
+		html += '<TR><TD align="right">';
+		html += '<B>Варианты "' + esc_tags(v) + '":</B></TD><TD><INPUT ID="edit_var_' + id + '_' + opt_idx + '" type="text" value="' + z + '" onChange="javascript:change_item(' + id + ');">';
+		html += '</TD></TR>';
+		opt_idx ++;
+	}
+	if (bundle_var)
+	{
+		var z = "";
+		if (items[id].bundle && bundle_var in items[id].bundle)
+		{
+			var bundle = null;
+			bundle = items[id].bundle[bundle_var];
+			for (var i=0; i<bundle.length; i++)
+			{
+				if (z!="")
+					z += "; ";
+				z += esc_tags(bundle[i]);
+			}
+		}
+		html += '<TR><TD align="right"><B>Ряд(' + bundle_var + '):</B></TD><TD><INPUT ID="edit_bundle_' + id + '" type="text" value="' + z + '" onChange="javascript:change_item(' + id + ');"></TD></TR>';
+	}
+	html += '</TABLE>';
+	return html;
+}
+
+//*******************************************************************
+</SCRIPT>
+		
+
+<SCRIPT language="Javascript">
+
+function object_copy(src)
+{
+	var o = new Object;
+	for (var key in src)
+	{
+		o[key] = src[key];
+	}
+	return o;
+}
+
+
+function reset_catalog_filter()
+{
+	article = document.getElementById("catalog_search_article").checked = true;
+	name = document.getElementById("catalog_search_name").checked = true;
+	desc = document.getElementById("catalog_search_desc").checked = false;
+	search_in_results = document.getElementById("catalog_search_results").checked = false;
+	document.getElementById("catalog_search_keywords").value = defMsg;
+	var vars = new Object();
+	{
+		var v = new Array();
+		for (var id in items_back)
+		{
+			v = items_back[id].vars;
+			break;
+		}
+		
+		for (var key in v)
+		{		
+			var id = 'catalog_search_' + esc_tags(key);
+			document.getElementById(id).checked = false;
+		}
+	}
+	update_catalog_filter();
+}
+
+
+function update_catalog_filter()
+{
+	var article = document.getElementById("catalog_search_article").checked;
+	var name = document.getElementById("catalog_search_name").checked;
+	var desc = document.getElementById("catalog_search_desc").checked;
+	var search_in_results = document.getElementById("catalog_search_results").checked;
+	var keywords = document.getElementById("catalog_search_keywords").value;
+	var vars = new Object();
+	{
+		var v = new Array();
+		for (var id in items_back)
+		{
+			v = items_back[id].vars;
+			break;
+		}
+		
+		for (var key in v)
+		{		
+			var id = 'catalog_search_' + esc_tags(key);
+			vars[key] = document.getElementById(id).checked;
+		}
+	}
+	
+	if (defMsg==keywords)
+	{
+		items = object_copy(items_back);
+	}
+	else
+	{
+		// filter
+		if (!search_in_results)
+		{
+			items = object_copy(items_back);
+		}
+		var re = new RegExp(keywords.replace(/([\()<>.?*:])/g,'\\$1'),"i");
+		for (var id in items)
+		{
+			var good = false;
+			var item = items[id];
+			if (name && -1!=item.name.search(re))
+				good = true;
+			else if (article && -1!=item.article.search(re))
+				good = true;
+			else if (desc && -1!=item.desc.search(re))
+				good = true;
+			else
+			{
+				for (var key in item.vars)
+				{
+					if (vars[key] && -1!=item.vars[key].toString().search(re))
+					{
+						good = true;
+						break;
+					}
+				}
+			}
+			if (!good)
+			{
+				delete items[id];
+			}
+		}
+		
+	}
+
+	n = 0;
+	for (var id in items)
+	{
+		n++;
+	}
+	
+	if (n)
+	{
+		if (current_item_id in items)
+		{
+			select_item(current_item_id);
+		}
+		else
+		{
+			goto_page(1);
+			for (var id in items)
+			{
+				select_item(id);
+				break;
+			}
+		}
+		document.getElementById("search_results").innerHTML = "<center>Найдено " + n + " позиций</center>";
+	}
+	else
+	{
+		document.getElementById("search_results").innerHTML = '<center><h3><font color="red">Ничего не найдено</font></h3></center>';
+		select_item(-1);
+		fill_right();
+	}
+}
+
+
+function compare_name( a, b)
+{
+	return a.name.localeCompare( b.name);
+}
+
+function compare_name_desc( a, b)
+{
+	return -compare_name( a, b);
+}
+
+function compare_price( a, b)
+{
+	var aa = parseFloat(a.price);
+	var bb = parseFloat(b.price);
+	if (aa<bb)
+		return -1;
+	if (aa>bb)
+		return 1;
+	return 0;
+}
+
+function compare_price_desc( a, b)
+{
+	return -compare_price( a, b);
+}
+
+function compare_id( a, b)
+{
+	a = parseInt(a);
+	b = parseInt(b);
+	if (a.id<b.id)
+		return -1;
+	if (a.id>b.id)
+		return 1;
+	return 0;
+}
+
+function sort_items( compare_func)
+{
+	var a = new Array;
+	var i = 0;
+	for (id in items)
+	{
+		a[i++] = items[id];
+	}
+	a.sort( compare_func);
+	items = new Array;
+	for (var i=0; i<a.length; i++)
+	{
+		items[a[i].id] = a[i];
+	}
+}
+
+function do_clock(id,inc)
+{
+	var s = document.getElementById("status_" + id);
+	if (isNaN(s.cnt))
+	{
+		s.cnt = 0;
+	}
+	if (inc>0)
+	{
+		if (0==s.cnt)
+		{
+			s.innerHTML = '<img src="./images/icons/clock.gif">';
+		}
+		s.cnt ++;
+	}
+	else
+	{
+		s.cnt --;
+		if (0==s.cnt)
+		{
+			s.innerHTML = '<img src="./images/icons/empty.png">';
+		}
+	}				
+}
+
+
+function first_key(a)
+{
+	var i;
+	for (i in a)
+	{
+		return i;
+	}
+}
+
+
+function first_item(a)
+{
+	var i;
+	for (i in a)
+	{
+		return a[i];
+	}
+}
+
+
+function make_search_vars()
+{
+	var html = new Array();
+	var vars = new Array();
+	for (var id in items)
+	{
+		vars = items[id].vars;
+		break;
+	}
+	for (var key in vars)
+	{		
+		html.push ('<input type="checkbox" id="catalog_search_' + esc_tags(key) + '" />' + esc_tags(key) + '&nbsp;&nbsp;');
+	}
+	return html.join('');
+}
+
+
+function make_option(id,nm,v)
+{
+	var html = "";
+	//html += "<CENTER><B>" + nm + ":</B></CENTER><BR>";
+	html += "&nbsp;&nbsp;<B>" + esc_tags(nm) + ": </B>";
+	//v = v.filter( function(item){ return item != ''; } );
+	for (var i=0; i<v.length; i++)
+	{
+		var r_id = id + '_' + i;
+		html += '<input type="radio" ' + (1==v.length?'checked="true" ':'') + 'id="' + r_id + '" name="' + id + '" value="' + esc_tags(v[i]) + '"><label for="' + r_id + '">' + esc_tags(v[i]) + '</label> &nbsp;';
+	}
+	return html;
+}
+
+
+function make_img_selector(id)
+{
+	html = "";
+	var i = 1;
+	html += "<CENTER><B>";
+	for (var img_id in items[id].image_urls)
+	{
+		if (i>1)
+			html += ", ";
+		if (img_id == items[id].curImg)
+			html += i;
+		else
+			html += " <A href='javascript:select_image(" + id + "," + img_id + ");'>" + i + "</A>";
+		i ++;
+	}
+	html += "</B></CENTER>";
+	if (i>2)
+		return html;
+	else
+		return "";
+}
+
+
+function make_page_selectors()
+{
+	
+	var html="<P align=right> ";
+	html += "<select>";
+	html += "<option value=2 >2 </option>";
+	html += "<option value=10 >5 </option>";
+	html += "<option value=10 >10 </option>";
+	html += "<option value=20 >20 </option>";
+	html += "<option value=50 >50 </option>";
+	html += "<option value=100 >100 </option>";
+	html += "<option value=200 >200 </option>";
+	html += "</select>";
+	
+	html += "<B>НА СТРАНИЦУ:</B> ";
+	var lim = 7;		
+	if (page - lim < 0)
+	{
+		lim += lim - page;
+	}
+	if ((page+lim-1)*rows*cols>n)
+	{
+		lim += ((page+lim-1)*rows*cols - n)/(rows*cols);
+	}
+	var b=false;
+	
+	for (var i=0,p=1; i<n; i+=rows*cols,p++)
+	{
+		if (page - lim < p && p < page + lim)
+		{
+			if (b)
+				html += ",";
+			if (p==page)
+				html += "&nbsp;&nbsp;<B>" + p + "</B>";
+			else
+				html += "&nbsp;&nbsp;<A href='javascript:goto_page(" + p + ");'>" + p + "</A>";
+			b = true;
+		}		
+	}
+	var bw = (page>1);
+	var fw = (page*rows*cols<n);
+	html += (bw?"&nbsp;&nbsp;<A href='javascript:goto_page(" + (1) + ");'>":"") + "&nbsp;&lt;&lt;&lt;&nbsp;Начало"+(bw?"</A>":"");
+	html += (bw?"&nbsp;&nbsp;<A href='javascript:goto_page(" + (page-1) + ");'>":"") + "&nbsp;&lt;&nbsp;назад"+(bw?"</A>":"");
+	html += (fw?"&nbsp;&nbsp;<A href='javascript:goto_page(" + (page+1) + ");'>":"") + "&nbsp;вперед&nbsp;&gt;"+(fw?"</A>":"");
+	html += (fw?"&nbsp;&nbsp;<A href='javascript:goto_page(" + (p-1) + ");'>":"") + "&nbsp;Конец&nbsp;&gt;&gt;&gt;"+(fw?"</A>":"");
+	html += "</P>";
+
+	return html;
+}
+
+
+function make_item(id)
+{
+
+	var ni="'images/icons/noimage.png'";
+	var html = "";
+	html += '<FORM ACTION="javascript:" METHOD="post" ENCTYPE="multipart/form-data" ACCEPT="image/png,image/gif,image/jpeg,image/bmp" id="postimg_'+id+'">';
+	html += '<TABLE width="450" height="240">';
+	html += '<TR>';
+	html +=		'<TD width="50%" height="240">';
+	html +=			'<A  HREF="javascript:select_item(' + id + ');">';
+	html += 			'<IMG ID="img_' + id + '" style="max-width: 100%; max-height: 100%;" SRC="' + item_thumb_url(id) + '" BORDER="0" ALT="кликните сюда для просмотра полного изображения" onerror="this.src=' + ni + '" >';
+	html += 		'</A>';
+	html +=			'<br/>'
+	html +=			'<DIV id="img_sel_' + id + '">' + make_img_selector(id) + '</DIV>';
+	html +=			'<center><b>Ссылка:</b> <a title="Ссылка на модель ' + esc_tags( items[id].name ) + ' в каталоге" href="catalog.php?catalog_id='+catalog_id+'&lot_id=' + id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">модель ' + esc_tags( items[id].name ) + '</a></center>';
+	html +=		'</TD>';
+
+	if (edit_mode)
+	{
+		// make edit controls
+		html += '<TD width="50%" height="240">';
+
+		html +=		'<span cnt="0" id="status_' + id + '" ><img style="max-width: 100%; max-height: 100%;" src="./images/icons/empty.png" width="22" height="22"></span>';
+		html +=		'<span style="position:relative; left:0; top:-22px; vertical-align:middle">';
+
+		html +=		edit_controls(id);
+		html += '</TD>';
+	}
+	else
+	{
+		html += '<TD width="50%" height="240">';
+		
+		html +=		'<span cnt="0" id="status_' + id + '" ><img src="./images/icons/empty.png" width="22" height="22"></span>';
+		html +=		'<span style="position:relative; left:0; top:-22px; vertical-align:middle">';
+		
+		html +=		'<CENTER><B>Название: </B> ' + esc_tags( items[id].name) + '</CENTER>';
+		html +=		'<CENTER><B>Цена: </B> ' + format_money(esc_tags( items[id].price)) + '</CENTER>';
+		html +=		'<CENTER><B>Орг %: </B> ' + format_money(esc_tags( items[id].org_fee)) + '</CENTER>';
+		html +=		'<BR>';
+		
+		// make options
+		var vars = items[id].vars;
+		var opt_idx = 0;
+		for (v in vars)
+		{
+			html +=	make_option( "item" + id + "_opt" + opt_idx, v, vars[v]);
+			html +=	'<BR><BR>';
+			opt_idx ++;
+		}
+		
+		html +=		'<CENTER><A HREF="javascript:add_to_order(' + id + ');">добавить в заказ</A></CENTER>';
+		html += '</TD>';
+	}
+
+	html += '</TR>';
+
+	if (edit_mode)
+	{
+		html += '<TR><TD colspan="2">';
+		html += '<B>Изображение:</B>';
+		html += '<INPUT TYPE="HIDDEN" NAME="MAX_FILE_SIZE" VALUE="5000000" />'
+		html += '<INPUT ID="img_fp_' + id + '" NAME="img_fp_' + id + '" TYPE="FILE"><INPUT TYPE="image" src="./images/icons/add.png" VALUE="Добавить" onClick="javascript:add_image(' + id + ');">';
+		html += '<INPUT TYPE="image" src="./images/icons/delete.png" VALUE="Удалить" onClick="javascript:delete_image(' + id + ', items[' + id + '].curImg);"><br/>';
+		html += '<B>URL адрес:</B> <INPUT ID="img_fp_' + id + '_url" NAME="img_fp_' + id + '_url" TYPE="text" size=20><INPUT TYPE="image" src="./images/icons/add.png" VALUE="Добавить" onClick="javascript:add_image2(' + id + ');">';
+		html += '</TD></TR>';
+		html += '<tr><td>';
+    }
+	
+
+	html += '</TABLE>';
+	html += "</FORM>";
+	
+	
+	return html;
+}
+
+
+function fill_right()
+{
+	var html='';
+	html += '<TABLE border="1">';
+	var i=0;
+	for (id in items)
+	{
+		if (i>=((page-1)*rows*cols)&&i<(page*rows*cols))
+		{
+			if (0==(i%cols))
+				html += "<TR>";
+
+			html += '<TD ID=item_' + id + '>';
+		
+			html += make_item(id);					
+			
+			html += '</TD>';
+			
+			if (0==((i+1)%cols))
+				html += "</TR>";
+		}
+		
+		i++;						
+	}
+	html += "</TABLE>";
+	var d=document.getElementById("right").innerHTML = html;
+}			
+
+
+function goto_page(n)
+{
+	page = n;
+	fill_right();
+	document.getElementById('make_page_selectors_top').innerHTML = make_page_selectors();
+	document.getElementById('make_page_selectors_bottom').innerHTML = make_page_selectors();
+}
+										
+
+function select_item(id)
+{
+	if (id in items)
+	{
+		var i = 1;
+		for (var item_id in items)
+		{
+			if (id==item_id)
+			{
+				goto_page(Math.floor((i-1)/(rows*cols)) + 1);
+				break;
+			}
+			i ++;
+		}
+		var ni="'images/icons/noimage.png'";
+		var html = "";
+		html += '<TABLE>';
+		html += '<TR>';
+		html += '	<TD>';
+		html += '	<span style="width:450px; height:450px">';
+//		html += '<IMG src="images/icons/noimage1.png" onerror="this.src=' + ni + '" >';
+
+		html +=			'<IMG style="max-width: 100%; max-height: 100%;" src="' + item_image_url(id) + '" BORDER="0" ALT="" onerror="this.src=' + ni + '" >';
+		html += '	</span>';
+		html += '<BR><DIV id="cur_item_img_sel_' + id + '">' + make_img_selector(id) + '</DIV>';
+		html += '</TD>';
+		html += '</TR>';
+		html += '<TR>';
+		html += '	<TD>';
+		html += '<B>Название:</B> ' + esc_tags( items[id].name );
+		html += '<BR>';
+		html += '<b>Цена:</b> ' + esc_tags( items[id].price );	
+		html += '<BR>';
+		html += '<b>Ссылка на эту модель:</b> <a title="Ссылка на модель ' + esc_tags( items[id].name ) + ' в каталоге" href="catalog.php?catalog_id='+catalog_id+'&lot_id=' + id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">модель ' + esc_tags( items[id].name ) + '</a>';
+		html += '<BR>';
+		html += '<b>Описание:</b><br/> ' + esc_tags2( items[id].desc ).replace(/\[br\]/gi,"<br>");
+		html += '</TD>';
+		html += '</TR>';
+		html += '</TABLE>';
+		
+		document.getElementById("selected_model").innerHTML = html;
+		current_item_id = id;
+	}
+	else
+	{
+		document.getElementById("selected_model").innerHTML = "";
+	}
+}
+
+
+function select_image( id, img_id)
+{
+	items[id].curImg = img_id;
+	var sel = document.getElementById( "img_sel_" + id);
+	sel.innerHTML = make_img_selector(id);
+	var im = document.getElementById("img_" + id);
+	im.src = item_thumb_url( id );
+	if (id == current_item_id)
+	{
+		select_item(current_item_id);
+	}
+}
+
+
+function item_image_url(id)
+{
+	for (var image_id in items[id].image_urls)
+	{
+		url = esc_tags(items[id].image_urls[items[id].curImg]);
+		if (url) return "images/lots/"  + url;
+	}
+	return "images/icons/noimage.png";
+}
+
+
+function item_thumb_url(id)
+{
+	for (var image_id in items[id].image_urls)
+	{
+		url = "" + esc_tags(items[id].image_urls[items[id].curImg]);
+		if (url) return "images/lots/thumb/"  + url;
+	}
+	return "images/icons/noimage.png";
+}
+
+
+function add_to_order( item_id)
+{
+	if (registered_user)
+	{
+		var vars = items[item_id].vars;
+		var item_vars = new Array();
+		var opt_idx = 0;
+		for (k in vars)
+		{
+			var bFound = false;
+			for (var i=0; i<vars[k].length; i++)
+			{							
+				var el=document.getElementById( "item" + item_id + "_opt" + opt_idx + "_" + i);
+				if (true == el.checked)
+				{
+					item_vars[k] = el.value;
+					bFound = true;
+					break;
+				}
+			}
+			if (!bFound)
+			{
+				alert("Не заполнен " + k);
+				return;
+			}
+			opt_idx ++;
+		}
+		JsHttpRequest.query(
+			'service.php?nyg_=317', // backend
+			{
+				'cmd': "add_to_order",	
+				'item_id': item_id,
+				'item_vars': item_vars,
+				'purchase_id': purchase_id
+			},
+			// Function is called when an answer arrives. 
+			function(result, errors) 
+			{
+				if ("ok" == result)
+				{
+					alert("Успешно добавлено в заказ!");
+				}
+				else
+				{
+					alert("Произошла ошибка при добавлении в заказ!\n" + errors);
+					// Write errors to the debug div.
+					document.getElementById("debug").innerHTML = errors; 
+				}
+			},
+			true	// disable caching
+		);		
+	}
+	else
+	{
+		alert("Для добавления в заказ необходимо сначала войти в систему!");
+	}
+}
+
+function change_sort()
+{
+	var asc = document.getElementById("sort_by_asc").selected;
+	var func = "compare_id";
+	if (document.getElementById( "sort_by_name" ).selected)
+		func = asc ? "compare_name" : "compare_name_desc";
+	else if (document.getElementById( "sort_by_price" ).selected)
+		func = asc ? "compare_price" : "compare_price_desc";
+
+	sort_items( eval(func));
+	if (current_item_id in items)
+	{
+		select_item( current_item_id );
+	}
+	else
+	{
+		goto_page(page);
+	}
+	//createCookie( "catalog" + catalog_id + "_sort", func, 14);
+	createCookie( "catalog_sort", func, 14);
+}
+
+var edit_mode = {EDIT};
+var items = { {LOTS} };
+var n = {NOM};
+var registered_user = 0;
+var catalog_id = {CATALOG_ID};
+var catalog_org_fee = {CATALOG_ORGRATE};
+var select_item_id = -1;
+var bundle_var = "{CATALOG_BUNDLE}";
+var cols=1;
+
+var rows=4;
+var page=1;
+
+// make items backup
+var items_back = object_copy(items);
+
+// set current image
+for (var id in items)
+{
+	for (var img_id in items[id].image_urls)
+	{
+		items[id].curImg = img_id;
+		break;
+	}
+}		
+
+// sort items
+var sort_func = readCookie("catalog" + catalog_id + "_sort");
+if (null==sort_func)
+	sort_func = readCookie("catalog_sort");
+if (null!=sort_func)
+{
+	var asc = (sort_func =="compare_name" || sort_func =="compare_price" || sort_func =="compare_id");
+
+	document.getElementById("sort_by_asc").selected = asc
+	document.getElementById("sort_by_desc").selected = !asc;
+		
+	document.getElementById( "sort_by_name" ).selected = (sort_func =="compare_name" || sort_func =="compare_name_desc");
+	document.getElementById( "sort_by_price" ).selected = (sort_func =="compare_price" || sort_func =="compare_price_desc");
+	document.getElementById( "sort_by_id" ).selected = (sort_func =="compare_id");
+
+	sort_items( eval(sort_func));
+}
+else
+{
+	sort_items( compare_id);
+}
+
+document.getElementById("catalog_search_vars").innerHTML = make_search_vars();
+
+goto_page( 1);
+			
+if (select_item_id>=0)
+{
+	select_item( select_item_id );
+}
+else
+{
+	// select first item
+	for (var id in items)
+	{
+		select_item( id);
+		break;
+	}
+}
+			
+			</SCRIPT>
+
+	</div>
+</div>
+
+
+
+
+<!-- ELSE -->
+<div class="panel">
+	<div class="inner">
+		<span class="corners-top"><span></span></span>
+			<p>Этот раздел доступен только организаторам</p>
+			<a href="" title="Подать заявку">Подать заявку</a>
+		<span class="corners-bottom"><span></span></span>
+	</div>
+</div>
+<!-- ENDIF -->
+<!-- INCLUDE org_footer.html -->

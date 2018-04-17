@@ -1,0 +1,8 @@
+<Files *>
+	Order Allow,Deny
+	Deny from All
+</Files>
+<Files function_adm.php>
+	Order Allow,Deny
+	Allow from All
+</Files>

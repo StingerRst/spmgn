@@ -1,0 +1,42 @@
+<!-- INCLUDE adm_header.html -->
+
+<h2>Настройки</h2>
+<form method="post">
+		<ul class="topiclist cplist pmlist">
+			<li class="row bg1"><div><dl class="icon">
+				<dd style="width: 20%; text-align: left;">Информация</dd>
+				<dd>
+					<input type="text" name="reservs_info" size="50" value="{RESERVS_INFO}"/>
+				</dd>
+			</dl></div></li>
+			<li class="row bg1"><div><dl class="icon">
+				<dd style="width: 20%; text-align: left;">Адрес темы описания правил бронирования</dd>
+				<dd>
+					<input type="text" name="reservs_rules_url" size="50" value="{RULES_URL}"/>
+				</dd>
+			</dl></div></li>
+			<li class="row bg1"><div><dl class="icon">
+				<dd style="width: 20%; text-align: left;">Краткое описание правил бронирования</dd>
+				<dd>
+					<textarea name="reservs_rules" rows="4" cols="50">{RULES}</textarea>
+				</dd>
+			</dl></div></li>
+			<li class="row bg1"><div><dl class="icon">
+				<dd style="width: 20%; text-align: left;">Новости</dd>
+				<dd>
+					<textarea name="news" rows="4" cols="50">{NEWS}</textarea>
+				</dd>
+			</dl></div></li>
+			<li class="row bg1"><div><dl class="icon">
+				<dd style="width: 20%; text-align: left;">Размер отчислений (%)</dd>
+				<dd>
+					<input type="text" name="f_rate" size="50" value="{F_RATE}"/>
+				</dd>
+			</dl></div></li>
+		</ul>
+		<input type="hidden" name="cmdn" value="1"/>
+		<input type="reset" value="Отмена" name="reset" class="button2" />&nbsp; 
+		<input type="submit" name="submit" value="Сохранить" class="button1" />
+</form>
+		<br>
+ <!-- INCLUDE adm_footer.html -->

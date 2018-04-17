@@ -1,0 +1,63 @@
+ <head>
+  <style>
+	@media aLL { 
+	body {
+		display: block;
+		margin: 0px;
+		padding:0;
+	}
+	table#main {
+		table-layout: auto; /* Фиксированная ширина ячеек */
+		width: 58mm; /* Ширина таблицы */
+		page-break-before: always;
+		page-break-inside: avoid;
+		border:1px solid black;
+		border-collapse: collapse;
+		text-align: center;
+		hyphens: auto;
+		padding:0;
+	}
+	
+	td {
+		word-break:normal;
+		border:1px solid black;
+		padding:0;
+	}
+	
+	tr#t0 { height:1mm;border:1px solid white;border: inherit}
+	tr#t1 { height: 8mm;font-size: 10pt; border: inherit}
+	tr#t2 { height: 12mm;font-size: 12pt;border: inherit}
+	tr#t3 { height: 8mm;font-size: 10pt; border: inherit}	
+	}
+  </style>
+ </head>
+
+<form  method="post" sid = {sid}>
+
+</form>
+<SCRIPT language="javascript">
+	var users = {USERS};
+
+
+	
+	for (var id in users)
+	{ 
+	document.write('<table id ="main">');
+
+	document.write('<tr id = "t1">');
+	document.write('<td><b>'+ users[id].username +'</b></td>');
+	document.write('</tr>');
+
+	
+	document.write('<tr id = "t2">');
+	document.write('<td><b>'+ users[id].brand_label +'</b></td>');
+	document.write('</tr>');
+
+	document.write('<tr id = "t3">');
+	document.write('<td><b>' + users[id].kol + '</b></td>');
+	document.write('</tr>');
+
+	document.write('</table>');
+	}
+	
+</SCRIPT>

@@ -1,0 +1,573 @@
+ <head>
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />
+	
+	
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<link href="{T_THEME_PATH}/output_ec_body.css" rel="stylesheet" type="text/css" />
+	<style>
+		.err {background:red}
+		.set {background:green}
+		.unset {background:blue}
+	</style>
+	
+ </head>
+
+<body>
+<form  method="post" sid = {sid}>
+<div class="theader"> 
+<div class="table"> 
+	<div class="colgroup"> 
+		<div class="col" style="width:24%; "></div>
+		<div class="col" ></div>
+		<div class="col" style="width:10%; "></div>
+	</div>
+		<div class="tr"  >
+		<div class="td" style="width:24%;">Участник</div>
+		<div class="td">
+			<div class="table" style="width: 100%;">
+				<div class="col" style="width:54%; "></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:5%;"></div>
+				<div class="tr"  >
+					<div class="td center" >Закупка</div>
+					<div class="td center">В Ец</div>
+					<div class="td center">Дней</div>
+					<div class="td center">Кол-во</div>
+					<div class="td center">Долг</div>
+					<div class="td center">Дост</div>
+					<div class="td center">ЕЦ</div>
+					<div class="td center"></div>
+				</div>
+			</div>
+		</div>
+		<div class="td center">Сумма</div>
+	</div>
+		<div class="tr" >
+		<div class="td"><input type="text" id="find"></div>
+		<div class="td">
+			<div class="table" style="width: 100%;">
+				<div class="col" style="width:54%; "></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:5%;"></div>
+
+				<div class="td center"></div>
+				<div class="td center"></div>
+				<div class="td center"></div>
+				<div class="td center" id="sum">0</div>
+				<div class="td center" id="DOLG" data-ajaxload ="" >0</div>
+				<div class="td center" id="CHEL">0</div>
+				<div class="td center" id="EC">0</div>
+				<div class="td center"></div>
+			</div>
+		</div>
+		<div class="td center" id="ITOGO">0</div>
+		
+	</div>
+	</div>
+	</div>
+
+
+<div class="table"> <!-- Таблица -->
+	<div class="colgroup"> 
+		<div class="col" style="width:24%; "></div>
+		<div class="col" ></div>
+		<div class="col" style="width:10%; "></div>
+	</div>
+		<div class="tr"  >
+		<div class="td" style="width:24%;">Участник</div>
+		<div class="td">
+			<div class="table" style="width: 100%;">
+				<div class="col" style="width:54%; "></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:5%;"></div>
+				<div class="tr"  >
+					<div class="td center" >Закупка</div>
+					<div class="td center">В Ец</div>
+					<div class="td center">Дней</div>
+					<div class="td center">Кол-во</div>
+					<div class="td center">Долг</div>
+					<div class="td center">Дост</div>
+					<div class="td center">ЕЦ</div>
+					<div class="td center"></div>
+				</div>
+			</div>
+		</div>
+		<div class="td center">Сумма</div>
+	</div>
+		<div class="tr" >
+		<div class="td"><input type="text"></div>
+		<div class="td">
+			<div class="table" style="width: 100%;">
+				<div class="col" style="width:54%; "></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:5%;"></div>
+
+				<div class="td center"></div>
+				<div class="td center"></div>
+				<div class="td center"></div>
+				<div class="td center"></div>
+				<div class="td center"></div>
+				<div class="td center"></div>
+				<div class="td center"></div>
+				<div class="td center"></div>
+			</div>
+		</div>
+		<div class="td center"></div>
+		
+	</div>
+	
+<!-- IF .balance -->
+	<div>
+	<div>
+<!-- BEGIN balance -->
+	<!-- IF  balance.NEW_USER -->
+    </div>
+	</div>
+	<div id= "UID_{balance.USER_ID}"class="tr UsersRows">
+		<input type="hidden" class="PCount" id="tr_cnt{balance.USER_ID}" value=0>
+		<div class="td uname"  data-cnt="{balance.CNT}"><b><a href="ucp.php?i=pm&mode=compose&u={balance.USER_ID}" title="Отправиль личное сообщение участнику" target ="_blank">{balance.USERNAME}</a></b> <br> <small>({balance.USER_REALNAME}&nbsp;{balance.USER_PHONE})</small></div>	
+		<div class="td noborder"> <!-- Подробности -->
+	<!-- ENDIF -->
+			<div class="table" style="width: 100%;">
+				<div class="col" style="width:54%; "></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:7%;"></div>
+				<div class="col" style="width:5%;"></div>
+			  <div class="tr rst">
+				<div class="td "><p ><a href="memberlist.php?mode=viewprofile&u={balance.ORG_ID}" title="Профиль организатора" target ="_blank">{balance.ORG_NAME}</a>&nbsp;/&nbsp;<b>{balance.PURCHASE_ID}</b>&nbsp;/&nbsp;{balance.BRAND_LABEL}&nbsp;/&nbsp;<a href="adm.php?i=1&mode=otchet&p={balance.PURCHASE_ID}#U{balance.USER_ID}" title="Заказ участника в админке" target ="_blank">{balance.PURCHASE_NAME}</a></div>
+				<div class="td center"><p >{balance.IN_EC_DATE}</div>
+				<div class="td center IN_EC_DAYS"><p >{balance.IN_EC_DAYS}</div>
+				<div class="td center"><p >{balance.COST_COUNT}</div>
+		<!-- IF  balance.CONSIDERED == 1 -->
+				<div class="td center td_dolg"> <input type="text" id="dolg{balance.PURCHASE_ID}!{balance.USER_ID}"  value="{balance.DOLG}" disabled> </div>
+				<div class="td center td_chel"><!-- IF  balance.DELIVERY == 1 --> <input type="text" id="dostavka{balance.PURCHASE_ID}!{balance.USER_ID}"   value="{balance.CHEL}"disabled><!-- ENDIF --></div>
+				<div class="td center td_ec"><input type="text" id="EC{balance.PURCHASE_ID}!{balance.USER_ID}"  value="{balance.EC}"disabled></div>
+				<div class="td center td_mark"><LABEL><input class ="btn" id="mark{balance.PURCHASE_ID}!{balance.USER_ID}" type="checkbox" class="radio" name="mark[]" value="{balance.PURCHASE_ID}!{balance.USER_ID}!{balance.ORG_ID}" / hidden checked><span></span></label></div>
+				<SCRIPT language="javascript">
+					if (document.getElementById("dostavka{balance.PURCHASE_ID}!{balance.USER_ID}")) 	document.getElementById("CHEL").innerHTML=Number(document.getElementById("CHEL").innerHTML)+Number({balance.CHEL});
+					if (document.getElementById("dolg{balance.PURCHASE_ID}!{balance.USER_ID}")) document.getElementById("DOLG").innerHTML=Number(document.getElementById("DOLG").innerHTML)+Number({balance.DOLG});
+					if (document.getElementById("EC{balance.PURCHASE_ID}!{balance.USER_ID}")) document.getElementById("EC").innerHTML=Number(document.getElementById("EC").innerHTML)+Number({balance.EC});
+					document.getElementById("tr_cnt{balance.USER_ID}").value=Number(document.getElementById("tr_cnt{balance.USER_ID}").value)+1;
+				</SCRIPT>
+		<!-- ELSE -->
+				<div class="td center td_dolg"> <input type="text" id="dolg{balance.PURCHASE_ID}!{balance.USER_ID}"  value="{balance.DOLG}"> </div>
+				<div class="td center td_chel"><!-- IF  balance.DELIVERY == 1 --> <input type="text" id="dostavka{balance.PURCHASE_ID}!{balance.USER_ID}"   value="10"><!-- ENDIF --></div>
+				<div class="td center td_ec"><input type="text" id="EC{balance.PURCHASE_ID}!{balance.USER_ID}"  value="10"></div>
+				<div class="td center td_mark"><LABEL><input class ="btn" id="mark{balance.PURCHASE_ID}!{balance.USER_ID}" type="checkbox" class="radio" name="mark[]" value="{balance.PURCHASE_ID}!{balance.USER_ID}!{balance.ORG_ID}" / hidden><span></span></label></div>
+		<!-- ENDIF -->
+			  </div>
+			</div>
+	<!-- END balance -->
+<!-- ENDIF -->
+	</div><!-- Подробности -->
+	</div> <!-- UsersRows -->
+</div>  <!-- Таблица -->
+	
+	
+	
+  <input class="button2" id="btHidden"  value="Скрыть" onClick="javascript:HiddenEmpty()"/>
+ </form>
+
+ <div id='modal'></div>
+ <div id='fade'></div>
+<SCRIPT language="javascript">
+//	var t1="аaбbвvгgдdеeёjoжzhзzиiйjкkлlмmнnоoпpрrсsтtуuфfхkhцcчchшshщshhъ''ыyь'эehюjuяjaАAБBВVГGДDЕEЁJoЖZhЗZИIЙJjКKЛLМMНNОOПPРRСSТTУUФFХKhЦCЧChШShЩShhЪ''ЫYЬ'ЭEhЮJuЯJa";
+//	var t2="joёzhжkhхchчshшshhщ''ъehэjuюjaяaаbбvвgгdдeеzзiиjйkкlлmмnнoоpпrрsсtтuуfфcцyы'ьJOЁZHЖKHХCHЧSHШSHHЩ''ЪEHЭJUЮJAЯAАBБVВGГDДEЕZЗIИJЙKКLЛMМNНOОPПRРSСTТUУFФCЦYЫ'Ь";
+//	var t3="йqцwуeкrеtнyгuшiщoзpх[ъ]фaыsвdаfпgрhоjлkдlж;э'яzчxсcмvиbтnьmб,ю.ЙQЦWУEКRЕTНYГUШIЩOЗPХ{Ъ}ФAЫSВDАFПGРHОJЛKДLЖ:ЯZЧXСCМVИBТNЬMБ<Ю>";	
+//	var t4="qйwцeуrкtеyнuгiшoщpзaфsыdвfаgпhрjоkлlд;ж'эzяxчcсvмbиnтmь,бQЙWЦEУRКTЕYНUГIШOЩPЗAФSЫDВFАGПHРJОKЛLД;Ж'ЭZЯXЧCСVМBИNТMЬ,Б{Х}Ъ<Б>Ю";	
+var t1="аaбbвvгgдdеeёjoжzhзzиiйjкkлlмmнnоoпpрrсsтtуuфfхkhцcчchшshщshhъ''ыyь'эehюjuяja";
+var t2="joёzhжkhхchчshшshhщ''ъehэjuюjaяaаbбvвgгdдeеzзiиjйkкlлmмnнoоpпrрsсtтuуfфcцyы'ь";
+var t3="йqцwуeкrеtнyгuшiщoзpх[ъ]фaыsвdаfпgрhоjлkдlж;э'яzчxсcмvиbтnьmб,ю.";	
+var t4="qйwцeуrкtеyнuгiшoщpзaфsыdвfаgпhрjоkлlд;ж'эzяxчcсvмbиnтmь,б";	
+var timerid;
+		
+	function translite(s) {
+		t=t1.replace(/([а-яёЁ])([a-z']+)/gi,'.replace(/$1/g,"$2")');
+		return eval("s"+t);
+	};
+	function translitr(s) {
+		t=t2.replace(/([a-z']+)([а-яёЁ])/gi,'.replace(/$1/g,"$2")');
+		return eval("s"+t);
+	};
+	function transe(s) {
+		t=t3.replace(/([а-яёЁ])(.)/gi,'.replace(/$1/g,"$2")');
+		a=eval("s"+t);
+		a=a.replace('Э','"');
+		return eval("s"+t);
+	};
+	function transr(s) {
+		t=t4.replace(/(.)([а-яёЁ])/gi,'.replace(/$1/g,"$2")');
+		a=eval("s"+t);
+		a=a.replace('[','х').replace(']','ъ').replace('"','Э').replace('.','ю');
+		return a;
+	};
+
+	function showd(a) {
+		$(".uname").parent().hide();
+		$(".uname:Ucontains('" + a +"')").parent().show();
+		$("div.UsersRows:visible:odd").removeClass("alt");
+		$("div.UsersRows:visible:even").addClass("alt");
+	};
+	
+$(document).ready( //документ загрузился
+  function()
+  {
+	date={DATE};
+	//date="qwert";
+	document.getElementById("ITOGO").innerHTML=Number(document.getElementById("EC").innerHTML)+ Number(document.getElementById("DOLG").innerHTML)+Number(document.getElementById("CHEL").innerHTML);
+
+	jQuery.expr[":"].Ucontains = function( elem, i, match, array ) {
+		r=transr(match[3]);
+		if ((elem.textContent || "").toLowerCase().indexOf(r.toLowerCase()) >= 0 ) {
+			return true;
+		}	
+		else {
+			e=transe(match[3]);
+			if ((elem.textContent || "").toLowerCase().indexOf(e.toLowerCase()) >= 0 ) {
+				return true;
+			}	
+			else {
+				te=translite(r);
+				if ((elem.textContent || "").toLowerCase().indexOf(te.toLowerCase()) >= 0 ) {
+					return true;
+				}
+				else {
+					tr=translitr(e);
+					if ((elem.textContent || "").toLowerCase().indexOf(tr.toLowerCase()) >= 0 ) {
+						return true;
+					}
+					else {
+						return false;
+					}	
+				}	
+			}	
+		}	
+		//e=transe(match[3]);
+		//te=translite(r);
+		//tr=translitr(e);
+		//return (elem.textContent || elem.innerText || jQuery.text( elem ) || "").toLowerCase().indexOf(r.toLowerCase()) >= 0 || (elem.textContent || elem.innerText || jQuery.text( elem ) || "").toLowerCase().indexOf(e.toLowerCase()) >= 0 || (elem.textContent || elem.innerText || jQuery.text( elem ) || "").toLowerCase().indexOf(te.toLowerCase()) >= 0 || (elem.textContent || elem.innerText || jQuery.text( elem ) || "").toLowerCase().indexOf(tr.toLowerCase()) >= 0;
+		return (elem.textContent || "").toLowerCase().indexOf(r.toLowerCase()) >= 0 || (elem.textContent  || "").toLowerCase().indexOf(e.toLowerCase()) >= 0 || (elem.textContent  || "").toLowerCase().indexOf(te.toLowerCase()) >= 0 || (elem.textContent  || "").toLowerCase().indexOf(tr.toLowerCase()) >= 0;
+	}
+	$(".td_ec > input").each(function(indx){
+		
+		$("#sum").html(parseInt($("#sum").html(),10) + parseInt($(this)[0].value,10) + ' р.');
+	});
+//	$("#sum").html($("#sum").html() + ' р.');
+	$(".uname[data-cnt]").each(function(indx){
+		a=$(this).attr('data-cnt');
+		switch (a) {
+			case "0":
+				$(this).css("background","#FF0000");
+				break
+			case "1":
+				$(this).css("background","#FF3333");
+				break
+			case "2":
+				$(this).css("background","#FF6666");
+				break
+			case "3":
+				$(this).css("background","#FF9A9A");
+				break
+		}
+		
+	});
+	
+	$(".IN_EC_DAYS").each(function(indx){
+		//css("background","red");
+		a=$(this)[0].textContent;
+		if (a>365) {
+			$(this).css("background","#FF0000");
+		}
+		else {
+			if (a>183) {
+				$(this).css("background","#FF3333");
+			}
+			else {
+				if (a>90) {
+					$(this).css("background","#FF6666");
+				}
+				else {
+					if (a>60) {
+						$(this).css("background","#FF9A9A");
+					}
+					else {
+						if (a>30) {
+							$(this).css("background","#FFCDCD");
+						}
+					}
+				}
+			}
+		}
+	});
+
+    $('body').on('keydown', function(e){
+		clearTimeout(timerid);
+		if ($(e.target).get(0).nodeName=='BODY') {
+			//alert (e.keyCode);
+			$('#find').focus();
+		}
+	});		
+	
+    $('body').on('keyup', function(e){
+		if ($(e.target).get(0).nodeName=='BODY') {
+			//alert (e.keyCode);
+			if (e.keyCode==27) {
+				$('#find').val('');
+//				alert('body');
+				$(".uname").parent().show();
+				$("div.UsersRows:visible").removeClass("alt");
+				$("div.UsersRows:visible:even").addClass("alt");
+
+
+			}
+		}
+	});		
+    $('#find').bind('keyup', function(e){
+		if (e.keyCode==27) {
+			this.value='';
+		}
+		timerid= window.setTimeout(showd(this.value), 200)
+	});	
+	
+	jQuery.each($('div.UsersRows'), function(indx, element) { //добавляем Сумму для пользователя
+		a= ($(element).attr("id"));
+		$(element).append('<div id="S_'+a+'"class="td center UserSumma" >');
+    });
+	jQuery.each($('input.btn:checked'), function(indx, element) { //Выбираем все помеченные строки
+		chel=0;
+		dolg=Number($(element).parent().parent().parent().find('div.td.center.td_dolg').children().attr('value')); //Получаем долг
+		ec=Number($(element).parent().parent().parent().find('div.td.center.td_ec').children().attr('value')); // Получаем ец
+		if ($(element).parent().parent().parent().find('div.td.center.td_chel').children().length){	// Если есть доставка (с Челябинска) , то учитываем ее
+			chel=Number($(element).parent().parent().parent().find('div.td.center.td_chel').children().attr('value'));
+		}
+		summa=Number($(element).parent().parent().parent().parent().parent().parent().find('div.UserSumma').html()); // Полчаем текущую сумму
+		summa= summa+dolg+chel+ec;
+		$(element).parent().parent().parent().parent().parent().parent().find('div.UserSumma').html(summa) // Пишем сумму на страницу
+    });
+
+
+	
+	/*
+	$("div.UsersRows").on('click',function() {
+		if (this.id.indexOf('UID_')==0 ){
+			$user_id=this.id.substring(4);
+				$.ajax({
+				type : 'POST',
+				url : 'function.php{SID}',
+				//dataType: 'text',
+				data : {
+					'cmd': "user_out",
+						'user_id': $user_id,
+				},
+				dataFilter: function (data, type) {
+					return data;
+				},
+				success: function(evt, request, settings){
+					a=evt;
+					//alert(evt);
+				}
+			});		
+		}
+		}); */
+	$("input.btn").click(function() {
+		//alert ("нажал");
+		a= this.value.split ("!");
+		org_id=a[2];
+		user_id=a[1];
+		purshase_id=a[0];
+		val=purshase_id+"!"+user_id;
+		dolg=0;
+		dostavka=0;
+		ec_sum=0;
+		if (document.getElementById("dolg" + val)) dolg=Number(document.getElementById("dolg" + val).value);
+		if (document.getElementById("dostavka" + val)) dostavka=Number(document.getElementById("dostavka" + val).value);
+		if (document.getElementById("EC" + val)) ec_sum=Number(document.getElementById("EC" + val).value);
+		summa=Number(dolg) + Number(dostavka) + Number(ec_sum);
+		e=$(this).parent();
+		$(e).removeClass("err");
+		if (this.checked) {
+			$(e).addClass("set");
+			$(e).removeClass("unset");
+			$.ajax({
+				type : 'POST',
+				url : 'function.php{SID}',
+				data : {
+						'cmd': "set_kassa",
+						'ec': '1',
+						'operations':'Приход',
+						'user_id': user_id,
+						'org_id': org_id,
+						'purshase_id': purshase_id,
+						'summa': summa,
+						'dolg': dolg,
+						'dostavka': dostavka,
+						'ec_sum': ec_sum,
+						'comment': ''
+				},
+				// Function is called when an answer arrives.
+				success : function(result, errors)
+				{
+					if ("ok" == result)
+					{
+						//alert (dolg +"-"+ dostavka +"-"+ ec_sum +"-"+ summa +"-"+ user_id +"-"+ org_id);
+						$(e).removeClass("set");
+					}
+					else
+					{
+					 //alert (result);
+						alert("Произошла ошибка при обработки выдачи" +errors);
+						$(e).removeClass("set");
+						$(e).addClass("err");
+					}
+				},
+   			    error: function (xhr, ajaxOptions, thrownError) {
+					$(e).removeClass("set");
+					$(e).addClass("err");
+				}
+			});
+		
+			if (document.getElementById("dolg" + val))  document.getElementById("dolg" + val).disabled="disabled";
+			if (document.getElementById("dostavka" + val))  document.getElementById("dostavka" + val).disabled="disabled";
+			if (document.getElementById("EC" + val))  document.getElementById("EC" + val).disabled="disabled";
+			document.getElementById("tr_cnt" + user_id).value=Number(document.getElementById("tr_cnt" + user_id).value)+1;
+			
+			if (document.getElementById("dostavka" + val)) 	document.getElementById("CHEL").innerHTML=Number(document.getElementById("CHEL").innerHTML)+Number(dostavka);
+			if (document.getElementById("dolg" + val)) document.getElementById("DOLG").innerHTML=Number(document.getElementById("DOLG").innerHTML)+Number(dolg);
+			if (document.getElementById("EC" + val)) document.getElementById("EC").innerHTML=Number(document.getElementById("EC").innerHTML)+Number(ec_sum);
+			document.getElementById("S_UID_"+user_id).innerHTML=Number (document.getElementById("S_UID_"+user_id).innerHTML)+dolg+ec_sum+dostavka;
+		}
+		else {
+			if (document.getElementById("dolg" + val))  document.getElementById("dolg" + val).disabled=0;
+			if (document.getElementById("dostavka" + val))  document.getElementById("dostavka" + val).disabled=0;
+			if (document.getElementById("EC" + val))  document.getElementById("EC" + val).disabled=0;
+			document.getElementById("tr_cnt" + user_id).value=Number(document.getElementById("tr_cnt" + user_id).value)-1;
+			if (document.getElementById("dostavka" + val)) document.getElementById("CHEL").innerHTML=Number(document.getElementById("CHEL").innerHTML)-Number(dostavka);
+			if (document.getElementById("dolg" + val)) document.getElementById("DOLG").innerHTML=Number(document.getElementById("DOLG").innerHTML)-Number(dolg);
+			if (document.getElementById("EC" + val)) document.getElementById("EC").innerHTML=Number(document.getElementById("EC").innerHTML)-Number(ec_sum);
+			document.getElementById("S_UID_"+user_id).innerHTML=Number (document.getElementById("S_UID_"+user_id).innerHTML)-dolg-ec_sum-dostavka;
+			$(e).addClass("unset");
+			$(e).removeClass("set");
+				$.ajax({
+					type : 'POST',
+					url : 'function.php{SID}',
+					data : {
+							'cmd': "unset_kassa",
+							'ec': '1',
+							'operations':'Приход',
+							'dolg': dolg,
+							'user_id': user_id,
+							'org_id': org_id,
+							'purshase_id': purshase_id,
+					},
+					// Function is called when an answer arrives.
+					success : function(result, errors)
+					{
+						if ("ok" == result)
+						{
+							//alert ("отмена");
+							//x=$(e).parent().prev().css("background");
+							$(e).removeClass("unset");
+						}
+						else
+						{
+							$(e).parent().css("background","F00");
+							 //alert (result);
+							 alert("Произошла ошибка при отмене выдачи" +errors);
+							 $(e).removeClass("unset");
+							 $(e).addClass("err");
+						}
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						$(e).removeClass("unset");
+						$(e).addClass("err");
+					}
+				});
+			
+			
+		}
+		document.getElementById("ITOGO").innerHTML=Number(document.getElementById("EC").innerHTML)+ Number(document.getElementById("DOLG").innerHTML)+Number(document.getElementById("CHEL").innerHTML);
+    });
+		
+	$("div.UsersRows").mouseover(function() {
+		$(this).addClass("s");
+    });
+    
+    $("div.UsersRows").mouseout(function() {
+		$(this).removeClass("s");
+    });
+      
+    $("div.UsersRows:even").addClass("alt");
+	// Вызов модального окна
+    $('#DOLG').on('click',function(){
+      $.ajax({
+//        url: $(this).attr('data-ajaxload'),
+        url: 'Ec_to_Orgs.php',
+        data:{isNaked:1,modal:1,date:date},
+        type: "POST",
+        error: function(){alert('Ошибка')},
+        success: function(response){
+          $("#modal").html(response);
+        },
+        complete: function(){
+			$('#fade,#modal').fadeIn("fast");
+        }
+      })
+      return false;
+    })
+// Закрытие окон
+    $('#fade').click(function(){
+      //$('#modal').fadeOut('fast');
+      $('#fade,#modal').fadeOut("fast");
+	  
+    })
+	
+  }
+);
+
+
+function HiddenEmpty() {
+	if (document.getElementById("btHidden").value=="Скрыть") {
+		$(".PCount[value=0]").parent().hide();
+		document.getElementById("btHidden").value="Показать";
+		
+	}
+	else {
+		$(".UsersRows").show();
+		document.getElementById("btHidden").value="Скрыть";
+	}
+}
+ </SCRIPT>
+</body>
+
+
+
+
+

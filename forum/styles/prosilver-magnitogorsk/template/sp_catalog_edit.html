@@ -1,0 +1,74 @@
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_headerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_header.html -->
+<!-- ENDIF -->
+
+
+<div id="page-body">	
+	<font size="2">
+		<div class="panel">
+			<div class="inner">
+				<span class="corners-top"><span></span></span>
+				<div class="content">
+					<div id="debug"></div>
+					<script language="javascript" src="/sp/ajax/JsHttpRequest.js"></script>
+					<center>
+						<font color="#FF0000"><h3>Режим редактирования каталога</h3></font>
+						<a href="" id="spcat">Режим просмотра</a> • 
+						<a href="javascript:add_item();">Добавить запись</a> • 
+						<a href="javascript:delete_current_item();">Удалить выбранную запись </a>
+						<br /><br />
+						<b>Закупка:</b> <font id="spurl"></font> • 
+						<b>Каталог:</b> <font id="spcatname"></font> • 
+						<b>Организатор:</b> <font id="sporg"></font> • 
+						<b>Состояние:</b> <font id="spinfo"></font>	
+						<br /><br />
+						Поля для поиска:	
+						<input type="checkbox" id="catalog_search_name" checked/>Название&nbsp;&nbsp;
+						<input type="checkbox" id="catalog_search_desc" />Описание&nbsp;&nbsp;
+						<span id="catalog_search_vars"></span>
+						<input type="checkbox" id="catalog_search_results" />Искать в найденном&nbsp;&nbsp;
+						<input name="keywords" id="catalog_search_keywords" type="text" size="20" maxlength="128" title="Ключевые слова" class="inputbox search tiny" value="Поиск в каталоге…" onclick="if(this.value=='Поиск в каталоге…')this.value='';" onblur="if(this.value=='')this.value='Поиск в каталоге…';" /> 
+						<input type="button" class="button2" value="Поиск" onclick="javascript:update_catalog_filter();" />
+						<input type="button" class="button2" value="Сброс" onclick="javascript:reset_catalog_filter();" />
+						<br />
+						<div id="search_results"></div>
+						<br />
+						упорядочить:
+						<select onchange="javascript:change_sort();">
+							<option id="sort_by_name">по названию</option>
+							<option id="sort_by_price">по цене</option>
+							<option id="sort_by_id" selected>не сортировать</option>
+						</select>
+						<select onchange="javascript:change_sort();">
+							<option id="sort_by_asc" selected>по возрастанию</option>
+							<option id="sort_by_desc">по убыванию</option>
+						</select>
+						<br /><br />
+						<div id="make_page_selectors_top"></div>
+						<table border="0" id="tbl1">
+							<tr id="row1">
+								<td width="450" align="center" valign="top" id="selected_model"></td>
+								<td width="450" id="col2" style="vertical-align: top;"><div id="right"></div></td>
+							</tr>
+						</table>
+						<br />
+						<div id="make_page_selectors_bottom"></div>
+					</center>
+					<script language="javascript">catalog_id = {SP_CATALOG_ID};</script>
+					<script src="/sp/ajax/catalog_edit.js" language="javascript"></script>
+				</div>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+		</div>
+	</font>
+</div>
+<div id="sp_new_items"></div>
+
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_footerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_footer.html -->
+<!-- ENDIF -->
+ 

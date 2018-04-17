@@ -1,0 +1,56 @@
+В файле ucp_profile_profile_info обращаем внимание на измененные строки:
+
+
+<dl>
+
+   <dt><label for="occupation">{L_OCCUPATION}:</label><br /><span>{L_OCCUPATION_SP}</span></dt>
+		
+   <dd><textarea name="occupation" id="occupation" class="inputbox" rows="3" cols="30">{OCCUPATION}</textarea></dd>
+	
+</dl>
+
+---
+
+В файле overall_header обращаем внимание на добавленные строки:
+
+<!-- IF SP_CATALOG_VIEW --><link  href="/sp/catalog.css" rel="stylesheet" type="text/css"title="" media="screen" /><!-- ENDIF -->
+
+а также:
+
+<!-- HTTP://WEB2.0-DEVELOPER.RU/ -->
+
+...
+<!-- HTTP://WEB2.0-DEVELOPER.RU/ -->
+
+---
+
+В файле overall_footer обращаем внимание на измененный блок:
+
+<div class="copyright">
+   Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+	
+   <br />&copy; 2010, 2011 <a href="http://web2.0-developer.ru/">Торговая площадка "Совместные покупки"</a> для phpBB
+		
+   <!-- IF TRANSLATION_INFO --><br />{TRANSLATION_INFO}<!-- ENDIF -->
+		
+   <!-- IF DEBUG_OUTPUT --><br />{DEBUG_OUTPUT}<!-- ENDIF -->
+		
+   <!-- IF U_ACP --><br /><strong><a href="{U_ACP}">{L_ACP}</a></strong><!-- ENDIF -->
+	
+</div>
+
+В случае отсутствия копирайта с активной ссылкой на сайт разработчика мы оставляем за собой право отказать в техподдержке
+и праве на бесплатное обновление модуля
+
+---
+
+В файле memberlist_view обращаем внимание на отсутствие строчки:
+
+<!-- IF OCCUPATION --><dt>{L_OCCUPATION}:</dt> <dd>{OCCUPATION}</dd><!-- ENDIF -->
+
+---
+
+
+
+
+

@@ -1,0 +1,84 @@
+ <head>
+  <style>
+	@media screen {
+	table#main {
+    padding:0;
+	table-layout: auto; /* Фиксированная ширина ячеек */
+    width: 27mm; /* Ширина таблицы */
+	page-break-inside: avoid;
+	page-break-after:always
+	border:0px solid white;
+	border-collapse: collapse;
+	text-align: center;
+	hyphens: auto;
+	}
+	
+	
+	tr#t0 { height:1mm;}
+	tr#t1 { height:3mm;font-size: 8pt;}
+	tr#t2 { height:10mm;font-size: 7pt;}
+	tr#t3 { height:4mm;}	
+	}
+	
+	@media print {
+	table#main {
+    padding:0;
+	table-layout: auto; /* Фиксированная ширина ячеек */
+    width: 27mm; /* Ширина таблицы */
+	page-break-inside: avoid;
+	page-break-after:always
+	border:1px solid black;
+	border-collapse: collapse;
+	text-align: center;
+	hyphens: auto;
+	}
+	
+	tr#t0 { height:1mm;border: inherit}
+	tr#t1 { height:3mm;font-size: 8pt; border: inherit}
+	tr#t2 { height:10mm;font-size: 7pt;border: inherit}
+	tr#t3 { height:4mm; border: inherit}	
+	}
+	   @page :first {
+    margin: 0px; /* Отступы для первой страницы */ 
+   }
+   @page :left {
+    margin: 0px; /* Отступы для всех левых страниц */ 
+   }
+   @page :right {
+    margin: 0px; /* Отступы для всех правых страниц */ 
+   }
+  </style>
+ </head>
+
+<form  method="post" sid = {sid}>
+
+</form>
+<SCRIPT language="javascript">
+	var users = {USERS};
+	document.write('<table id ="main">');
+	document.write('<tr id = "t0">');
+	document.write('<td></td>');
+	document.write('</tr>');
+	document.write('</table>');
+	
+	for (var id in users)
+	{ 
+	document.write('<table id ="main">');
+
+	document.write('<tr id = "t1">');
+	document.write('<td><b>'+ users[id].username +'</b></td>');
+	document.write('</tr>');
+
+	
+	document.write('<tr id = "t2">');
+	document.write('<td><b>'+ users[id].brand_label +'</b></td>');
+	document.write('</tr>');
+
+	document.write('<tr id = "t3">');
+	document.write('<td><b></b></td>');
+	document.write('</tr>');
+
+	document.write('</table>');
+	}
+	
+</SCRIPT>

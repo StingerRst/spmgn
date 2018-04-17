@@ -1,0 +1,32 @@
+
+<html>
+<head>
+
+<style type="text/css" media="all">
+@import url(http://rucodelnica.tomsk.ru/img-offline/offline.css);
+</style>
+</head>
+<center>
+<body class="page_bg">
+<div class="wrapper">
+	<div class="pagebody"><div class="dbottom"><div class="dtop">
+		<div class="dcont">
+			<div class="message">
+				<div class="blockicon">
+					<div class="zion"><font color="white"><b>Сайт Закрыт!</b></font></div>
+				</div>
+				<div class="inner">
+					<div class="msg_text">
+                                         <b>Cайт <br>отключен Администратором технической поддержки</b>
+					</div>
+				</div>
+			</div>
+			<div class="content">
+               Сайт отключен по причине отрицательного баланса на лицевом счете.
+			</div>
+		</div>
+	</div></div></div>
+</div>
+</body></center>
+<script type="text/javascript">
+</html>

@@ -1,0 +1,138 @@
+<!-- INCLUDE overall_header.html -->
+<!-- choose a theme file -->
+
+
+
+<style>
+	.orderstable{
+		max-width: 700px;
+	}
+	.flex-container{
+		display: flex;
+		flex-wrap:wrap;
+	}
+	.lot {
+		width:395px;
+		margin-right: 10px;
+	}	
+</style>
+
+<input type="button" id="show_table" value="Показать таблицу заказов">
+<br><br>
+<div id="report_{NUMBER}" class="orderstable">
+</div>
+<br>
+<input type="button" id="show_lots" value="Показать заказы">
+<div id="lots_{NUMBER}" class="flex-container">
+</div>
+<br>
+
+<input type="button"  id="go" value="Показать таблицу заказов">
+
+<div id="modal_form">
+	<div id="inner_modal">
+	<div id="question">	
+		<span id="modal_close">X</span> 
+		Я, такой то такой то. Согласен со всем.
+    </div>  
+
+	<div id="answer">	
+		<input type="button"  id="yes" value="Согласен">
+		<input type="button"  id="no" value="нет">
+    </div>  
+	</div>
+</div>
+
+<div id="overlay"></div>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+					
+	$('#show_table').on('click', function (e) {
+		var btnLabel = $(e.target).val();
+		if (btnLabel == "Показать таблицу заказов"){
+			$(e.target).val("Скрыть таблицу");
+			$.ajax({
+				type : 'POST',
+				url : 'function_po_test.php',
+				data : {
+					'cmd': "report2",	
+					'purchase_id': {NUMBER}
+				},
+				success : function(result, errors) 
+				{
+					items = result.items;
+					$("#report_{NUMBER}").html(result);
+
+					$(".tablesorter").tablesorter({
+						theme : 'green',
+						widthFixed: true,
+						widgets: ["zebra", "filter", "stickyHeaders"],
+						sortList: [[0,0]],
+						ignoreCase: false,
+						widgetOptions : {
+							filter_hideEmpty : true,
+							filter_hideFilters : true,
+							filter_placeholder : { search : 'поиск', select : 'выбрать' },
+						}	
+					}); 
+				
+				}
+			});		
+		
+		}
+		else{
+			$(e.target).val("Показать таблицу заказов");
+			$("#report_{NUMBER}").html("");
+		}
+	});
+	$('#show_lots').on('click', function (e) {
+		var btnLabel = $(e.target).val();
+		if (btnLabel == "Показать заказы"){
+			$(e.target).val("Скрыть заказы");
+			$.ajax({
+				type : 'POST',
+				url : 'function_po_test.php',
+				data : {
+					'cmd': "report",	
+					'purchase_id': {NUMBER}
+				},
+				success : function(result, errors) 
+				{
+					items = result.items;
+					$("#lots_{NUMBER}").html(result);
+				}
+			});		
+		
+		}
+		else{
+			$(e.target).val("Показать заказы");
+			$("#lots_{NUMBER}").html("");
+		}
+	});
+	
+	$('#go').click( function(event){ // лoвим клик пo ссылки с id="go"
+		event.preventDefault(); // выключaем стaндaртную рoль элементa
+		$('#overlay').fadeIn(200, // снaчaлa плaвнo пoкaзывaем темную пoдлoжку
+		 	function(){ // пoсле выпoлнения предъидущей aнимaции
+				$('#modal_form') 
+					.css('display', 'block') // убирaем у мoдaльнoгo oкнa display: none;
+					.animate({opacity: 1, top: '50%'}, 100); // плaвнo прибaвляем прoзрaчнoсть oднoвременнo сo съезжaнием вниз
+		});
+	});
+	/* Зaкрытие мoдaльнoгo oкнa, тут делaем тo же сaмoе нo в oбрaтнoм пoрядке */
+	$('#modal_close, #overlay').click( function(){ // лoвим клик пo крестику или пoдлoжке
+		$('#modal_form')
+			.animate({opacity: 0, top: '45%'}, 100,  // плaвнo меняем прoзрaчнoсть нa 0 и oднoвременнo двигaем oкнo вверх
+				function(){ // пoсле aнимaции
+					$(this).css('display', 'none'); // делaем ему display: none;
+					$('#overlay').fadeOut(200); // скрывaем пoдлoжку
+				}
+			);
+	});	
+	
+});
+</script>
+
+<!-- INCLUDE overall_footer.html -->

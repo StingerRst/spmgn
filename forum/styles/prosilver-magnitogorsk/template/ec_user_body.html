@@ -1,0 +1,134 @@
+<!-- INCLUDE overall_header.html -->
+
+
+<!-- IF  S_USER_IS_EC_OPERATOR -->
+<H3>Выдача заказов пользователю </H3>
+<form  method="post" sid = {sid}>
+<SELECT type="submit" name ="UserSelect" id="OrderOutput" onchange=form.submit()>
+   <OPTION value="0">Выбрать...</OPTION>
+  <!-- BEGIN users -->
+   <!-- IF  users.ID == USERSELECT -->
+     <OPTION selected value="{users.ID}">{users.NAME}&nbsp;(&nbsp;{users.FULLNAME}&nbsp;)</OPTION>
+   <!-- ELSE -->  
+     <OPTION value="{users.ID}">{users.NAME}&nbsp;(&nbsp;{users.FULLNAME}&nbsp;)</OPTION>
+   <!-- ENDIF -->
+  <!-- END users -->
+</SELECT>
+</form>
+<!-- ELSE -->
+<H3>Ваши заказы в ЕЦ </H3>
+<!-- ENDIF -->
+
+<form  method="post" sid = {sid}>
+	<!-- IF .order -->
+		<!-- IF  S_USER_IS_EC_OPERATOR -->
+			<input type="button" value="Выдать" onClick="add_orders();"/>
+		<!-- ENDIF -->
+		<table border="1" width="70%" cellspacing = "0">
+			<THEAD>
+				<tr align="center">
+					<td>Закупка</td>
+					<td>Лот</td>
+					<td>Цена</td>
+					<!-- IF  S_USER_IS_EC_OPERATOR -->
+						<td>Выбор</td>
+					<!-- ELSE -->  
+						<td>ЕЦ</td>
+					<!-- ENDIF -->
+				</tr>
+			</THEAD>
+			<!-- BEGIN order -->
+				<tr>
+					<td>
+					<!-- IF  S_USER_IS_EC_OPERATOR -->
+						<a href="adm.php?i=1&mode=otchet&p={order.PURCHASE_ID}{SID}">{order.PURCHASE_NAME}</a>
+					<!-- ELSE -->  
+						<a href="{order.PURCHASE_URL}">{order.PURCHASE_NAME}</a>
+ 					<!-- ENDIF -->
+					</td>
+					<td>{order.LOT_NAME}</td>
+					<td>{order.LOT_COST}</td>
+					<!-- IF  S_USER_IS_EC_OPERATOR -->
+						<TD  align="center" valign="center"> <INPUT id="order{order.ORDER_ID}" type="checkbox" checked> </td>
+					<!-- ELSE -->  
+						<td>&nbsp;{order.EC}&nbsp;</td>
+					<!-- ENDIF -->
+				</tr>
+			<!-- END order -->
+		</table>
+		<p/>
+		<!--<H4>Итого доставка:&nbsp;{order.SUM_DELIVERY}  р. <H4/>-->
+		<p/>
+		<!--<H4>Итого за ЕЦ:&nbsp;{order.SUM_EC}  р. <H4/>-->
+		<p/>
+                <!-- IF  !S_USER_IS_EC_OPERATOR -->
+                   <a href="http://spmgn.ru/viewtopic.php?f=80&t=3810" title="Заказать доставку ваших закупок на дом" target="blank" class="button2" >Заказать доставку на дом</a>
+		   <p/>
+                <!-- ENDIF -->
+	<!-- ELSE -->
+   <H3>Ваших заказов в ЕЦ нет !</H3>
+ <!-- ENDIF -->
+</form>
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<SCRIPT language="javascript">
+
+var orders={ORDERS};
+
+function change_orders_state( o, st,pr)
+{
+	$.ajax({
+                type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "change_orders_state",
+			'orders': o,
+			'state': st
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			var po = result["processed"];
+			if (null!=po)
+			{
+				for (var j=0; j<po.length; j++)
+				{
+					var id = po[j];
+					set_order_state( id, st);
+				}
+			}
+
+			if ("ok" == result["state"])
+			{
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении статуса заказов!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	})
+}
+
+
+function add_orders()
+{
+	var st = 6;
+	var o = new Array;
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id);
+		if (el.checked)
+		{
+			o.push( id);
+		}
+	}
+
+	change_orders_state( o, st);
+        location.reload();
+}
+
+</SCRIPT>
+<!-- INCLUDE overall_footer.html -->

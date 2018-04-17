@@ -1,0 +1,256 @@
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_headerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_header.html -->
+<!-- ENDIF -->
+
+
+<div id="page-body">
+	<div id="bg" class="my_bg" style="
+	display: none;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+	position: fixed;
+	background-color: #404040;
+	opacity:.4;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=40);
+	">
+	</div>
+	<div id='full_results' class="my_popup" style='
+	display: none;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	z-index: 1000;
+	left: 0px;
+	top: 0px'>
+	</div>
+	<script language="javascript" src="/sp/ajax/JsHttpRequest.js"></script>
+	<table id="infosearch" class="w100">
+		<tr>
+			<td class="info">
+				<table class="heading w100">
+					<tr>
+						<td><img src="/sp/images/bg-corner-l.gif" style="width: 15px; height: 30px;"></td>
+						<td class="vam text nowrap bold white em13">Информация о закупке</td>
+						<td><img src="/sp/images/icon-info.gif" style="width: 30px; height: 30px; border: 0px solid;"></td>
+						<td class="crnr" style="width: 50%;"></td>
+					</tr>
+				</table>
+				<div style="padding: 10px">
+					<table class="data w100">
+						<tr>
+							<td class="text w30">Закупка</td>
+							<td class="text w70" id="spurl"></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="dotline"></td>
+						</tr>
+						<tr>
+							<td class="text">Каталог</td>
+							<td class="text" id="spcatname"></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="dotline"></td>
+						</tr>
+						<tr>
+							<td class="text">Организатор</td>
+							<td class="text" id="sporg"></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="dotline"></td>
+						</tr>
+						<tr>
+							<td class="text">Состояние</td>
+							<td class="text" id="spinfo"></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="dotline"></td>
+						</tr>
+					</table>
+				</div>
+			</td>
+			<td style="background: #fff;"><img src="/sp/images/e.gif" style="width: 20px;"><br /></td>
+			<td class="search">
+				<table class="heading w100">
+					<tr>
+						<td><img src="/sp/images/bg-corner-l.gif" style="width: 15px; height: 30px;"></td>
+						<td class="vam text nowrap bold white em13">Поиск по каталогу</td>	
+						<td><img src="/sp/images/icon-search.gif" style="width: 30px; height: 30px; border: 0px solid;"></td>
+						<td class="crnr" style="width: 50%"></td>
+					</tr>
+				</table>
+				<div style="padding: 10px">
+					<table class="data w100">
+						<tr>
+							<td class="text">
+								<table>
+									<tr class="vam" id="searchrow">
+										<td><input type="Checkbox" id="catalog_search_name" checked></td>
+										<td class="pr1" >Название</td>
+										<td><input type="Checkbox" id="catalog_search_desc"></td>
+										<td class="pr1">Описание</td>
+										<td id="tdbefore_search"><input type="Checkbox" id="catalog_search_results"></td>
+										<td class="pr1">В найденном</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr><td class="dotline"></td></tr>
+						<tr	>
+							<td>
+								<table>
+									<tr>
+										<td class="w100">
+											<input type="Text" style="width: 99%" onblur="if(this.value=='')this.value=defMsg;" onclick="if(this.value==defMsg)this.value='';" value="Поиск в каталоге…" title="Ключевые слова" id="catalog_search_keywords" onkeypress="sendSearchByKey(event);" name="keywords" />
+										</td>
+										<td class="pl05">
+											<img src="/sp/images/button-search.gif" title="Применить фильтр" onclick="javascript:update_catalog_filter();">
+										</td>
+										<td class="pl05">
+											<img src="/sp/images/button-reset.gif" title="Сброс фильтров" onclick="javascript:reset_catalog_filter();">
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td class="dotline"></td>
+						</tr>
+						<tr>
+							<td class="text green em11" id="sort_block"></td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<div class="clear em1"><br /></div>
+	<table id="layers">
+		<tr>
+			<td class="active" id="catalog_header_corner">
+				<img src="/sp/images/bg-corner-l.gif" style="width: 15px; height: 30px;">
+			</td>
+			<td class="active vam nowrap bold blue em13 pr2 pl05" id="catalog_header">
+				<a href="#" onclick="change_catalog_header(0);return false;" title="Все позиции каталога">Все позиции каталога</a>
+			</td>
+			<td class="vam nowrap bold em13 pr2 pl1" id="catalog_header_cmp">
+				<a href="#" onclick="change_catalog_header(1);return false;" id="cmp_header_link" title="Список сравнения">Список сравнения (0)</a>
+			</td>
+			<td id="catalog_header_corner_cmp">
+				<img src="/sp/images/bg-corner-rsm.gif" style="width: 15px; height: 30px;" >
+			</td>
+			<td style="background: transparent;display:none" class="vam" id="clear_cmp">
+				<a href="javascript:clear_cmp_list();" title="Очистить список">Очистить список</a>
+			</td>
+		</tr>
+	</table>
+	<div id="results">
+		<table class="nav w100">
+			<tr>
+				<td class="w25 dotline"><span class="desc">Внешний вид:</span></td>
+				<td class="w50 dotline"><span class="desc">Позиций на странице:</span></td>
+				<td class="w25 dotline"><span class="desc">Управление страницами:</span></td>
+			</tr>
+			<tr>
+				<td>
+					<table class="mt1 ml1">
+						<tr id="cols_selector"></tr>
+					</table>
+				</td>
+				<td class="p105" id="show_how_many_td"></td>
+				<td>
+					<table class="mt1 ml1">
+						<tr>
+							<td class="icon" id="pagefirst">
+								<a href="" id="pagefirst_link" title="Первая страница">
+									<img src="/sp/images/icon-first.gif">
+								</a>
+								<img id="pagefirst_empty" src="/sp/images/e.gif" style="display:none">
+							</td>
+							<td class="icon" id="pageback">
+								<a href="" id="pageback_link" title="Предыдущая страница"><img src="/sp/images/icon-back.gif"></a>
+								<img id="pageback_empty" src="/sp/images/e.gif" style="display:none">
+							</td>
+							<td class="icon">
+								<input id="pagenumber"  onChange="javascript:page_selector_goto_page(this.value);" type="Text" class="red bold" style="border: 1px solid rgb(161, 195, 230); padding: 7px 5px 0pt; height: 23px; width: 20px;">
+							</td>
+							<td class="icon vam em11 blue" id="pagecount"></td>
+							<td class="icon" id="pagenext">
+								<a href="" id="pagenext_link" title="Следующая страница"><img src="/sp/images/icon-next.gif"></a>
+								<img id="pagenext_empty" src="/sp/images/e.gif" style="display:none">
+							</td>
+							<td class="icon" id="pagelast">
+								<a href="" id="pagelast_link" title="Последняя страница"><img src="/sp/images/icon-last.gif"></a>
+								<img id="pagelast_empty" src="/sp/images/e.gif" style="display:none">
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="dotline" colspan="3"><br/></td>
+			</tr>
+		</table>
+		<div id="catalog_results" class="class_result"></div>
+		<table class="nav w100">
+			<tr>
+				<td class="w25 dotline"><span class="desc">Внешний вид:</span></td>
+				<td class="w50 dotline"><span class="desc">Позиций на странице:</span></td>
+				<td class="w25 dotline"><span class="desc">Управление страницами:</span></td>
+			</tr>
+			<tr>
+				<td>
+					<table class="mt1 ml1">
+						<tr id="cols_selector_bottom"></tr>
+					</table>
+				</td>                
+				<td class="p105" id="show_how_many_td_bottom"></td>
+				<td>
+					<table class="mt1 ml1">
+						<tr>
+							<td class="icon" id="pagefirst_bottom">
+								<a href="" id="pagefirst_link_bottom" title="Первая страница"><img src="/sp/images/icon-first.gif"></a>
+								<img id="pagefirst_empty_bottom" src="/sp/images/e.gif" style="display:none">
+							</td>
+							<td class="icon" id="pageback_bottom">
+								<a href="" id="pageback_link_bottom" title="Предыдущая страница"><img src="/sp/images/icon-back.gif"></a>
+								<img id="pageback_empty_bottom" src="/sp/images/e.gif" style="display:none">
+							</td>
+							<td class="icon">
+								<input id="pagenumber_bottom" onChange="javascript:page_selector_goto_page(this.value);" type="Text" class="red bold" style="border: 1px solid rgb(161, 195, 230); padding: 7px 5px 0pt; height: 23px; width: 20px;">
+							</td>
+							<td class="icon vam em11 blue" id="pagecount_bottom"></td>
+							<td class="icon" id="pagenext_bottom">
+								<a href="" id="pagenext_link_bottom" title="Следующая страница"><img src="/sp/images/icon-next.gif"></a>
+								<img id="pagenext_empty_bottom" src="/sp/images/e.gif" style="display:none">
+							</td>
+							<td class="icon" id="pagelast_bottom">
+								<a href="" id="pagelast_link_bottom" title="Последняя страница"><img src="/sp/images/icon-last.gif"></a>
+								<img id="pagelast_empty_bottom" src="/sp/images/e.gif" style="display:none">
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="dotline" colspan="3"><br/></td>
+			</tr>
+		</table>
+	</div>
+	<script language="javascript">catalog_id = {SP_CATALOG_ID}; select_item_id = {SP_ITEM_ID};</script>
+	<script language="javascript" src="/sp/ajax/catalog.js"></script>
+	<br>
+	<br>
+	<br>
+</div>
+
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_footerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_footer.html -->
+<!-- ENDIF -->
+ 

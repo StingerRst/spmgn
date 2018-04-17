@@ -1,0 +1,600 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}" lang="{S_USER_LANG}" xml:lang="{S_USER_LANG}">
+<!--
+<link rel="SHORTCUT ICON" href="images/icons/icon2.jpg"> 
+-->
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale = 0.5, maximum-scale = 1.0,user-scalable =yes"/>
+  <style type="text/css">
+  h1r {
+color: rgb(76, 93, 119);
+display: block;
+font-family: 'PT Sans', Helvetica, arial, serif;
+font-size: 36px;
+font-weight: 200;
+height: 40px;
+line-height: 40px;
+margin-bottom: 10px;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 10px;
+text-align: right;
+text-rendering: optimizelegibility;
+text-shadow: rgb(76, 93, 119) 0px 2px 3px;
+word-wrap: break-word;
+width: 100%;
+ } 
+
+  </style>
+<meta http-equiv="content-type" content="text/html; charset={S_CONTENT_ENCODING}" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-language" content="{S_USER_LANG}" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9" />
+<title>{SITENAME} &bull; <!-- IF S_IN_MCP -->{L_MCP} &bull; <!-- ELSEIF S_IN_UCP -->{L_UCP} &bull; <!-- ENDIF -->{PAGE_TITLE}</title>
+<!-- IF S_ENABLE_FEEDS -->
+	<!-- IF S_ENABLE_FEEDS_OVERALL --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {SITENAME}" href="{U_FEED}" /><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_NEWS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_NEWS}" href="{U_FEED}?mode=news" /><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_FORUMS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_ALL_FORUMS}" href="{U_FEED}?mode=forums" /><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_TOPICS --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_TOPICS_NEW}" href="{U_FEED}?mode=topics" /><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_TOPICS_ACTIVE --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FEED_TOPICS_ACTIVE}" href="{U_FEED}?mode=topics_active" /><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_FORUM and S_FORUM_ID --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FORUM} - {FORUM_NAME}" href="{U_FEED}?f={S_FORUM_ID}" /><!-- ENDIF -->
+	<!-- IF S_ENABLE_FEEDS_TOPIC and S_TOPIC_ID --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_TOPIC} - {TOPIC_TITLE}" href="{U_FEED}?f={S_FORUM_ID}&amp;t={S_TOPIC_ID}" /><!-- ENDIF -->
+<!-- ENDIF -->
+
+<script type="text/javascript">
+	document.domain = "spmgn.ru"; // да-да, это обязательно нужно, иначе не заработает
+// <![CDATA[
+	var jump_page = '{LA_JUMP_PAGE}:';
+	var on_page = '{ON_PAGE}';
+	var per_page = '{PER_PAGE}';
+	var base_url = '{A_BASE_URL}';
+	var style_cookie = 'phpBBstyle';
+	var style_cookie_settings = '{A_COOKIE_SETTINGS}';
+	var onload_functions = new Array();
+	var onunload_functions = new Array();
+
+	<!-- IF S_USER_PM_POPUP -->
+		if ({S_NEW_PM})
+		{
+			var url = '{UA_POPUP_PM}';
+			window.open(url.replace(/&amp;/g, '&'), '_phpbbprivmsg', 'height=225,resizable=yes,scrollbars=yes, width=400');
+		}
+	<!-- ENDIF -->
+
+	/**
+	* Find a member
+	*/
+	function find_username(url)
+	{
+		popup(url, 760, 570, '_usersearch');
+		return false;
+	}
+
+	/**
+	* New function for handling multiple calls to window.onload and window.unload by pentapenguin
+	*/
+	window.onload = function()
+	{
+		for (var i = 0; i < onload_functions.length; i++)
+		{
+			eval(onload_functions[i]);
+		}
+	}
+
+	window.onunload = function()
+	{
+		for (var i = 0; i < onunload_functions.length; i++)
+		{
+			eval(onunload_functions[i]);
+		}
+	}
+			function selector_state_po( id)
+			{
+				var sel = document.getElementById( id);
+				for (var i=0; i<sel.childNodes.length; i++)
+				{
+					var el = sel.childNodes[i];
+					if ("tagName" in el && "option"==el.tagName.toLowerCase() && true==el.selected)
+					{
+						return parseInt(el.value);
+					}
+				}
+				return -1;
+			}
+			function change_selected_orders_state_po(id,p)
+			{
+				var st = selector_state_po("selected_orders_status_selector_"+id);
+				var o = document.getElementById("ssuser_"+id).value;
+
+				$.ajax({
+					type : 'POST',
+					url : 'function_po.php{SID}',
+					data : {
+						'cmd': "change_orders_state2",
+						'orders': o,
+						'state': st
+					},
+					dataType: 'json',
+					// Function is called when an answer arrives.
+					success : function(result, errors)
+					{
+						if ("ok" == result["status"])
+						{
+						}
+						else
+						{
+							alert("Произошла ошибка при изменении статуса заказов!\n" + errors);
+						}
+					}
+				});
+				$.ajax({
+					type : 'POST',
+					url : 'function_po.php{SID}',
+					data : {
+						'cmd': "report",	
+						'purchase_id': p
+					},
+					success : function(result, errors) 
+					{
+                        items = result.items;
+						document.getElementById("report_"+p).innerHTML=result;
+					}
+				});		
+			}
+
+// ]]>
+
+// Функция кодирования строки в base64
+function base64encode(str) {
+    // Символы для base64-преобразования
+    var b64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefg'+
+                   'hijklmnopqrstuvwxyz0123456789+/=';
+    var b64encoded = '';
+    var chr1, chr2, chr3;
+    var enc1, enc2, enc3, enc4;
+ 
+    for (var i=0; i<str.length;) {
+        chr1 = str.charCodeAt(i++);
+        chr2 = str.charCodeAt(i++);
+        chr3 = str.charCodeAt(i++);
+ 
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+ 
+        enc3 = isNaN(chr2) ? 64:(((chr2 & 15) << 2) | (chr3 >> 6));
+        enc4 = isNaN(chr3) ? 64:(chr3 & 63);
+ 
+        b64encoded += b64chars.charAt(enc1) + b64chars.charAt(enc2) +
+                      b64chars.charAt(enc3) + b64chars.charAt(enc4);
+    }
+    return b64encoded;
+}
+
+</script>
+
+<!-- IF SP_CATALOG_VIEW --><link  href="/sp/catalog.css" rel="stylesheet" type="text/css"title="" media="screen" /><!-- ENDIF -->
+
+<script type="text/javascript" src="{T_TEMPLATE_PATH}/styleswitcher.js"></script>
+<script type="text/javascript" src="{T_TEMPLATE_PATH}/forum_fn.js"></script>
+<script type="text/javascript" src="./js/jquery.js"></script>
+<!-- <script type="text/javascript" src="./js/jquery.form.js"></script> -->
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script type="text/javascript" src="./js/jquery.date_input.js"></script>
+<script type="text/javascript" src="./js/jquery.date_input.ru_RU.js"></script> 
+<script type="text/javascript" src="./js/ajaxupload.js"></script>
+<link href="./js/date_input.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+$(function() {
+$("input.datebox").date_input();
+});
+$.extend(DateInput.DEFAULT_OPTS, {
+stringToDate: function(string) {
+var matches;
+if (matches = string.match(/^(\d{2,2})-(\d{2,2})-(\d{4,4})$/)) {
+return new Date(matches[3], matches[2] - 1, matches[1]);
+} else {
+return null;
+};
+},
+dateToString: function(date) {
+var month = (date.getMonth() + 1).toString();
+var dom = date.getDate().toString();
+if (month.length == 1) month = "0" + month;
+if (dom.length == 1) dom = "0" + dom;
+return dom + "-" + month + "-" + date.getFullYear();
+}
+});
+</script> 
+
+<link href="{T_THEME_PATH}/grid-responsive.css" rel="stylesheet" type="text/css" />
+<link href="{T_THEME_PATH}/menu.css" rel="stylesheet" type="text/css" />
+
+<link href="{T_THEME_PATH}/print.css" rel="stylesheet" type="text/css" media="print" title="printonly" />
+<link href="{T_STYLESHEET_LINK}" rel="stylesheet" type="text/css" media="screen, projection" />
+
+<link href="{T_THEME_PATH}/normal.css" rel="stylesheet" type="text/css" title="A" />
+<link href="{T_THEME_PATH}/medium.css" rel="alternate stylesheet" type="text/css" title="A+" />
+<link href="{T_THEME_PATH}/large.css" rel="alternate stylesheet" type="text/css" title="A++" />
+
+<!-- IF S_CONTENT_DIRECTION eq 'rtl' -->
+	<link href="{T_THEME_PATH}/bidi.css" rel="stylesheet" type="text/css" media="screen, projection" />
+<!-- ENDIF -->
+<!-- INCLUDE ads/ads.js -->
+<link href="{T_THEME_PATH}/rox_menu.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body id="phpbb" class="section-{SCRIPT_NAME} {S_CONTENT_DIRECTION}">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48250565-1', 'spmgn.ru');
+  ga('send', 'pageview');
+
+</script>
+<div id="mydivbg">
+<div id="mydiv">
+
+
+<div id="wrap">
+<a id="top" accesskey="t" name="top"></a>
+
+<div style="clear:both;height:7px"></div>
+<div id="rt-top" >
+	<div class="rt-grid-12 rt-alpha rt-omega">
+		<div class="rt-block logo">
+			<div class="module-surround">
+				<div class="module-content">
+					<div class="customlogo"  >
+						<h1r style="text-align: right;"><img style="font-size: 2em;" src="/images/logo.png" alt="" width="136" height="111" align="left" />Совместные покупки в Магнитогорске</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="rt-grid-12 rt-alpha rt-omega">
+	<div class="rt-block menu-block">
+		<ul class="gf-menu l1 " style="display: inherit;">
+			<li class="item101">
+				<a class="item" href="http://spmgn.ru" target="_blank">Главная</a>
+			</li>
+	
+<!-- IF S_USER_LOGGED_IN -->	
+                        <li class="item672">
+				<a class="item" href="http://www.spmgn.ru/forum/viewtopic.php?f=6&t=608">Анонсы закупок</a>
+			</li>
+			<li class="item672">
+				<a class="item" href="search.php?search_id=active_topics">Активные темы</a>
+			</li>
+			<li class="item672">
+				<a class="item" href="active_purchases.php">Поиск закупок</a>
+			</li>
+<!-- ENDIF -->
+
+			<li class="item630 parent">
+				<a class="item" href="javascript:void(0);">Помощь<span class="border-fixer"></span></a>
+				<div class="dropdown columns-1 " style="width:180px;">
+					<div class="column col1" style="width:180px;">
+						<ul class="l2">
+							<li class="item592">
+								<a class="item" href="viewtopic.php?f=79&t=1010&p=13718#p13718">Как сделать заказ</a>
+							</li>						
+							<li class="item592">
+								<a class="item" href="http://spmgn.ru/?time=1435475920#Adres">Обратная связь</a>
+							</li>						
+							<li class="item592">
+								<a class="item" href="/index.php/informatsiya/pravila" target="_blank">Правила</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li class="item194 parent">
+				<a class="item" href="javascript:void(0);">Личный кабинет<span class="border-fixer"></span></a>
+				<div class="dropdown columns-1 " style="width:180px;">
+					<div class="column col1" style="width:180px;">
+						<ul class="l2">
+						<!-- IF S_USER_LOGGED_IN -->
+
+							<li class="item629">
+								<a class="item" href="ucp.php?i=main&mode=bookmarks">Закладки</a>
+							</li>								<li class="item632">
+								<a class="item" href="ec.php">Заказы в ЕЦ</a>
+							</li>
+							<li class="item197">
+								<a class="item" href="cart.php">Корзина</a>
+							</li>
+							<li class="item631">
+								<a class="item" href="ucp.php">Личный раздел</a>
+							</li>
+							<li class="item195 box3">
+								<a class="item" href="/index.php/lichnyj-kabinet/profil">Профиль</a>
+							</li>
+							<li class="item209">
+								<a class="item" href="event_calendar.php?view=allnew">События</a>
+							</li>
+<li class="item631">
+								<a class="item" href="http://www.spmgn.ru/forum/viewtopic.php?f=70&t=12460">Доставка на дом</a>
+							</li>
+
+
+							<!-- ENDIF -->
+							<!-- IF S_USER_IS_ORGANIZER -->
+							<li class="item604">
+								<a class="item" href="org.php">Закупки организатора</a>
+							</li>
+							<li class="item605">
+								<a class="item" href="org_personal_balance.php">Оплаты</a>
+							</li>
+							<!-- ENDIF -->
+						</ul>
+					</div>
+				</div>
+			</li>
+			
+			<!-- IF S_USER_LOGGED_IN -->
+			
+			<li class="item670">
+				<a class="item" href="http://www.spmgn.ru/forum/viewtopic.php?f=79&t=1010&p=13718#p13718" target="_blank" >Как заказать</a>
+			</li>
+			<li class="item671">
+				<a class="item" href="http://www.spmgn.ru/forum/viewtopic.php?f=6&t=12903" target="_blank" >К Новому году</a>
+			</li>
+                      
+			<!-- ENDIF -->
+		</ul>
+		<div class="clear"></div>
+	</div>
+</div>
+
+
+<!--
+<table id ="panel1" width="100%" style="background: #F5FFFA; border: 1px solid #CCCCCC;">
+<tbody>
+<tr>
+
+
+
+<td align="center" style="padding-top: 4px;">
+<a href="viewtopic.php?f=6&t=608">
+<img title="Все закупки нашего форума" alt="Все закупки нашего форума" src="/forum/images/icons/buy_now.png">
+</a>
+</td>
+<!-- IF S_USER_IS_EC_OPERATOR -->
+<td align="center" style="padding-top: 4px;">
+<a href="output_ec.php"</a>
+<img title="Оператор ЕЦ. Выдача" alt="ЕЦ" src="/forum/images/icons/accept.png">
+
+</td>
+<!-- ENDIF -->
+<td align="center" style="padding-top: 4px;">
+<a href="{U_SEARCH_ACTIVE_TOPICS}"</a>
+<img title="Активные темы" alt="Активные темы" src="/forum/images/icons/favorite.png">
+</td>
+
+
+<!-- IF S_USER_IS_ORGANIZER -->
+<td align="center" style="padding-top: 4px;">
+<a href="{U_ORGANIZER_ROOM}" title="{L_ORGANIZER_ROOM}">
+<img title="Организаторская" alt="Организаторская" src="/forum/images/icons/toolbox.png">
+</a>
+</td>
+<!-- ENDIF -->
+<!-- IF S_USER_LOGGED_IN -->
+
+<td align="center" style="padding-top: 4px;">
+<a href="{U_SEARCH_NEW}">
+<img title="Переход к списку непрочитанных сообщений" alt="Новые сообщения" src="/forum/images/icons/open_folder_full.png">
+</a>
+
+</td>
+
+
+<td align="center" style="padding-top: 4px;">
+<a href="cart.php">
+<img title="Корзина покупок" alt="Корзина покупок" src="/forum/images/icons/shopping_basket.png">
+</a>
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="{U_USER_EC}">
+<img title="Ваши заказы в ЕЦ" alt="Ваши заказы в ЕЦ" src="/forum/images/icons/shopping_basket_accept.png">
+</a>
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="http://www.spmgn.ru/forum/viewtopic.php?f=80&t=8500">
+<img title="Заказать доставку на дом" alt="Заказать доставку на дом" src="/forum/images/icons/truck.png">
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="ucp.php?i=main&mode=bookmarks">
+<img title="Любимые темы (закладки)" alt="Любимые темы (ваши закладки)" src="/forum/images/icons/red_heart.png">
+</a>
+</td>
+<!-- ENDIF -->
+
+
+
+</tr>
+
+
+
+</table>
+
+
+
+
+</div>
+-->
+
+<p>
+<table width="100%">
+
+<td>
+
+
+<div id= "events"> 
+	<p style="line-height: 1em;"><b>{EVENTS_INFO}</b>
+	<!-- IF S_USER_LOGGED_IN --> <b><img src="{T_THEME_PATH}/images/img/icon_order_form.gif" alt="" /> <a href="{U_USER_CART}" title="{L_USER_CART}">Моя корзина</a></b><!-- ENDIF -->
+	<!--<img src="{T_THEME_PATH}/images/img/purchase-icon.png" alt="" /> <b><a href="#">Мои закупки</a></b>-->
+	<!-- IF S_USER_IS_ORGANIZER --><img src="{T_THEME_PATH}/images/img/purchase-icon.png" alt="" /> <b><a href="{U_ORGANIZER_ROOM}" title="{L_ORGANIZER_ROOM}">{L_ORGANIZER_ROOM}</a></b><!-- ENDIF -->
+	<a href="{U_SEARCH_ACTIVE_TOPICS}"> <img title="Активные темы" height = "20px"alt="Активные темы" src="/forum/images/icons/favorite.png"> </a> <a href="{U_SEARCH_ACTIVE_TOPICS}"><b>Активные темы</b></a>
+    <!-- IF S_USER_LOGGED_IN -->
+    <b><a href="{U_USER_EC}" title="Мои заказы, которые можно забрать" target="_self">Мои заказы в ЕЦ</a></b>
+    <b><a href="{U_SEARCH_NEW}" title="Список новых сообщений" target="_self">Новые сообщения</a></b>
+	<!-- ENDIF -->
+	<!-- IF S_USER_IS_EC_OPERATOR -->
+		<b><a href="input_ec.php" title="Приемка товара в ЕЦ" target="_self">Приемка</a></b>&nbsp;
+		<b><a href="output_ec.php" title="Выдача товара" target="_self">Выдача</a></b>&nbsp;
+		<b><a href="otchet_ec.php" title="Отчет по Оргам" target="_self">Отчет по Оргам</a></b>&nbsp;
+		<b><a href="balance_ec.php" title="Баланс по ЕЦ" target="_self">Баланс по ЕЦ</a></b>&nbsp;
+		<b><a href="purchases_not_open.php" title="Брни, неоткрытые закупки" target="_self">Брони</a></b>&nbsp;
+		<b><a href="purchases_open_not_stop.php" title="Брни, неоткрытые закупки" target="_self">Набираемость</a></b>&nbsp;
+	<!-- ENDIF -->
+	</p>
+</div>
+
+</td>
+<tr >
+<td>
+	<div id="grafik">
+		<font color=brown size=4 style=bold>График работы Центра выдачи заказов:</font> 
+		</br>
+		</br>
+		<font color=red size=4 style=bold> вторник -  с 15 до 17; среда  - с 16 до 20; </font>
+		</br>
+		</br>
+		<font color=red size=4 style=bold>пятница - с 15 до 19;  </font>
+		</br>
+                </br>
+                <font color=green size=4 style=bold>в субботу 14 ноября ЕЦ не работает  </font>
+		</br>
+		<font color=red size=4 style=bold>тел. 8 922 698 09 82</font>
+	</div>
+
+</td>
+
+</tr>
+
+
+
+<td valign="top">
+
+		<!-- IF S_DISPLAY_SEARCH and not S_IN_SEARCH -->
+			<div id="search-box">
+				<form action="{U_SEARCH}" method="post" id="search">
+				<fieldset>
+					<input name="keywords" id="keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" value="<!-- IF SEARCH_WORDS-->{SEARCH_WORDS}<!-- ELSE -->{L_SEARCH_MINI}<!-- ENDIF -->" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" />
+					<input class="button2" value="{L_SEARCH}" type="submit" />
+					<a href="{U_SEARCH}" title="{L_SEARCH_ADV_EXPLAIN}">{L_SEARCH_ADV}</a> {S_SEARCH_HIDDEN_FIELDS}
+				</fieldset>
+				</form>
+			</div>
+		<!-- ENDIF -->
+<div id="wrap">
+	<a id="top" name="top" accesskey="t"></a>
+	<div id="page-header">
+		{ADS_1}
+		<div class="navbar">
+			<div class="inner"><span class="corners-top"><span></span></span>
+
+			<ul class="linklist navlinks">
+				<li class="icon-home"><a href="{U_INDEX}" accesskey="h">{L_INDEX}</a> <!-- BEGIN navlinks --> <strong>&#8249;</strong> <a href="{navlinks.U_VIEW_FORUM}">{navlinks.FORUM_NAME}</a><!-- END navlinks --></li>
+
+				<li class="rightside"><a href="#" onclick="fontsizeup(); return false;" onkeypress="return fontsizeup(event);" class="fontsize" title="{L_CHANGE_FONT_SIZE}">{L_CHANGE_FONT_SIZE}</a></li>
+
+				<!-- IF U_EMAIL_TOPIC --><li class="rightside"><a href="{U_EMAIL_TOPIC}" title="{L_EMAIL_TOPIC}" class="sendemail">{L_EMAIL_TOPIC}</a></li><!-- ENDIF -->
+				<!-- IF U_EMAIL_PM --><li class="rightside"><a href="{U_EMAIL_PM}" title="{L_EMAIL_PM}" class="sendemail">{L_EMAIL_PM}</a></li><!-- ENDIF -->
+				<!-- IF U_PRINT_TOPIC --><li class="rightside"><a href="{U_PRINT_TOPIC}" title="{L_PRINT_TOPIC}" accesskey="p" class="print">{L_PRINT_TOPIC}</a></li><!-- ENDIF -->
+				<!-- IF U_PRINT_PM --><li class="rightside"><a href="{U_PRINT_PM}" title="{L_PRINT_PM}" accesskey="p" class="print">{L_PRINT_PM}</a></li><!-- ENDIF -->
+			</ul>
+
+			<!-- IF not S_IS_BOT and S_USER_LOGGED_IN -->
+			<ul class="linklist leftside">
+				<li class="icon-ucp">
+					<a href="{U_PROFILE}" title="{L_PROFILE}" accesskey="e">{L_PROFILE}</a>
+						<!-- IF S_DISPLAY_PM --> (<a href="{U_PRIVATEMSGS}">{PRIVATE_MESSAGE_INFO}</a>)<!-- ENDIF -->
+					<!-- IF S_DISPLAY_SEARCH --> &bull;
+					<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>
+					<!-- ENDIF -->
+					<!-- IF U_RESTORE_PERMISSIONS --> &bull;
+					<a href="{U_RESTORE_PERMISSIONS}">{L_RESTORE_PERMISSIONS}</a>
+					<!-- ENDIF -->
+
+
+		
+				<!-- IF S_DOQ eq 1 --> &bull;  <a href="{U_DOQ}" title="{DOQ}">{DOQ}</a><!-- ENDIF -->
+				<!-- IF U_ACP --> &bull;  <a href="{U_ADMIN_ROOM}">{L_ADMIN_ROOM}</a><!-- ENDIF -->
+</li>
+			</ul>
+			<!-- ENDIF -->
+
+			<ul class="linklist rightside">		
+				<li class="icon-faq"><a href="{U_FAQ}" title="{L_FAQ_EXPLAIN}">{L_FAQ}</a></li>
+				<!-- IF not S_IS_BOT -->
+					<!-- IF S_DISPLAY_MEMBERLIST -->
+						<li class="icon-members"><a href="{U_MEMBERLIST}" title="{L_MEMBERLIST_EXPLAIN}">{L_MEMBERLIST}</a></li>
+					<!-- ENDIF -->
+					<!-- IF S_DISPLAY_TOPLIST -->
+						<li class="icon-thanks_toplist"><a href="{U_REPUT_TOPLIST}" title="{L_REPUT_TOPLIST}">{L_REPUT_TOPLIST}</a></li>
+					<!-- ENDIF -->
+					<!-- IF S_DISPLAY_THANKSLIST -->
+						<li class="icon-thanks"><a href="{U_THANKSLIST}" title="{L_THANKS_USER}">{L_GRATITUDES}</a></li>
+					<!-- ENDIF -->
+				<!-- ENDIF -->
+				<!-- IF S_USER_LOGGED_IN and not S_IS_BOT -->
+					<li class="icon-logout"><a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" accesskey="x">{L_LOGIN_LOGOUT}</a></li>
+				<!-- ENDIF -->
+				
+				<!-- IF not S_USER_LOGGED_IN and not S_IS_BOT -->
+					<li class="icon-logout"><script type="text/javascript">document.write('<a href="http://www.spmgn.ru/index.php?option=com_users&view=login&return='+base64encode(document.URL)+'">Вход</a>');</script></li>
+
+					<li style="margin-top: 5px;">
+						<script src="http://ulogin.ru/js/ulogin.js"></script>
+				<script type="text/javascript">document.write('<div id="uLogin" x-ulogin-params="display=small&fields=first_name,last_name,email,photo&optional=bdate,country,city&providers={ULOGIN_SHOWN}&hidden={ULOGIN_HIDDEN}&redirect_uri=http%3A%2F%2Fspmgn.ru%2Findex.php%3Foption%3Dcom_ulogin%26task%3Dlogin%26backurl%3D'+base64encode(document.URL)+'"></div>');</script>
+					</li>
+				<!-- ENDIF -->
+			</ul>
+
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+
+	</div>
+	<!-- IF ADS_2 -->
+	<br />
+	<div class="forabg">
+		<div class="inner"><span class="corners-top"><span></span></span>
+			<ul class="topiclist">
+				<li class="header">
+					<dl class="icon">
+						<dt>{L_ADVERTISEMENT}</dt>
+					</dl>
+				</li>
+			</ul>
+			<div style="padding: 5px 5px 2px 5px; font-size: 1.1em; background-color: #ECF1F3; margin: 0px auto; text-align: center;">
+				{ADS_2}
+			</div>
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+	<!-- ENDIF -->
+	<a name="start_here"></a>
+	<div id="page-body">
+		<!-- IF S_BOARD_DISABLED and S_USER_LOGGED_IN and (U_MCP or U_ACP) -->
+		<div id="information" class="rules">
+			<div class="inner"><span class="corners-top"><span></span></span>
+				<strong>{L_INFORMATION}:</strong> {L_BOARD_DISABLED}
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+		<!-- ENDIF -->
+<div class="ya-site-form ya-site-form_inited_no" onclick="return {'bg': 'transparent', 'target': '_blank', 'language': 'ru', 'suggest': true, 'tld': 'ru', 'site_suggest': true, 'action': 'http://yandex.ru/sitesearch', 'webopt': true, 'fontsize': 12, 'arrow': false, 'fg': '#000000', 'searchid': '1949558', 'logo': 'rb', 'websearch': false, 'type': 2}"><form action="http://yandex.ru/sitesearch" method="get" target="_blank"><input type="hidden" name="searchid" value="1949558" /><input type="hidden" name="l10n" value="ru" /><input type="hidden" name="reqenc" value="" /><input type="text" name="text" value="" /><input type="submit" value="Найти" /></form></div><style type="text/css">.ya-page_js_yes .ya-site-form_inited_no { display: none; }</style><script type="text/javascript">(function(w,d,c){var s=d.createElement('script'),h=d.getElementsByTagName('script')[0],e=d.documentElement;(' '+e.className+' ').indexOf(' ya-page_js_yes ')===-1&&(e.className+=' ya-page_js_yes');s.type='text/javascript';s.async=true;s.charset='utf-8';s.src=(d.location.protocol==='https:'?'https:':'http:')+'//site.yandex.net/v2.0/js/all.js';h.parentNode.insertBefore(s,h);(w[c]||(w[c]=[])).push(function(){Ya.Site.Form.init()})})(window,document,'yandex_site_callbacks');</script>

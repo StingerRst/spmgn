@@ -1,0 +1,178 @@
+<style type="text/css">
+
+</style>
+<br/>
+
+<table border="0" width="100%">
+	<tr>
+		<td>
+	           <H3>{ORG_NAME}</H3>
+		   <H5>({ORG_FULLNAME} {ORG_PHONE}) </a></H5>
+		</td>
+		<td>
+		   <H2>Отчет по закупке <a title="Перейти к обсуждению закупки {PURCHASE_NAME}" href="{PURCHASE_URL}">"{PURCHASE_NAME}"</a></H2>
+		</td>
+		<td>
+		  {DATE_PRINT}
+		</td>
+	</tr>
+</table>
+<hr />
+
+  <div id="report" style=" font-size: 10pt">
+
+
+</div>
+
+
+<hr />
+</font>
+
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<SCRIPT language="javascript">
+
+
+function form_report()
+{
+document.getElementById( "report").innerHTML =make_orders_report() + "<BR/>" + make_total_report();
+	update_total();
+}
+
+
+function calc_user_total(id)
+{
+	var user = users[id];
+	var tp = 0;
+	var to = 0;
+	var td = 0;
+	var o_inscr = 0;
+	for (var oid in user.orders)
+	{
+		var order = user.orders[oid];
+		if (3!=order.state)
+		{
+			var price = parseFloat(order.lot.price);
+			tp += price;
+			td += parseFloat(order.delivery);
+			to ++;
+		}
+		if (2==order.state)
+		{
+			o_inscr += price;
+		}
+	}
+	user.total_price = tp;
+	user.total_delivery = td;
+}
+
+function make_orders_report()
+{
+	var html = new Array;
+
+	var cnt = 0;
+	for (var uid in users)
+	{
+                var user = users[uid];
+		var bgcolor = cnt++&1 ? "bg1" : "bg2";
+				html.push('<TR class="' + bgcolor + '" align="left">');
+				html.push(		'<td colspan="11">');
+				html.push(	'<b>'+esc_tags(user.name)+' ('+esc_tags(user.fio) + '   ' + esc_tags(user.phone)+')'+'</b>' );
+				html.push(		'</td>');
+				html.push('</TR>');
+		html.push('<TABLE cellspacing="0" width="100%" >');
+		html.push(		'<TR align="center">');
+		html.push(			'<TD width="45%"><B>Название</B></TD>');
+		html.push(			'<TD width="35%"><B>Параметры</B></TD>');
+		html.push(			'<TD width="10%"><B>Цена</B></TD>');
+		html.push(			'<TD width="10%"><B>Доставка</B></TD>');
+		html.push(		'</TR>');
+		
+		for (var i in user.orders)
+		{
+			var order = user.orders[i];
+				html.push('<TR align="center">');
+				html.push(		'<TD  align="left" ><A title="Перейти в каталог к модели ' + esc_tags(order.lot.name) + '" href="catalog.php?catalog_id=' + esc_tags(order.lot.catalog.id) + '&lot_id=' + order.lot.id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">' + esc_tags(order.lot.name) + '</A></TD>');
+				html.push(		'<TD>' + format_vars(order.vars) + '</TD>');
+				html.push(		'<TD>');
+				html.push(			format_money(esc_tags(order.lot.price)));
+				html.push(			'<span id="status_' + order.id + '"><img src="/images/icons/empty.png" width="22" height="22" style="position:relative; left:0; top:0; z-index:-1"/></span>');
+				html.push(		'</TD>');
+				html.push(		'<TD> '+ format_money(esc_tags(order.delivery))+' </TD>');
+				html.push('</TR>');
+		}
+		calc_user_total(user.id);
+		html.push('<TR  align="center">');
+		html.push(		'<TD style="border: 1px solid black;"> Сумма заказа: ' + format_money(user.total_price) + '</TD>');
+		html.push(		'<TD style="border: 1px solid black;"> Доставка: ' + format_money(user.total_delivery) + '</TD>');
+		html.push(		'<TD style="border: 1px solid black;"> </TD>');
+		html.push(		'<TD style="border: 1px solid black;"> </TD>');
+		html.push('</TR>');
+	}
+	html.push('</TABLE>');
+
+	return html.join("");
+}
+
+
+function make_total_report()
+{
+	var html = '';
+	return html;
+}
+
+var total_price = 0;
+var total_delivery = 0;
+
+
+var orders = {ORDERS};
+var users = {USERS};
+var catalogs = {CATALOGS};
+var lots = {LOTS};
+
+
+var purchase_id = {PURCHASE_ID};
+
+
+
+
+// sort users
+{
+	var ar = new Array;
+	for (var id in users)
+		ar.push( users[id]);
+ 
+	var cmp_func = function(a,b)
+		{
+			return a.name.localeCompare(b.name);
+		}
+	ar.sort( cmp_func);
+ 
+	users = new Object;
+	for (var i=0; i<ar.length; i++)
+		users[ar[i].id] = ar[i];
+}
+
+for (var id in orders)
+	orders[id].lot = lots[orders[id].lot_id];
+
+for (var id in users)
+	users[id].orders = new Array;
+ 
+for (var id in orders)
+{
+	var order = orders[id];
+	users[order.user_id].orders.push(order);
+}
+// associate items with catalog
+for (var id in lots)
+	lots[id].catalog = catalogs[lots[id].catalog_id];
+
+
+
+form_report();
+document.getElementById("select_controls").innerHTML = select_format_controls( select_catalog_id, select_lot_id, select_vars);
+document.getElementById('dateFolder').innerHTML = day + "." + month + "." + year;
+
+
+</SCRIPT>

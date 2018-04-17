@@ -1,0 +1,3492 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="ru-ru" xml:lang="ru-ru">
+<!--
+<link rel="SHORTCUT ICON" href="images/icons/icon2.jpg"> 
+-->
+
+<head>
+  <style type="text/css">
+ h1r {
+color: rgb(76, 93, 119);
+display: block;
+font-family: 'PT Sans', Helvetica, arial, serif;
+font-size: 36px;
+font-weight: 200;
+height: 40px;
+line-height: 40px;
+margin-bottom: 10px;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 10px;
+text-align: right;
+text-rendering: optimizelegibility;
+text-shadow: rgb(76, 93, 119) 0px 2px 3px;
+width: 1160px;
+ } 
+
+  </style>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-language" content="ru-ru" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="2000, 2002, 2005, 2007 phpBB Group" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9" />
+
+<title>Совместные закупки в Магнитогорске &bull; </title>
+
+
+
+<script type="text/javascript">
+	var str = location.href;
+	var newstr = str.replace("http://www.spmgn.ru/forum/", "");
+	document.write(newstr);
+	document.domain = "spmgn.ru"; // да-да, это обязательно нужно, иначе не заработает
+// <![CDATA[
+	var jump_page = 'Введите номер страницы, на которую хотите перейти:';
+	var on_page = '';
+	var per_page = '';
+	var base_url = '';
+	var style_cookie = 'phpBBstyle';
+	var style_cookie_settings = '; path=/; domain=.spmgn.ru';
+	var onload_functions = new Array();
+	var onunload_functions = new Array();
+
+	
+
+	/**
+	* Find a member
+	*/
+	function find_username(url)
+	{
+		popup(url, 760, 570, '_usersearch');
+		return false;
+	}
+
+	/**
+	* New function for handling multiple calls to window.onload and window.unload by pentapenguin
+	*/
+	window.onload = function()
+	{
+		for (var i = 0; i < onload_functions.length; i++)
+		{
+			eval(onload_functions[i]);
+		}
+	}
+
+	window.onunload = function()
+	{
+		for (var i = 0; i < onunload_functions.length; i++)
+		{
+			eval(onunload_functions[i]);
+		}
+	}
+			function selector_state_po( id)
+			{
+				var sel = document.getElementById( id);
+				for (var i=0; i<sel.childNodes.length; i++)
+				{
+					var el = sel.childNodes[i];
+					if ("tagName" in el && "option"==el.tagName.toLowerCase() && true==el.selected)
+					{
+						return parseInt(el.value);
+					}
+				}
+				return -1;
+			}
+			function change_selected_orders_state_po(id,p)
+			{
+				var st = selector_state_po("selected_orders_status_selector_"+id);
+				var o = document.getElementById("ssuser_"+id).value;
+
+				$.ajax({
+					type : 'POST',
+					url : 'function_po.php?sid=',
+					data : {
+						'cmd': "change_orders_state2",
+						'orders': o,
+						'state': st
+					},
+					dataType: 'json',
+					// Function is called when an answer arrives.
+					success : function(result, errors)
+					{
+						if ("ok" == result["status"])
+						{
+						}
+						else
+						{
+							alert("Произошла ошибка при изменении статуса заказов!\n" + errors);
+						}
+					}
+				});
+				$.ajax({
+					type : 'POST',
+					url : 'function_po.php?sid=',
+					data : {
+						'cmd': "report",	
+						'purchase_id': p
+					},
+					success : function(result, errors) 
+					{
+                        items = result.items;
+						document.getElementById("report_"+p).innerHTML=result;
+					}
+				});		
+			}
+
+// ]]>
+</script>
+
+
+
+<script type="text/javascript" src="./styles/prosilver-magnitogorsk/template/styleswitcher.js"></script>
+<script type="text/javascript" src="./styles/prosilver-magnitogorsk/template/forum_fn.js"></script>
+<script type="text/javascript" src="./js/jquery.js"></script>
+<!-- <script type="text/javascript" src="./js/jquery.form.js"></script> -->
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script type="text/javascript" src="./js/jquery.date_input.js"></script>
+<script type="text/javascript" src="./js/jquery.date_input.ru_RU.js"></script> 
+<script type="text/javascript" src="./js/ajaxupload.js"></script>
+<link href="./js/date_input.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+$(function() {
+$("input.datebox").date_input();
+});
+$.extend(DateInput.DEFAULT_OPTS, {
+stringToDate: function(string) {
+var matches;
+if (matches = string.match(/^(\d{2,2})-(\d{2,2})-(\d{4,4})$/)) {
+return new Date(matches[3], matches[2] - 1, matches[1]);
+} else {
+return null;
+};
+},
+dateToString: function(date) {
+var month = (date.getMonth() + 1).toString();
+var dom = date.getDate().toString();
+if (month.length == 1) month = "0" + month;
+if (dom.length == 1) dom = "0" + dom;
+return dom + "-" + month + "-" + date.getFullYear();
+}
+});
+</script> 
+<link href="./styles/prosilver-magnitogorsk/theme/grid-responsive.css" rel="stylesheet" type="text/css" />
+<link href="./styles/prosilver-magnitogorsk/theme/menu.css" rel="stylesheet" type="text/css" />
+<link href="./styles/prosilver-magnitogorsk/theme/rox_menu.css" rel="stylesheet" type="text/css" />
+
+<link href="./styles/prosilver-magnitogorsk/theme/print.css" rel="stylesheet" type="text/css" media="print" title="printonly" />
+<link href="./style.php?id=9&amp;lang=ru" rel="stylesheet" type="text/css" media="screen, projection" />
+
+<link href="./styles/prosilver-magnitogorsk/theme/normal.css" rel="stylesheet" type="text/css" title="A" />
+<link href="./styles/prosilver-magnitogorsk/theme/medium.css" rel="alternate stylesheet" type="text/css" title="A+" />
+<link href="./styles/prosilver-magnitogorsk/theme/large.css" rel="alternate stylesheet" type="text/css" title="A++" />
+
+
+
+</head>
+
+
+
+<body id="phpbb" class="section-org ltr">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48250565-1', 'spmgn.ru');
+  ga('send', 'pageview');
+
+</script>
+<div id="mydivbg">
+<div id="mydiv">
+
+<!--<div id="head_bg">
+<div id="head_cart">
+<div id="head_cart">
+<div style="clear: both;height:7px"></div>
+
+<!--<a href="./" title="Совместные закупки в Магнитогорске" id="mylogo"></a>-->
+<!--
+</div>
+</div>
+</div>-->
+
+
+
+<div id="wrap">
+<a id="top" accesskey="t" name="top"></a>
+
+<div style="clear:both;height:7px"></div>
+<div id="rt-top" >
+	<div class="rt-grid-12 rt-alpha rt-omega">
+		<div class="rt-block logo">
+			<div class="module-surround">
+				<div class="module-content">
+					<div class="customlogo"  >
+						<h1r style="text-align: right;"><img style="font-size: 2em;" src="/images/logo.png" alt="" width="136" height="111" align="left" />Совместные покупки в Магнитогорске</h1r>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="rt-grid-12 rt-alpha rt-omega">
+	<div class="rt-block menu-block">
+		<ul class="gf-menu l1 " >
+			<li class="item101 active last" >
+				<a class="item" href="/"  >Главная</a>
+			</li>
+			<li class="item191" > 
+				<a class="item" href="http://www.spmgn.ru/forum" target="_blank" >Форум</a>
+			</li>
+			<li class="item196" >
+				<a class="item" href="/index.php/zakupki"  >Закупки</a>
+			</li>
+			<li class="item194 parent" >
+				<a class="item" href="/index.php/kontakt"  >Кабинет<span class="border-fixer"></span></a>
+				<div class="dropdown columns-1 " style="width:180px;">
+					<div class="column col1"  style="width:180px;">
+						<ul class="l2">
+							<li class="item195 box3" >
+								<a class="item" href="/index.php/kontakt/profil"  >Профиль</a>
+							</li>
+							<li class="item197" >
+								<a class="item" href="/index.php/kontakt/korzina"  >Корзина</a>
+							</li>
+							<li class="item209" >
+								<a class="item" href="/index.php/kontakt/sobytiya"  >События</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li class="item511" >
+				<a class="item" href="http://www.spmgn.ru/forum/viewtopic.php?f=80&t=8500" target="_blank" >Доставка</a>
+			</li>
+			<li class="item518" >
+				<a class="item" href="/index.php/pristroj"  >Пристрой</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<table width="100%" style="background: #F5FFFA; border: 1px solid #CCCCCC;">
+<tbody>
+<tr>
+
+<td align="center" style="padding-top: 4px;">
+<a href="">
+<img title="Что такое СП" alt="Что такое СП" src="/forum/images/icons/promotion.png">
+</a>
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="">
+<img title="Вопросы и ответы для новичков - что есть на форуме и как этим пользоваться" alt="Вопросы и ответы для новичков - что есть на форуме и как этим пользоваться" src="/forum/images/icons/help.png">
+</a>
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="">
+<img title="Правила нашего форума - читать обязательно!" alt="Правила нашего форума - читать обязательно!" src="/forum/images/icons/pin.png">
+</a>
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="viewtopic.php?f=6&t=608">
+<img title="Все закупки нашего форума" alt="Все закупки нашего форума" src="/forum/images/icons/buy_now.png">
+</a>
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="./search.php?search_id=active_topics"</a>
+<img title="Активные темы" alt="Активные темы" src="/forum/images/icons/favorite.png">
+
+</td>
+
+
+
+<td align="center" style="padding-top: 4px;">
+<a href="./org.php" title="Мои закупки">
+<img title="Организаторская" alt="Организаторская" src="/forum/images/icons/toolbox.png">
+</a>
+</td>
+
+
+<td align="center" style="padding-top: 4px;">
+<a href="./search.php?search_id=newposts">
+<img title="Переход к списку непрочитанных сообщений" alt="Новые сообщения" src="/forum/images/icons/open_folder_full.png">
+</a>
+</div>
+</td>
+
+
+<td align="center" style="padding-top: 4px;">
+<a href="cart.php">
+<img title="Корзина покупок" alt="Корзина покупок" src="/forum/images/icons/shopping_basket.png">
+</a>
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="./ec.php">
+<img title="Ваши заказы в ЕЦ" alt="Ваши заказы в ЕЦ" src="/forum/images/icons/shopping_basket_accept.png">
+</a>
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="http://www.spmgn.ru/forum/viewtopic.php?f=80&t=8500">
+<img title="Заказать доставку на дом" alt="Заказать доставку на дом" src="/forum/images/icons/truck.png">
+</td>
+
+<td align="center" style="padding-top: 4px;">
+<a href="ucp.php?i=main&mode=bookmarks">
+<img title="Любимые темы (закладки)" alt="Любимые темы (ваши закладки)" src="/forum/images/icons/red_heart.png">
+</a>
+</td>
+
+
+</tr>
+
+</tbody>
+</table>
+</div>
+
+
+<table width="100%">
+
+<tr>
+<p>
+<p>
+<center>
+<font color=red size=4 style=bold>График работы ЕЦ: вторник с 15 до 17; среда с 16 до 20; пятница с 15 до 19; суббота с 11 до 14. тел ец 8 922 698 09 82</font> 
+
+
+<p>
+</center>
+
+</tr>
+<tr>
+
+
+<div style="padding-left:15px">
+	<p style="line-height: 1em;"><b><img src="./images/events/icon_calendar.gif"/><a href="./event_calendar.php" title="Перейти на страницу событий"> События СП<b> 0 </b> </a></b>
+	 <b><img src="./styles/prosilver-magnitogorsk/theme/images/img/icon_order_form.gif" alt="" /> <a href="./cart.php" title="Ваши заказы">Ваши заказы</a></b>
+	<!--<img src="./styles/prosilver-magnitogorsk/theme/images/img/purchase-icon.png" alt="" /> <b><a href="#">Мои закупки</a></b>-->
+	<img src="./styles/prosilver-magnitogorsk/theme/images/img/purchase-icon.png" alt="" /> <b><a href="./org.php" title="Мои закупки">Мои закупки</a></b>
+    <b><a href="./ec.php" title="Закупки, которые уже в ЕЦ" target="_self">Мои заказы в ЕЦ</a></b>
+	
+	</p>
+</div>
+
+
+
+<td valign="top">
+
+		
+			<div id="search-box">
+				<form action="./search.php" method="post" id="search">
+				<fieldset>
+					<input name="keywords" id="keywords" type="text" maxlength="128" title="Ключевые слова" class="inputbox search" value="Поиск…" onclick="if(this.value=='Поиск…')this.value='';" onblur="if(this.value=='')this.value='Поиск…';" />
+					<input class="button2" value="Поиск" type="submit" />
+					<a href="./search.php" title="Параметры расширенного поиска">Расширенный поиск</a> 
+				</fieldset>
+				</form>
+			</div>
+		
+		
+		<div style="clear:both;height:10px"></div>
+<div id="wrap">
+	<a id="top" name="top" accesskey="t"></a>
+	<div id="page-header">
+		<div class="navbar">
+			<div class="inner"><span class="corners-top"><span></span></span>
+
+			<ul class="linklist navlinks">
+				<li class="icon-home"><a href="./" accesskey="h">Совместные покупки</a> </li>
+
+				<li class="rightside"><a href="#" onclick="fontsizeup(); return false;" onkeypress="return fontsizeup(event);" class="fontsize" title="Изменить размер шрифта">Изменить размер шрифта</a></li>
+
+				
+			</ul>
+
+			
+			<ul class="linklist leftside">
+				<li class="icon-ucp">
+					<a href="./ucp.php" title="Личный раздел" accesskey="e">Личный раздел</a>
+						 (<a href="./ucp.php?i=pm&amp;folder=inbox">Новых ЛС: <strong>1</strong></a>) &bull;
+					<a href="./search.php?search_id=egosearch">Ваши сообщения</a>
+					
+</li>
+			</ul>
+			
+
+			<ul class="linklist rightside">		
+				<li class="icon-faq"><a href="./faq.php" title="Часто задаваемые вопросы">FAQ</a></li>
+				<li class="icon-members"><a href="./memberlist.php" title="Просмотр всего списка пользователей">Пользователи</a></li><li class="icon-thanks_toplist"><a href="./toplist.php" title="Топлист">Топлист</a></li><li class="icon-thanks"><a href="./thankslist.php" title="Лист благодарностей">Благодарности</a></li>
+				<li class="icon-logout"><a href="./ucp.php?mode=logout&amp;sid=5566a0f5ee061044c343e466181ea57f" title="Выход [ AnnKI ]" accesskey="x">Выход [ AnnKI ]</a></li>
+				
+			</ul>
+
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+
+	</div>
+
+	<a name="start_here"></a>
+	<div id="page-body">
+		
+
+<div class="ya-site-form ya-site-form_inited_no" onclick="return {'bg': 'transparent', 'target': '_blank', 'language': 'ru', 'suggest': true, 'tld': 'ru', 'site_suggest': true, 'action': 'http://yandex.ru/sitesearch', 'webopt': true, 'fontsize': 12, 'arrow': false, 'fg': '#000000', 'searchid': '1949558', 'logo': 'rb', 'websearch': false, 'type': 2}"><form action="http://yandex.ru/sitesearch" method="get" target="_blank"><input type="hidden" name="searchid" value="1949558" /><input type="hidden" name="l10n" value="ru" /><input type="hidden" name="reqenc" value="" /><input type="text" name="text" value="" /><input type="submit" value="Найти" /></form></div><style type="text/css">.ya-page_js_yes .ya-site-form_inited_no { display: none; }</style><script type="text/javascript">(function(w,d,c){var s=d.createElement('script'),h=d.getElementsByTagName('script')[0],e=d.documentElement;(' '+e.className+' ').indexOf(' ya-page_js_yes ')===-1&&(e.className+=' ya-page_js_yes');s.type='text/javascript';s.async=true;s.charset='utf-8';s.src=(d.location.protocol==='https:'?'https:':'http:')+'//site.yandex.net/v2.0/js/all.js';h.parentNode.insertBefore(s,h);(w[c]||(w[c]=[])).push(function(){Ya.Site.Form.init()})})(window,document,'yandex_site_callbacks');</script>
+  
+<br>
+<br>
+<h2>Ваши закупки</h2>
+
+<div id="tabs">
+<ul>
+	<li><a href="./org.php?i=0"><span>Новые закупки и брони</span></a></li>
+	<li class="activetab"><a href="./org.php?i=1"><span>Текущие закупки</span></a></li>
+	<li><a href="./viewtopic.php?f=6&t=632"><span>Тех.Поддержка</span></a></li>
+	<li><a href="./viewforum.php?f=3"><span>ОРГ-форум</span></a></li>
+</ul>
+</div>
+<div class="panel bg3">
+	<div class="inner"><span calss="corners-top"><span></span></span>
+	            <style type="text/css">
+<!--
+	#mycalendar-panel img, #mycalendar-panel select {
+		vertical-align: middle;
+	}
+	ol {
+		list-style: none;
+	}
+	.calendar_panel{
+		background-color: #ECF1F3;
+		border: solid 1px #536482;
+	}
+	.calendar, .monthyear, .dayheaders {
+		width: 18em;
+		overflow: hidden;
+		margin: 0px;
+		padding: 0px;
+		padding-left: 0.25em;
+		text-align: center;
+	}
+	.calendar li a {
+		display: block;
+		background-image: url(./styles/prosilver-magnitogorsk/theme/images/corners.gif);
+	}
+	.calendar li {
+		width: 2.3em;
+		height: 2.3em;
+		margin: 0.1em;
+		background-position: top left;
+		display: inline; /* For IE */
+	}
+	.calendar li a {
+		display: block;
+		width: 2.3em;
+		height: 1.8em;
+		padding-top: 0.5em;
+		background-position: bottom right;
+	}
+	.monthyear li {
+		display: block;
+		height: 2em;
+		width: 12em;
+	}
+	.content ol {
+		margin: 0;
+	}
+	.monthyear li.previous, .monthyear li.next {
+			width: 2.5em;
+	}
+	.dayheaders li.left {
+		width: 2.5em;
+	}
+	.dayheaders li {
+		display: block;
+		width: 2.5em;
+		height: 1.5em;
+	}
+	.calendar li, .monthyear li, .dayheaders li {
+		float: left;
+	}
+	.calendar a {
+		text-decoration: none;
+	}
+	.calendar li:hover {
+		background-color: #ccb;
+	}
+	.sundaystart .firstday { margin-left: 0.1px; }
+	.mondaystart .firstday { margin-left: 2.6em; }
+	.tuesdaystart .firstday { margin-left: 5.1em; }
+	.wednesdaystart .firstday { margin-left: 7.6em; }
+	.thursdaystart .firstday { margin-left: 10.1em; }
+	.fridaystart .firstday { margin-left: 12.6em; }
+	.saturdaystart .firstday { margin-left: 15.1em; }
+
+	#cp-main .panel ol {
+		font-size:1em;
+		margin-left:0em;
+	}
+
+-->
+</style>
+<script language="Javascript" src="js/mycalendar.js"></script>
+<SCRIPT language="Javascript">
+// <![CDATA[
+
+var calendarFormat = 'd-m-y';
+var calendarMonths = new Array('Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь');
+var calendarWeekdaysShort = new Array("Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб");
+var calendarWeekdays = new Array("Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота");
+var previous_month = 'Предыдущий месяц';
+var next_month = 'Следующий месяц';
+var image_previous = './styles/prosilver-magnitogorsk/theme/images/arrow_left.gif';
+var image_next = './styles/prosilver-magnitogorsk/theme/images/arrow_right.gif';
+var weekday_start = 1;
+
+var insert_id = 'date_picker';
+
+var today = new Date();
+var day = today.getDate();
+var month = today.getMonth();
+var year  = y2k(today.getYear());
+
+var currentDay = day;
+var currentMonth = month;
+var currentYear = year;
+
+var targetDateField;
+
+function change_payment(source)
+{
+	var text = document.getElementById(source).value;
+	var new_text = text.replace(/^\s+|\s+$/g,"");
+	var reg;
+		reg=/^(?:([0-2]{0,1})\d):(?:[0-5]\d)$/i;
+		var regres;
+		if (!reg.test(new_text)) {
+			alert('Поле "Время" не соответствует заданному формату.\n Пример правильного заполнения 12:30');
+			//document.getElementById( "payment"+source + purchase_id ).value = payment_timeMsg;
+			return;
+		}else {
+			regres = reg.exec(new_text);
+			if (regres[1]=="") new_text="0"+new_text;
+			document.getElementById(source).value = new_text;
+		}
+}
+
+function select_date(formField)
+{
+	// get the reference to the target element and setup the date
+	targetDateField = formField;
+	var dateString = targetDateField.value;
+
+	if ((dateString != '')&&(dateString != '00-00-0000'))
+	{
+		// convert the user format of the date into something we can parse to make a javascript Date object
+		// we need to pad with placeholders to get the rigth offset
+		tmp_format = calendarFormat.replace(/m/i, 'mm').replace(/d/i, 'dd').replace(/y/i, 'yyyy');
+		tmp_yOffset = tmp_format.indexOf('y');
+		tmp_mOffset = tmp_format.indexOf('m');
+		tmp_dOffset = tmp_format.indexOf('d');
+		var today = new Date(dateString.substring(tmp_yOffset, tmp_yOffset + 4), dateString.substring(tmp_mOffset, tmp_mOffset + 2) - 1, dateString.substring(tmp_dOffset, tmp_dOffset + 2));
+		if ((today == "Invalid Date") || (isNaN(today)))
+		{
+   			var today = new Date();
+		}
+	} else
+	{
+		var today = new Date();
+	}
+	day = today.getDate();
+	month = today.getMonth();
+	year  = y2k(today.getYear());
+	fill_div(insert_id, build_calendar(month, day, year));
+	fill_calendar(month, year);
+	document.getElementById(insert_id).style.top = getBounds(formField).top+"px";
+	document.getElementById(insert_id).style.left = 100 +"px";
+	document.getElementById(insert_id).style.display = 'block';
+}
+
+function fill_calendar(month, year)
+{
+	for (i = 1; i <= calendarDays[month]; i++)
+	{
+		fill_day(i, '<a href="javascript: void(0);" onclick="sendDate(' + (month + 1) + ', ' + i + ', ' + year + ');" title="' + formatDate(month + 1, i, year) + '">' + i + '</a>');
+	}
+}
+
+function sendDate(month, day, year)
+{
+	var id=targetDateField.id;
+	id=id.split(targetDateField.name).join('');
+	
+	targetDateField.value = formatDate(month, day, year);
+
+	purchases_upd(id);
+	
+	var dest = document.getElementById(insert_id);
+	dest.style.display = 'none';
+}
+// ]]>
+</SCRIPT>
+
+<h2>Мои закупки</h2>
+ <a class="button2" href="org.php?i=1&a=1&sid=">Архив</a>
+
+
+<br/>
+<SCRIPT language="Javascript">
+
+	function esc_tags(s)
+	{
+		s = s.toString();
+		s = s.replace(/</g,'&lt;');
+		s = s.replace(/>/g,'&gt;');
+		s = s.replace(/"/g,'&quot;');
+		return s;
+	}
+	function esc_tags2(s)
+	{
+		s = s.toString();
+		s = s.replace(/</g,'&lt;');
+		s = s.replace(/>/g,'&gt;');
+		s = s.replace(/"/g,'&quot;');
+		s = s.replace(/\n/g,'<br>');
+		return s;
+	}
+	function purchase_showhide (purchase_id) {
+		var purchase_blocks=$('.purchase'+purchase_id);
+		var button=document.getElementById("b" + purchase_id);
+		$(purchase_blocks).each (
+			function () {
+				this.style.display=(this.style.display == 'none') ? 'block' : 'none';
+				button.value=(this.style.display == 'none') ? "Показать":"Скрыть";
+			});
+	}
+	
+	function addproperties(propfield,catalog_id) {
+		if ($("input[name='properties[]']", propfield).length<4) 
+			$(propfield).append('<div><input type="text" name="properties[]" id="properties[]" onChange="addPropOptions(this);upd_cat('+catalog_id+')" value="Новая переменная"><label for="values[]"> значения </label><input type="text" name="values[]" id="values[]" value="Значение1;Значение2" onChange="upd_cat('+catalog_id+')"><a href="#" onclick="javascript:delproperties(this.parentNode,'+catalog_id+');return false;"> (убрать)</a></div>');
+		addPropOptions(propfield);
+	}
+	function delproperties(propfield,catalog_id) {
+		$(propfield).empty();
+		addPropOptions(propfield);
+		upd_cat(catalog_id);
+	}
+	function addPropOptions(propfield) {
+		purchase = $(propfield).parents("div.catalog");
+		var seriesfield = $("select", purchase);
+		var properties = $("input[name='properties[]']", purchase);
+		$(seriesfield).html('<option value="-1">не собирать</option>');
+		for (var i=0; i<properties.length; i++) {
+			if ($(properties).eq(i).val())
+				$(seriesfield).append('<option value="'+i+'">'+$(properties).eq(i).val()+'</option>');
+		}
+	}
+	function openpurchase(reserv_id){
+		$.ajax({
+			type : 'POST',
+			url : 'function.php?sid=',
+			data : {
+				'cmd': "openpurchase",
+				'reserv_id': reserv_id
+			},
+			// Function is called when an answer arrives. 
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				var ar = result.split(";");
+				var ok=ar[1];
+				if ("ok" == ok)
+				{
+					window.location='org.php?i=1&sid=';
+					purchases[reserv_id].status = 4;
+					purchases[reserv_id].status_start =ar[2];
+
+					make_purchas(purchases[reserv_id],reserv_id);
+					var status=false;
+					for (var catalog in purchases[reserv_id].catalog){
+						make_catalog(purchases[reserv_id].catalog[catalog],purchases[reserv_id].id,purchases[reserv_id].status);
+					}
+				}
+				else
+				{
+					alert("Произошла ошибка открыте закупки!\n" + errors);
+					// Write errors to the debug div.
+					document.getElementById("status").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	
+	function allorg(catalog_id){
+		$.ajax({
+			type : 'POST',
+			url : 'function.php?sid=',
+			data : {
+				'cmd': "allorg",
+				'catalog_id': catalog_id
+			},
+			// Function is called when an answer arrives. 
+			success : function(result, errors) 
+			{
+				var ar = result.split(";");
+				var ok=ar[1];
+				if ("ok" == ok)
+				{
+				}
+				else
+				{
+					alert("Произошла ошибка!\n");
+					// Write errors to the debug div.
+					document.getElementById("status").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	
+	function copypurchase(reserv_id,nw){
+		$.ajax({
+			type : 'POST',
+			url : 'function.php?sid=',
+			data : {
+				'cmd': "copypurchase",
+				'reserv_id': reserv_id,
+				'nw': nw
+			},
+			success : function(result, errors) 
+			{
+				var ar = result.split(";");
+				var ok=ar[1];
+				if ("ok" == ok)
+				{
+					window.location='org.php?i=1&sid=';
+				}
+				else
+				{
+					alert("Произошла ошибка копировании закупки!\n" + errors);
+					// Write errors to the debug div.
+					//document.getElementById("status").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	function purchase_arhiv(reserv_id){
+		$.ajax({
+			type : 'POST',
+			url : 'function.php?sid=',
+			data : {
+				'cmd': "purchase_arhiv",
+				'reserv_id': reserv_id,
+			},
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				var ar = result.split(";");
+				var ok=ar[1];
+				if ("ok" == ok)
+				{
+					window.location='org.php?i=1&sid=';
+				}
+				else
+				{
+					alert("Произошла ошибка перемешения в архив!\n" + errors);
+				}
+			}
+		}
+		);		
+	}
+	function upd_blur(id){
+		alert ('потеря фокуса');
+	}
+	function upd_cat2(id,elem,v){
+	//alert (v);
+	console.log('V:'+v);
+	//setTimeout(alert (document.getElementById(elem).value), 10000);
+	setTimeout(console.log ('getElementById:'+ document.getElementById(elem).value), 10000);
+	//alert (document.getElementById(elem).value);
+	 return true;
+	}
+
+	function upd_cat(id) {
+	//alert("upd_catalog");
+		var form = $("#catalog_"+id);
+		var options = {
+			url : "function.php?sid=",
+			target : "#status"
+		};
+		$(form).ajaxSubmit(options);
+	}
+
+	function add_catalog( id, purchase, status)
+	{
+		$.ajax({
+			type : 'POST',
+			url : 'function.php?sid=',
+			data : {
+				'cmd': "add_catalog",
+				'catalog_id': id,
+				'purchase_id': purchase
+			},
+			dataType: 'json',
+			// Function is called when an answer arrives. 
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				if ("ok" == result.status)
+				{
+					make_catalog(result.catalog,purchase, status);
+				}
+				else
+				{
+					alert("Произошла ошибка добавление каталога!\n" + errors);
+					// Write errors to the debug div.
+					document.getElementById("debug").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	
+	function del_catalog(id){
+		if (!confirm("Удаление каталога приведет также и к удалению товара и ссылающихся на них заказов.\nПродолжить?"))
+			return;
+		$.ajax({
+			type : 'POST',
+			url : 'function.php?sid=',
+			data : {
+				'cmd': "del_catalog",
+				'catalog_id': id
+			},
+			dataType: 'json',
+			// Function is called when an answer arrives. 
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				if ("ok" == result.status)
+				{
+					$($('div.catalog_'+id)).empty();
+				}
+				else
+				{
+					alert("Произошла ошибка удаления каталога!\n" + errors);
+					// Write errors to the debug div.
+					document.getElementById("debug").innerHTML = errors;
+				}
+			}
+		}
+		);		
+
+	}
+	
+	function make_catalog(catalog,purchase, status){
+		var html = "";
+
+		html+='<a name="catalog'+catalog.catalog_id+'"></a>';
+		html+='<div class="catalog_'+catalog.catalog_id+'">';
+		html+='	<div class="panel bg1">';
+		html+='		<div class="inner">';
+		html+='			<span class="corners-top"><span></span></span>';
+		html+='				<div class="catalog">';
+		html+='					<form id="catalog_'+catalog.catalog_id+'" method="post">';
+		html+='						<fieldset>';
+		html+='								<div align=right><input name="catalog_hide" id="catalog_hide" ';
+		if (catalog.hide==1) html+=' checked="checked"';
+		html+='								 onchange="upd_cat('+catalog.catalog_id+')" type="checkbox"> Скрыть ';
+		html+='								 | <input name="catalog_foruser" id="catalog_foruser" ';
+		if (catalog.foruser==1) html+=' checked="checked"';
+		html+='								 onchange="upd_cat('+catalog.catalog_id+')" type="checkbox"> возможно УЗам добавлять товар </div>';
+		html+=' 							<label for="catalog_name"><b>Каталог:</b> </label>'+catalog.catalog_id+'';
+		html+='							';
+		html+='							';
+		html+=' 							<br/><label for="catalog_name"><b>Название каталога:</b></label>';
+		html+='								<input type="text" name="catalog_name" id="catalog_name" value="'+esc_tags(catalog.name)+'" onchange="upd_cat('+catalog.catalog_id+')">';
+		html+='							';
+		html+='							';
+		html+=' 							<br/><label for="catalog_valuta"><b>Валюта:</b></label>';
+		html+='								<input type="text" name="catalog_valuta" id="catalog_valuta_'+catalog.catalog_id+'" value="'+catalog.valuta+'" onchange="upd_cat2('+catalog.catalog_id+',this.id,this.value)">';
+		html+=' 							<br/><label for="catalog_course"><b>Курс:</b></label>';
+		html+='								<input type="text" name="catalog_course" id="catalog_course" value="'+catalog.course+'" onchange="upd_cat('+catalog.catalog_id+')">';
+		html+='								<br/><label for="catalog_orgrate"><b>Орг %:</b></label></dt>';
+		html+='								<input type="text" name="catalog_orgrate" id="catalog_orgrate" value="'+catalog.orgrate+'" onchange="upd_cat('+catalog.catalog_id+')">';
+		html+='								<br/><a href="#" onclick="allorg('+catalog.catalog_id+');return!1;" class="button2">проставить орг по всем позициям</a>';
+		html+='							';
+		html+='							<dl>';
+		html+='								<dt style="width:100%"><label for="properties[]">Переменные (значения перечисляются через точку с запятой): </label></dt>';
+		html+='								<dd style="margin-left:30px">';
+		html+='									<div  id="propertiesfield">';
+		html+='										<div>';
+		html+='											<a href="#" onclick="javascript:addproperties(this.parentNode.parentNode,'+catalog.catalog_id+');return false;">(добавить)</a><br>';
+		html+='										</div>';
+
+		var vars = catalog.vars;
+		for (var v in vars)
+		{
+			html+='										<div>';
+			html+='											<input type="text" name="properties[]" id="properties[]" onChange="addPropOptions(this);upd_cat('+catalog.catalog_id+')" value="'+esc_tags(v)+'" >';
+			html+='											<label for="values[]"> значения </label>';
+			html+='											<input type="text" name="values[]" id="values[]" value="'+esc_tags(vars[v])+'" onChange="upd_cat('+catalog.catalog_id+')">';
+			html+='											<a href="#" onclick="javascript:delproperties(this.parentNode,'+catalog.catalog_id+');return false;"> (убрать)</a>';
+			html+='										</div>';
+		}
+		
+		html+='									</div>';
+		html+='								</dd>';
+		html+='							</dl>';
+		html+='							<dl>';
+		html+='								<dt style="width:100%"><label for="series[]">Собирать по ряду: </label></dt>';
+		html+='								<dd style="margin-left:30px">';
+		html+='									<div  id="seriesfield">';
+		html+='											<select name="series[]" id="series[]" onChange="upd_cat('+catalog.catalog_id+')">';
+		html+='												<option value="-1">не собирать</option>';
+		var i=0;
+		for (var v in vars){
+			html+='												<option value="'+i+'"';
+			if (v==catalog.catalog_bundle) 
+				html+=' selected';
+			html+='>'+v+'</option>';
+			i++;
+		}
+		html+='											</select>';
+		html+='									</div>';
+		html+='								</dd>';
+		html+='							</dl>';
+		html+='						</fieldset>';
+		html+='						<input type="hidden" value="upd_cat" name="cmd" id="cmd">';
+		html+='						<input type="hidden" value="'+catalog.catalog_id+'" name="catalog_id" id="catalog_id">';
+			html+='						<a href="./org.php?i=1&mode=edit&cat='+catalog.catalog_id+'&sid=" class="button2">Редактировать</a>';
+			html+='						<a href="javascript:del_catalog('+catalog.catalog_id+');" class="button2">Удалить</a>';
+		html+='					</form>';
+		html+='				</div>';
+		
+		html+='				<form action="uploadprice.php?sid=" method="post" enctype="multipart/form-data" accept="csv/plain" target="_blank">';
+		html+='					Импортировать данные в каталог из прайса (*.csv): ';
+		html+='					<input name="purchase_id" value="'+purchase+'" type="hidden">';
+		html+='					<input name="catalog_id" value="'+catalog.catalog_id+'" type="hidden">';
+		html+='					<input name="max_file_size" value="1048576" type="hidden">';
+		html+='					<input name="price" title="Укажите файл в формате *.csv (Используйте меню Файл -&gt; Сохранить как... в Excel)" type="file"><br>';
+		html+='					<label for="merge_col">Совмещать по:</label>';
+		html+='					<input name="merge_col" value="" title="объединять строчки прайса с одинаковым значением этого поля, например, название или артикул." id="merge_col" type="text">';
+		html+='					<input name="test" id="test" checked="checked" type="checkbox">';
+		html+='					<label for="test" title="Перед созданием каталога рекомендуется сделать тест. Если программа правильно интерпретировала ваш прайс - тогда уберите эту галочку и программа создаст каталог">тест</label>';
+		html+='					<input value="Импортировать" type="submit">';
+		html+='					<a href="">помощь</a>';
+		html+='				</form>';
+
+		html+='			<span class="corners-bottom"><span></span></span>';
+		html+='		</div>';
+		html+='	</div>';
+		html+='</div>';
+		var catalogs = $("div.catalogs_"+purchase);
+		$(catalogs).append(html);
+	}
+	
+	function make_purchas(purchas,reserv_id){
+		var html = "";
+
+
+		html+='	<DIV class="forabg" >';
+		html+='	<DIV class="inner" >';
+		html+='	<ul class="topiclist"><li class="header"><dl class="icon"><dd></dd></dl></li></ul>';
+		
+		html+='	<ul class="topiclist cplist pmlist"><li class="row bg1">';
+		html+='		<dl class="icon">';
+		html+='			<dd class="posts" style="width: 20%; text-align: center;">';
+		if (purchas.status==2){
+			html+='			<a href="javascript:purchases_add('+reserv_id+');" class="button2">Создать закупку</a>';
+		}else{
+			html+='			Текущая закупка';
+		}
+		html+='			</dd>';
+		html+='			<dd class="posts" style="width: 59%; text-align: center;"><h4 id="hname'+purchas.id+'"> № '+purchas.id+ '&nbsp;'+purchas.name+'</h4> '+purchas.brandname+'</dd>';
+		html+='			<dd class="posts" style="width: 20%; text-align: center;">';
+		if (purchas.status==2){
+			html+='			Бронь до '+purchas.request_end;
+		}else{
+			html+='			<input class="button2" type="button" id="b'+purchas.id+'" onclick="purchase_showhide('+purchas.id+');" value="Показать">';
+			if (purchas.status==6){
+				html+='			<input class="button2" type="button" id="a'+purchas.id+'" onclick="purchase_arhiv('+reserv_id+');" value="В архив">';
+			} else{
+				html+='			<input class="button2" type="button" hidden="hidden" id="a'+purchas.id+'" onclick="purchase_arhiv('+reserv_id+');" value="В архив">';
+			}
+		}
+		html+='			</dd>';
+		html+='		</dl>';
+		html+='	</li>';
+		if (purchas.status>2){
+			html+='	<li class="row bg1" >';
+			html+='	<div class="purchase'+purchas.id+' bg2" style="display:none;">';
+			html+='		<table style="width:950px;border:1px" >';
+			html+='			<tr>';
+			html+='				<td style="width:410px; text-align: center;vertical-align: top;">';
+			if (purchas.status!=3){
+				html+='				<a href="org.php?i=1&mode=otchet&p='+purchas.id+'&sid=" class="button2">Отчет по закупке</a>';
+				html+='					</br>';
+				html+='					<hr/>';
+				html+='Копирование закупки ';
+<!--				if ( purchas.purchase_admin_money != ""){ // Если Оргсбор не оплачен то копировать закупку нельзя -->
+					html+='					</br>';
+					html+='					</br>';
+<!--					html+='<a href="#" onclick="copypurchase('+reserv_id+',0);" class="button2">Копировать закупку</a><br/></a>';-->
+					html+='<a href="#" onclick="copypurchase('+reserv_id+',1);" class="button2">Копировать закупку c переносом новых заказов</a>';
+<!--				}-->
+<!--				else {-->
+<!--					html+='невозможно </br> пока нет отчислений на поддержку сайта</br>';-->
+<!--				}-->
+			}
+			html+='					<hr/>';
+			html+='					<form id="flogo_'+reserv_id+'" action="function.php?sid=" method="POST" class="purchase_'+purchas.id+'" enctype="multipart/form-data"><fieldset>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_open">Название:</label></dt>';
+			html+='							<dd>';
+				html+='								<input style="width:190px" type="text" name="name" id="name'+purchas.id+'" maxlength="255" value="'+esc_tags(purchas.name)+'" class="inputbox"  onChange="purchases_upd('+purchas.id+')">';
+			html+='							</dd>';
+			html+='						</dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt>&nbsp;</dt>';
+			html+='							<dd><a href = "'+purchas.purchase_url+'">Перейти в тему закупки</a></dd>';
+			html+='						</dl>';
+			html+='						<hr/>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="description"><b>Описание товара:</b><br/></label>';
+				html+='							<img src="images/icons/empty.png" id="img_'+reserv_id+'"/><br />';
+			html+='							<label for="brandlogo"><b>логотип бренда</b></label><br />';
+				html+='							<input size="1" id="button_'+reserv_id+'" name="userfile" onchange="add_logo('+purchas.brand_id+','+reserv_id+');" type="file">';
+			html+='							</dt>';
+			html+='							<dd>';
+				html+='						<textarea name="description" id="description" rows="6" cols="24" onChange="purchases_upd('+purchas.id+')">'+esc_tags(purchas.purchase_description)+'</textarea>';
+			html+='							</dd>';
+			html+='						</dl>';
+			html+='						<hr /><p>Условия закупки</p>';
+			for (var name in purchas.rules){
+				html+='						<dl class="purch_org">';
+				html+='							<dt><label>'+name+'</label></dt>';
+				html+='							<dd>';
+				html+='								<input type="hidden" name="rules[]"	id="rules[]" value="'+name+'">';
+				if (purchas.rules[name]==''){
+					html+='								<input type="text" name="values[]" id="values[]" maxlength="500" class="inputbox" style="width:190px" value="'+purchas.rules[name]+'" onChange="purchases_upd('+purchas.id+')">';
+				}else{
+					html+='								<input type="hidden" name="values[]" id="values[]" value="'+purchas.rules[name]+'">'+purchas.rules[name];
+				}
+				html+='							</dd>';
+				html+='						</dl>';
+			}
+			html+='						<hr /><p>Статус закупки</p>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_open">открыт до:</label></dt>';
+			html+='							<dd>';
+			html+='								<input type="hidden" name="status_open" id="status_open"  maxlength="255" value="'+purchas.request_end+'" class="inputbox" />';
+			html+='								<span style="width:100px">'+purchas.request_end+'</span>';
+			html+='							</dd>';
+			html+='						</dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_start">Старт:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_start'+purchas.id+'" name="status_start" value="'+purchas.status_start+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_start'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_fix">Фиксация:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_fix'+purchas.id+'" name="status_fix" value="'+purchas.status_fixed+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_fix'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_stop">Стоп:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_stop'+purchas.id+'" name="status_stop" value="'+purchas.status_stop+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_stop'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_reorder">Дозаказ:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_reorder'+purchas.id+'" name="status_reorder" value="'+purchas.status_reorder+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_reorder'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_billreciv">Счет получен:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_billreciv'+purchas.id+'" name="status_billreciv" value="'+purchas.status_billreciv+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_billreciv'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_payto">Оплата до:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_payto'+purchas.id+'" name="status_payto" value="'+purchas.status_payto+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_payto'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org"">';
+			html+='							<dt><label for="status_shipping">Отгрузка:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_shipping'+purchas.id+'" name="status_shipping" value="'+purchas.status_shipping+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_shipping'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='							<dl class="purch_org">';
+			html+='							<dt><label for="status_goodsreciv">Груз получен:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_goodsreciv'+purchas.id+'" name="status_goodsreciv" value="'+purchas.status_goodsreciv+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_goodsreciv'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_distribfrom">Раздача с:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_distribfrom'+purchas.id+'" name="status_distribfrom" value="'+purchas.status_distribfrom+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_distribfrom'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			
+			if (purchas.status>3){
+				html+='						<dl class="purch_org">';
+				html+='							<dt><label for="status_distribfrom">Закупка закрыта:</label></dt><dd>';
+				html+='							<input type="checkbox" id="status_end'+purchas.id+'" ';
+				if(purchas.status==6){
+				html+='							checked="checked" ';
+				}
+				html+='							 name="status_end" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='						</dd></dl>';
+			}
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_distribfrom">Оплата доставки в ЕЦ:</label></dt><dd>';
+			html+='							<input type="checkbox" id="delivery_to_ec'+purchas.id+'" ';
+				if(purchas.delivery_to_ec==1){
+			html+='							checked="checked" ';
+				}
+			html+='							 name="delivery_to_ec" onChange="purchases_upd('+purchas.id+')"/>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_distribfrom">Накладные в ЕЦ:</label></dt><dd>';
+			html+='							<input type="checkbox" id="nakl_to_ec'+purchas.id+'" ';
+				if(purchas.nakl_to_ec==1){
+			html+='							checked="checked" ';
+				}
+			html+='							 name="nakl_to_ec" onChange="purchases_upd('+purchas.id+')"/>';
+			html+='						</dd></dl>';
+			
+
+			html+='						<hr />';
+			if (purchas.status==3){
+				html+='				<a href="javascript:openpurchase('+reserv_id+')" class="button2">Открыть</a>';
+			html+='						<hr />';
+			}
+			html+='						';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="news"><b>Новости:</b></label></dt>';
+			html+='							<dd><textarea name="news" id="news"  rows="7" cols="24" onChange="purchases_upd('+purchas.id+')">'+purchas.news+'</textarea></dd>';
+			html+='						</dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="komad">Комментарии администрации:</label></dt>';
+			html+='							<dd>'+purchas.coment+'</dd>';
+			html+='						</dl>';
+			html+='						</fieldset>';
+			html+='						<input type="hidden" value="'+purchas.id+'" name="purchase_id" id="purchase_id">';
+			html+='						<input type="hidden" value="purchases_upd" name="cmd" id="cmd">';
+			html+='					';
+			html+='					</form>';
+			html+='				</td>';
+			html+='				<td style="vertical-align: top;">';
+			html+='					<div>';
+			html+='						<div id="status"></div>';
+			html+='						<a href="javascript:add_catalog(0,'+purchas.id+',true);" class="button2">Добавить каталог</a>';
+			html+='						<div class="catalogs_'+purchas.id+'">';
+			html+='						</div>';
+			html+='					</div>';
+			html+='				</td>';
+			html+='			</tr>';
+			html+='		</table>';
+			html+='	</div>';
+			html+='	</li>';
+		}
+		html+='	</ul><br></DIV>';
+		html+='	</DIV>';
+
+//		$($('#reserv_'+reserv_id)).append(html);
+		var d=document.getElementById('reserv_'+reserv_id).innerHTML = html;
+	}
+	function add_logo(brand_id,reserv_id){
+		var form = $("#flogo_"+reserv_id);
+		var options = {
+			url : 'uploadlogo.php?sid=',
+			data : {
+				brand_id :brand_id
+			},
+			success : function(result, errors) 
+			{
+						
+				var ar = result.split(";");
+				var ok=ar[1];
+
+				if ('ok' == ok)
+				{
+					$("#img_"+reserv_id).attr("src", ar[2]);
+				}
+				else
+				{
+					alert("Произошла ошибка при обновлении изображения!\n" + errors);
+					// Write errors to the debug div.
+				}
+			}
+		};
+		$(form).ajaxSubmit(options);
+
+	}
+	
+	function purchases_add(reserv_id){
+	alert (reserv_id);
+		$.ajax({
+			type : 'POST',
+			url : 'function.php?sid=',
+			data : {
+				'cmd': "purchases_add",
+				'reserv_id': reserv_id
+			},
+			dataType: 'json',
+			// Function is called when an answer arrives. 
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				if ("ok" == result['status'])
+				{
+					window.location='org.php?i=1&sid=';
+					purchases[reserv_id].id = result['purchase_id'];
+					purchases[reserv_id].rules = result.rules;
+					purchases[reserv_id].status = 3;
+
+					make_purchas(purchases[reserv_id],reserv_id);
+				}
+				else
+				{
+					alert("Произошла ошибка открытия закупки!\n" + errors);
+					// Write errors to the debug div.
+					document.getElementById("status").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	function purchases_upd(purchase_id){
+	//alert (document.getElementById("delivery_to_ec"+purchase_id).checked);
+		var form = $(".purchase_"+purchase_id);
+		var options = {
+			url : "function.php?sid=",
+			target : "#status"
+		};
+		$(form).ajaxSubmit(options);
+
+		document.getElementById("a"+purchase_id).hidden=!document.getElementById("a"+purchase_id).hidden;
+		document.getElementById("hname"+purchase_id).innerHTML = document.getElementById("name"+purchase_id).value;
+	}
+</SCRIPT>
+
+<div id="date_picker" style="display:none;position:absolute;top:0px;left:0px;z-index:1000;">
+		</div>
+<div id="status" class="status">
+</div>
+							
+<div class="reservs">
+</div>
+		
+			<SCRIPT language="Javascript">
+				var purchases = {"428":{
+					"id" : "",
+					"purchase_admin_money" : "",
+   					"brandname" : "Домашний текстиль / Трикотаж для взрослых",
+   					"name" : "",
+					"brand_id" : "298",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "",
+					"status_open" : "",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "05-06-2012",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "3",
+					"delivery_to_ec" :"",					
+					"nakl_to_ec" :"",					
+					"auth" : 1,
+					"rules":  {"": "","": "","": "","": "","": "","": "","": "","": "","": ""},"catalog":[]},"740":{
+					"id" : "669",
+					"purchase_admin_money" : "",
+   					"brandname" : "Demar / Детская обувь",
+   					"name" : "D*E*M*A*Rики - 4 - собираем заказ на резиновые сапоги и сноубутсы!!",
+					"brand_id" : "188",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/6599a0f6ca5a06bb28ef063f2bff8467.jpg",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "10 пар без рядов","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "Ец","другие условия": ""},"catalog":{"2288": { 
+							"catalog_id": "2288", 
+							"name": "Демар4ва", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "669", 
+							"vars":  {"размеры": ["20-21;22-23;24-25;26-27;28-29;30-31;32-33;34-35"]}}}},"920":{
+					"id" : "818",
+					"purchase_admin_money" : "",
+   					"brandname" : "Sve*teks - Домашний текстиль / Мужская и женская одежда",
+   					"name" : "Sve*teks - доступный домашний текстиль! - 5",
+					"brand_id" : "308",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/997664012b4fb69630d7337b7cf96c0f.jpg",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "30 000","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "1","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": "2"},"catalog":{"2730": { 
+							"catalog_id": "2730", 
+							"name": "Сорочки2", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2731": { 
+							"catalog_id": "2731", 
+							"name": "Пижамы", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2732": { 
+							"catalog_id": "2732", 
+							"name": "Халаты, платья, сарафаны", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2733": { 
+							"catalog_id": "2733", 
+							"name": "Туники, футболки, блузы", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2734": { 
+							"catalog_id": "2734", 
+							"name": "Костюмы, бриджи, шорты", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2735": { 
+							"catalog_id": "2735", 
+							"name": "Пижамы - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2736": { 
+							"catalog_id": "2736", 
+							"name": "Сорочки - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2737": { 
+							"catalog_id": "2737", 
+							"name": "Пеньюары - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"14470": { 
+							"catalog_id": "14470", 
+							"name": "Новый каталог Test", 
+							"orgrate": "10.00", 
+							"valuta": "ttt", 
+							"course": "45", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  []}}},"1529":{
+					"id" : "",
+					"purchase_admin_money" : "",
+   					"brandname" : "Детская одежда из Турции. / Детская одежда",
+   					"name" : "",
+					"brand_id" : "735",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "",
+					"status_open" : "",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "15-05-2013",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "3",
+					"delivery_to_ec" :"",					
+					"nakl_to_ec" :"",					
+					"auth" : 1,
+					"rules":  {"": "","": "","": "","": "","": "","": "","": "","": "","": ""},"catalog":{"2730": { 
+							"catalog_id": "2730", 
+							"name": "Сорочки2", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2731": { 
+							"catalog_id": "2731", 
+							"name": "Пижамы", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2732": { 
+							"catalog_id": "2732", 
+							"name": "Халаты, платья, сарафаны", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2733": { 
+							"catalog_id": "2733", 
+							"name": "Туники, футболки, блузы", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2734": { 
+							"catalog_id": "2734", 
+							"name": "Костюмы, бриджи, шорты", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2735": { 
+							"catalog_id": "2735", 
+							"name": "Пижамы - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2736": { 
+							"catalog_id": "2736", 
+							"name": "Сорочки - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"2737": { 
+							"catalog_id": "2737", 
+							"name": "Пеньюары - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"14470": { 
+							"catalog_id": "14470", 
+							"name": "Новый каталог Test", 
+							"orgrate": "10.00", 
+							"valuta": "ttt", 
+							"course": "45", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "818", 
+							"vars":  []}}},"2106":{
+					"id" : "1979",
+					"purchase_admin_money" : "",
+   					"brandname" : "Гло*рия Д*жинс + ТурциЯ / Детская одежда",
+   					"name" : "Гло*рия Д*жинс + ТурциЯ ",
+					"brand_id" : "932",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "01-09-2013",
+					"status_start" : "04-09-2013",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "01-09-2013",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "5000","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех+если наберем меньше 10000 доставку до Че тоже делим так 50% из орг.сбора,50%-пропорц-но м/у УЗ","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг сбор","раздачи": "ец","другие условия": ""},"catalog":{"7177": { 
+							"catalog_id": "7177", 
+							"name": "Гло*риря", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "1979", 
+							"vars":  {"размер": ["Значение1;Значение2"],"цвет": ["Значение1;Значение2"]}},"7178": { 
+							"catalog_id": "7178", 
+							"name": "турция", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "1979", 
+							"vars":  {"размер": ["Значение1;Значение2"],"цвет": ["Значение1;Значение2"]}}}},"2356":{
+					"id" : "2182",
+					"purchase_admin_money" : "",
+   					"brandname" : "ДетскаЯ одежда и Активный Отдых / Детская одежда",
+   					"name" : "Новая закупка",
+					"brand_id" : "1003",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "24-10-2013",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "","сбор товара рядами": "","орг %": "","транспортные расходы": "","риски и пересорт, брак": "","работа с ЧС и СС": "","форма оплаты штрафы": "","раздачи": "","другие условия": ""},"catalog":[]},"2472":{
+					"id" : "2264",
+					"purchase_admin_money" : "",
+   					"brandname" : "*v*-ba*by / Детская одежда",
+   					"name" : "\"V\" - BАВY - зима, осень,трикотаж,джинсы!! - 3",
+					"brand_id" : "344",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=57&t=6487",
+					"status_open" : "",
+					"status_start" : "23-10-2013",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/b302a5521ea63000d97a87e652cf0746.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "20 000","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ец","другие условия": ""},"catalog":{"8657": { 
+							"catalog_id": "8657", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "1", 
+							"foruser": "1", 
+							"purchase_id": "2264", 
+							"vars":  {"размер": ["Значение1;Значение2"],"цвет": ["Значение1;Значение2"]}},"8658": { 
+							"catalog_id": "8658", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "2264", 
+							"vars":  {"рвзмер": ["Значение1;Значение2"],"цвет": ["Значение1;Значение2"]}}}},"2887":{
+					"id" : "3083",
+					"purchase_admin_money" : "",
+   					"brandname" : "Женская одежда! / Мужская и женская одежда",
+   					"name" : "Филгранд (женская одежда)",
+					"brand_id" : "1184",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=59&t=7756",
+					"status_open" : "15-02-2014",
+					"status_start" : "21-03-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "15-02-2014",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "","сбор товара рядами": "","орг %": "","транспортные расходы": "","риски и пересорт, брак": "","работа с ЧС и СС": "","форма оплаты штрафы": "","раздачи": "","другие условия": ""},"catalog":{"12675": { 
+							"catalog_id": "12675", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3083", 
+							"vars":  []}}},"2891":{
+					"id" : "",
+					"purchase_admin_money" : "",
+   					"brandname" : "Белье и купальники от 130 руб! / Мужская и женская одежда",
+   					"name" : "",
+					"brand_id" : "1185",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "",
+					"status_open" : "",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "15-02-2013",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "2",
+					"delivery_to_ec" :"",					
+					"nakl_to_ec" :"",					
+					"auth" : 0,
+					"rules":  {"": "","": "","": "","": "","": "","": "","": "","": "","": ""},"catalog":{"12675": { 
+							"catalog_id": "12675", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3083", 
+							"vars":  []}}},"2953":{
+					"id" : "2686",
+					"purchase_admin_money" : "",
+   					"brandname" : "Колгото/мания / Детская одежда",
+   					"name" : "Колгото/мания-колготки и носки для всей семьи ДЕШЕВО! - 4",
+					"brand_id" : "952",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=57&t=7416",
+					"status_open" : "",
+					"status_start" : "09-02-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "28-05-2014",
+					"status_billreciv" : "28-05-2014",
+					"status_payto" : "31-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/49896b0875a7cb6896f1a8748780dab6.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "25000","сбор товара рядами": "да","орг %": "12+доставка до ТК на всех","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех+доставка до ТК на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% ОРГ.СБОР","раздачи": "ец","другие условия": "минимальная сумма заказа 200 руб"},"catalog":{"10614": { 
+							"catalog_id": "10614", 
+							"name": "Дети", 
+							"orgrate": "12.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "размер ", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "2686", 
+							"vars":  {"размер ": ["Значение1;Значение2"]}},"10615": { 
+							"catalog_id": "10615", 
+							"name": "Женские", 
+							"orgrate": "12.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "размер", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "2686", 
+							"vars":  {"размер": ["Значение1;Значение2"]}},"10616": { 
+							"catalog_id": "10616", 
+							"name": "мужские", 
+							"orgrate": "12.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "размер", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "2686", 
+							"vars":  {"размер": ["Значение1;Значение2"]}}}},"2986":{
+					"id" : "2717",
+					"purchase_admin_money" : "",
+   					"brandname" : "*Б*е*л*ф*а*к*с* - кHиги для наших деток / Книги и подарки",
+   					"name" : "*Б*е*л*ф*а*к*с* - кHиги для наших деток - 2",
+					"brand_id" : "942",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=73&t=7228",
+					"status_open" : "",
+					"status_start" : "21-01-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/80e2be4eaf0db28e7e0cd433f21e99e4.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "25 000","сбор товара рядами": "нет","орг %": "13+ТК на всех (примерно 2% от суммы заказа без %)","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг сбор","раздачи": "ец","другие условия": "есть книги по акции - возврату не подлежат"},"catalog":{"10768": { 
+							"catalog_id": "10768", 
+							"name": "книги", 
+							"orgrate": "14.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "2717", 
+							"vars":  []}}},"3031":{
+					"id" : "2983",
+					"purchase_admin_money" : "",
+   					"brandname" : "Все для Восточной, Мексиканской и Тайской кухни. / Продукты",
+   					"name" : "Все для Восточной, Мексиканской и Тайской кухни.",
+					"brand_id" : "1224",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=55&t=7605",
+					"status_open" : "05-03-2014",
+					"status_start" : "03-03-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "29-05-2014",
+					"status_payto" : "30-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "05-03-2014",
+   					"request_control" : "",
+					"logo" : "images/brands/b3bbad336becf02e0002da5e5e687bc8.png",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "7000","сбор товара рядами": "","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "нет","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг.сбор","раздачи": "ец","другие условия": "МИНИМАЛЬНАЯ СУММА ЗАКАЗА 150 РУБ"},"catalog":{"12158": { 
+							"catalog_id": "12158", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "2983", 
+							"vars":  []}}},"3149":{
+					"id" : "2874",
+					"purchase_admin_money" : "",
+   					"brandname" : "Мега-товары / Товары для дома. Другое",
+   					"name" : "МЕГА-ТОВАРЫ-6 для открытия",
+					"brand_id" : "689",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/9b0113ed822ec2b849c7a51e58401347.jpg",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "10 000","сбор товара рядами": "НЕТ","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": ""},"catalog":{"11572": { 
+							"catalog_id": "11572", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "2874", 
+							"vars":  []}}},"3223":{
+					"id" : "2941",
+					"purchase_admin_money" : "",
+   					"brandname" : "lamiavita - женская одежда / Мужская и женская одежда",
+   					"name" : "lamiavita - женская одежда - 5",
+					"brand_id" : "677",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=59&t=7550",
+					"status_open" : "",
+					"status_start" : "25-02-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/f9d79cd9eadb6d8e4c68e5ab58cfa50e.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10 000","сбор товара рядами": "НЕТ","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ец","другие условия": ""},"catalog":{"11936": { 
+							"catalog_id": "11936", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "2941", 
+							"vars":  {"размер": ["Значение1;Значение2"]}},"11937": { 
+							"catalog_id": "11937", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "2941", 
+							"vars":  {"размер": ["Значение1;Значение2"]}}}},"3330":{
+					"id" : "3047",
+					"purchase_admin_money" : "",
+   					"brandname" : "Пледы, покрывала и шторы / Товары для дома. Текстиль",
+   					"name" : "Пледы, покрывала и шторы неприлично дешево - 6 СОБИРАЕМ",
+					"brand_id" : "430",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=49&t=7708",
+					"status_open" : "",
+					"status_start" : "15-03-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/1c0ccd3de8b6eb9d6b5ebda5dd1e8008.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10 000 руб.","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "рисунок может не совпадать(было только с постельным)","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": "Девочки поменять не могу условия, но груз тяжелый, поэтому орг.сбор 14% + доставку делим на всех пропорционально сумме заказа"},"catalog":{"12457": { 
+							"catalog_id": "12457", 
+							"name": "каталог", 
+							"orgrate": "14.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3047", 
+							"vars":  []}}},"3376":{
+					"id" : "3084",
+					"purchase_admin_money" : "",
+   					"brandname" : "Женская одежда! / Мужская и женская одежда",
+   					"name" : "Филгранд (женская одежда)",
+					"brand_id" : "1184",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "21-03-2014",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "","сбор товара рядами": "","орг %": "","транспортные расходы": "","риски и пересорт, брак": "","работа с ЧС и СС": "","форма оплаты штрафы": "","раздачи": "","другие условия": ""},"catalog":{"12677": { 
+							"catalog_id": "12677", 
+							"name": "юбки,брюки", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3084", 
+							"vars":  {"размер": ["Значение1;Значение2"]}}}},"3458":{
+					"id" : "3204",
+					"purchase_admin_money" : "",
+   					"brandname" : "s*ta*sia - постельное белье / Товары для дома. Текстиль",
+   					"name" : "s*ta*sia - постельное белье",
+					"brand_id" : "1340",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "01-05-2014",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "01-05-2014",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "","сбор товара рядами": "","орг %": "","транспортные расходы": "","риски и пересорт, брак": "","работа с ЧС и СС": "","форма оплаты штрафы": "","раздачи": "","другие условия": ""},"catalog":{"13215": { 
+							"catalog_id": "13215", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3204", 
+							"vars":  []}}},"3459":{
+					"id" : "3169",
+					"purchase_admin_money" : "",
+   					"brandname" : "Rusya - ивановский трикотаж! / Мужская и женская одежда",
+   					"name" : "Rusya - ивановский трикотаж!",
+					"brand_id" : "1341",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=59&t=7911",
+					"status_open" : "01-05-2014",
+					"status_start" : "03-04-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "22-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "01-05-2014",
+   					"request_control" : "",
+					"logo" : "images/brands/440212f16622020599cbe6aab54b0cff.gif",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "7000","сбор товара рядами": "НЕТ","орг %": "13","транспортные расходы": "НА ВСЕХ","риски и пересорт, брак": "","работа с ЧС и СС": "100% ПРЕДОПЛАТА","форма оплаты штрафы": "20% ОРГ.СБОР","раздачи": "ЕЦ","другие условия": "минимальная сумма заказа 250 руб"},"catalog":{"13065": { 
+							"catalog_id": "13065", 
+							"name": "Домашние костюмы", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62;64;66;68;70"]}},"13067": { 
+							"catalog_id": "13067", 
+							"name": "Спортивные костюмы", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62"]}},"13068": { 
+							"catalog_id": "13068", 
+							"name": "Туники", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62;64;66;68;70"]}},"13069": { 
+							"catalog_id": "13069", 
+							"name": "Платья и Сарафаны", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62;64;66;68;70"]}},"13070": { 
+							"catalog_id": "13070", 
+							"name": "Халаты", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62;64;66;68;70"]}},"13071": { 
+							"catalog_id": "13071", 
+							"name": "Пижамы", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62;64;66;68;70"]}},"13072": { 
+							"catalog_id": "13072", 
+							"name": "Ночные сорочки", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62;64;66;68;70"]}},"13073": { 
+							"catalog_id": "13073", 
+							"name": "Толстовки и футболки", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62;64;66;68;70"]}},"13074": { 
+							"catalog_id": "13074", 
+							"name": "Детское", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62;64;66;68;70"]}},"13075": { 
+							"catalog_id": "13075", 
+							"name": "Трусы", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58;60;62"]}},"13076": { 
+							"catalog_id": "13076", 
+							"name": "Брюки и лосины", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3169", 
+							"vars":  {"размер": ["48;50;52;54;56;58;"]}}}},"3572":{
+					"id" : "3269",
+					"purchase_admin_money" : "",
+   					"brandname" : "Шик -блеск от Swarovski / Украшения и бижутерия",
+   					"name" : "Шик -блеск от Swarovski - 10",
+					"brand_id" : "424",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=75&t=8105",
+					"status_open" : "",
+					"status_start" : "21-04-2014",
+					"status_fixed" : "",
+					"status_stop" : "30-04-2014",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/0d415a7229e77356f35a14efbb47e577.jpg",
+					"status" : "5",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "14 000","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "минимальная сумма заказа 200 руб","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": " 20% орг.сбор","раздачи": "ец","другие условия": ""},"catalog":{"13470": { 
+							"catalog_id": "13470", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3269", 
+							"vars":  []},"13471": { 
+							"catalog_id": "13471", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3269", 
+							"vars":  []},"13472": { 
+							"catalog_id": "13472", 
+							"name": "январь 2014", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3269", 
+							"vars":  {"размер кольца": ["Значение1;Значение2"]}},"13473": { 
+							"catalog_id": "13473", 
+							"name": "март 2014", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3269", 
+							"vars":  {"размер кольца": ["Значение1;Значение2"],"цвет": ["Значение1;Значение2"]}},"13474": { 
+							"catalog_id": "13474", 
+							"name": "апрель 2014", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3269", 
+							"vars":  {"размер кольца": ["Значение1;Значение2"],"цвет": ["Значение1;Значение2"]}}}},"3580":{
+					"id" : "3278",
+					"purchase_admin_money" : "",
+   					"brandname" : "Мега-товары / Товары для дома. Другое",
+   					"name" : "МЕГА-ТОВАРЫ - 9 ЕДУТ",
+					"brand_id" : "689",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=54&t=8136",
+					"status_open" : "",
+					"status_start" : "22-04-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "05-05-2014",
+					"status_payto" : "07-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/9b0113ed822ec2b849c7a51e58401347.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10 000","сбор товара рядами": "НЕТ","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": "МИНИМАЛЬНАЯ СУММА ЗАКАЗА 150 РУБ"},"catalog":{"13497": { 
+							"catalog_id": "13497", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3278", 
+							"vars":  []}}},"3587":{
+					"id" : "3285",
+					"purchase_admin_money" : "",
+   					"brandname" : "О*ли*ви сумки и аксессуары / Галантерея",
+   					"name" : "Классные сумки до 1000 руб! - 3 ОПЛАТА",
+					"brand_id" : "1124",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=56&t=8149",
+					"status_open" : "",
+					"status_start" : "23-04-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "15-05-2014",
+					"status_payto" : "17-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/09d9967a6035608a156027ab781e0cbb.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "15 000","сбор товара рядами": "нет","орг %": "13+доставка на всех","транспортные расходы": "доставку делим на всех","риски и пересорт, брак": "","работа с ЧС и СС": "нет","форма оплаты штрафы": "20% орг сбор","раздачи": "ец","другие условия": ""},"catalog":{"13507": { 
+							"catalog_id": "13507", 
+							"name": "Женские сумки", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3285", 
+							"vars":  {"цвет": ["Значение1;Значение2"]}}}},"3590":{
+					"id" : "3289",
+					"purchase_admin_money" : "",
+   					"brandname" : "Виктория - ПОСТЕЛЬНОЕ БЕЛЬЁ, МАХРОВЫЕ ПОЛОТЕНЦА. / Товары для дома. Текстиль",
+   					"name" : "Виктория - ПОСТЕЛЬНОЕ БЕЛЬЁ, МАХРОВЫЕ ПОЛОТЕНЦА - 2",
+					"brand_id" : "1307",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=49&t=8162",
+					"status_open" : "",
+					"status_start" : "24-04-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "13-05-2014",
+					"status_billreciv" : "14-05-2014",
+					"status_payto" : "16-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/0174fb651287e22e0a138ae463569ae9.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10 000","сбор товара рядами": "нет","орг %": "13","транспортные расходы": "делим на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг.сбор и ЧС","раздачи": "ец","другие условия": "минимальная сумма заказа 200 руб"},"catalog":{"13530": { 
+							"catalog_id": "13530", 
+							"name": "Поплин 3D", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13531": { 
+							"catalog_id": "13531", 
+							"name": "КПБ ПОПЛИН ", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13532": { 
+							"catalog_id": "13532", 
+							"name": "САТИН", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13533": { 
+							"catalog_id": "13533", 
+							"name": "ШЕЛК 3D + ПОПЛИН", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13534": { 
+							"catalog_id": "13534", 
+							"name": "ПОЛИКОТТОН", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13535": { 
+							"catalog_id": "13535", 
+							"name": "ЗИМА-ЛЕТО", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13536": { 
+							"catalog_id": "13536", 
+							"name": "Наперники", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13537": { 
+							"catalog_id": "13537", 
+							"name": "ПОЛОТЕЦА МАХРОВЫЕ ИВАНОВО", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13538": { 
+							"catalog_id": "13538", 
+							"name": "ПЛЕД", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}},"13539": { 
+							"catalog_id": "13539", 
+							"name": "САТИН 3D", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3289", 
+							"vars":  {"расцветка": ["Значение1;Значение2"]}}}},"3591":{
+					"id" : "3290",
+					"purchase_admin_money" : "",
+   					"brandname" : "Яблочные платья / Мужская и женская одежда",
+   					"name" : "Яблочный стиль - 8 РАСПРОДАЖА+НОВИНКИ",
+					"brand_id" : "341",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=59&t=8163",
+					"status_open" : "",
+					"status_start" : "24-04-2014",
+					"status_fixed" : "",
+					"status_stop" : "19-05-2014",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/8e43367e907b1c9b88ac617c530332ab.jpg",
+					"status" : "5",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10 000 руб.","сбор товара рядами": "нет","орг %": "13","транспортные расходы": "делим на всех","риски и пересорт, брак": "","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ец","другие условия": ""},"catalog":{"13540": { 
+							"catalog_id": "13540", 
+							"name": "Мечтатели - распродажа! ", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3290", 
+							"vars":  {"РАЗМЕР": ["Значение1;Значение2"]}},"13541": { 
+							"catalog_id": "13541", 
+							"name": "ОСЕНЬ-ЗИМА 2013 \"ПРОГУЛКА ПО МАНХЭТТЕНУ\"", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3290", 
+							"vars":  {"РАЗМЕР": ["42;44;46;48;50"]}},"13542": { 
+							"catalog_id": "13542", 
+							"name": "ДЖИНСОВАЯ КОЛЛЕКЦИЯ \"ЦВЕТОЧНЫЙ КАЛЕЙДОСКОП\"", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3290", 
+							"vars":  {"РАЗМЕР": ["42;44;46;48;50"]}},"13543": { 
+							"catalog_id": "13543", 
+							"name": "РАСПРОДАЖА 1", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3290", 
+							"vars":  {"РАЗМЕР": ["42;44;46;48;50"]}},"13544": { 
+							"catalog_id": "13544", 
+							"name": "\"Завтрак у Тиффани\" - Весна-Лето 2014", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3290", 
+							"vars":  {"РАЗМЕР": ["42;44;46;48;50"]}},"13545": { 
+							"catalog_id": "13545", 
+							"name": "Акция - КУПИ ПО 500 рублей", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3290", 
+							"vars":  {"РАЗМЕР": ["Значение1;Значение2"]}},"13546": { 
+							"catalog_id": "13546", 
+							"name": "РАСПРОДАЖА (ДОБАВЛЯЕМ САМИ ИЛИ ПИШЕМ В ТЕМЕ)", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3290", 
+							"vars":  {"РАЗМЕР": ["Значение1;Значение2"]}},"13547": { 
+							"catalog_id": "13547", 
+							"name": "Лето 2014 - Морской бриз ", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3290", 
+							"vars":  {"РАЗМЕР": ["Значение1;Значение2"]}}}},"3593":{
+					"id" : "3291",
+					"purchase_admin_money" : "",
+   					"brandname" : "Натуральные продукты / Продукты",
+   					"name" : "Б//е//л//O//е  д//e//р//e//B//o - Натуральные продукты, диабетическое и диетическое питание. Орехи, мюсли, фрутилады, виталады - 5",
+					"brand_id" : "244",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=55&t=8165",
+					"status_open" : "",
+					"status_start" : "24-04-2014",
+					"status_fixed" : "",
+					"status_stop" : "20-05-2014",
+					"status_reorder" : "",
+					"status_billreciv" : "08-05-2014",
+					"status_payto" : "12-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/6048a78cf3df7ad1dacae1442785d1c0.jpg",
+					"status" : "5",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "1000","сбор товара рядами": "нет","орг %": "12","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "нет","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": "минимальная сумма заказа 100 руб"},"catalog":{"13548": { 
+							"catalog_id": "13548", 
+							"name": "Каталог", 
+							"orgrate": "12.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3291", 
+							"vars":  []}}},"3614":{
+					"id" : "3315",
+					"purchase_admin_money" : "",
+   					"brandname" : "Sve*teks - Домашний текстиль / Мужская и женская одежда",
+   					"name" : "Sve*teks - доступный домашний текстиль! - 10",
+					"brand_id" : "308",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=59&t=8215",
+					"status_open" : "",
+					"status_start" : "28-04-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "20-05-2014",
+					"status_payto" : "22-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/997664012b4fb69630d7337b7cf96c0f.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "30 000","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "по цвету может быть","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": ""},"catalog":{"13635": { 
+							"catalog_id": "13635", 
+							"name": "Сорочки", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3315", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"13636": { 
+							"catalog_id": "13636", 
+							"name": "Пижамы", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3315", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"13637": { 
+							"catalog_id": "13637", 
+							"name": "Халаты, платья, сарафаны", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3315", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"13638": { 
+							"catalog_id": "13638", 
+							"name": "Туники, футболки, блузы", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3315", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"13639": { 
+							"catalog_id": "13639", 
+							"name": "Костюмы, бриджи, шорты", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3315", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"13640": { 
+							"catalog_id": "13640", 
+							"name": "Пижамы - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3315", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"13641": { 
+							"catalog_id": "13641", 
+							"name": "Сорочки - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3315", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}},"13642": { 
+							"catalog_id": "13642", 
+							"name": "Пеньюары - батист", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3315", 
+							"vars":  {"Новая переменная": ["40;42;44;46;48;50;52;54"]}}}},"3627":{
+					"id" : "3326",
+					"purchase_admin_money" : "",
+   					"brandname" : "Лимонтишон / Мужская и женская одежда",
+   					"name" : "Лимонти 5",
+					"brand_id" : "1381",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=59&t=8254",
+					"status_open" : "",
+					"status_start" : "01-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "13-05-2014",
+					"status_reorder" : "12-05-2014",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/1a385cb7fc14bc9ca40addf78f740c52.jpg",
+					"status" : "5",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "5000","сбор товара рядами": "НЕТ","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех + если соберем меньше 20тыс. - доставка до ТК 300 руб - на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг сбор/ЧС","раздачи": "ец","другие условия": "минимальная сумма заказа 200 руб"},"catalog":{"13704": { 
+							"catalog_id": "13704", 
+							"name": "АПРЕЛЬ 2014 наличие проверяем на сайте!!!)", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3326", 
+							"vars":  {"РАЗМЕР": ["Значение1;Значение2"]}},"13705": { 
+							"catalog_id": "13705", 
+							"name": "Май 2014", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3326", 
+							"vars":  {"размер": ["Значение1;Значение2"],"цвет": ["Значение1;Значение2"]}}}},"3657":{
+					"id" : "3353",
+					"purchase_admin_money" : "",
+   					"brandname" : "Обувь деткам!!! без рядов / Детская обувь",
+   					"name" : "Обувь деткам! Все сезоны!! - 3",
+					"brand_id" : "960",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=58&t=8305",
+					"status_open" : "",
+					"status_start" : "06-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/c482f7ef3ee5214ee91c4d6c8da8891a.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "7000","сбор товара рядами": "нет","орг %": "13","транспортные расходы": "доставку делим на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг.сбор","раздачи": "ец","другие условия": ""},"catalog":{"13795": { 
+							"catalog_id": "13795", 
+							"name": "Новый каталог", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "1", 
+							"foruser": "1", 
+							"purchase_id": "3353", 
+							"vars":  {"РАЗМЕР": ["Значение1;Значение2"]}},"13796": { 
+							"catalog_id": "13796", 
+							"name": "Обувь", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3353", 
+							"vars":  {"размер": ["Значение1;Значение2"]}}}},"3664":{
+					"id" : "3364",
+					"purchase_admin_money" : "",
+   					"brandname" : "Хочу платье!! / Мужская и женская одежда",
+   					"name" : "Хочу платье!! - 2 НОВИНКИ!",
+					"brand_id" : "1304",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=59&t=8339",
+					"status_open" : "",
+					"status_start" : "10-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/045707c39278890d530a35d7c51b56e7.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10 000","сбор товара рядами": "нет","орг %": "13","транспортные расходы": "на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг.сбор","раздачи": "ец","другие условия": ""},"catalog":{"13847": { 
+							"catalog_id": "13847", 
+							"name": "Платья, блузы", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3364", 
+							"vars":  {"размер": ["42;44;46;48"]}},"13848": { 
+							"catalog_id": "13848", 
+							"name": "Коктейльные платья (заполняю по запросу)", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3364", 
+							"vars":  {"размер": ["42;44;46;48"]}}}},"3667":{
+					"id" : "3389",
+					"purchase_admin_money" : "",
+   					"brandname" : "Ваш стиль - женская одежда от 220 руб!! / Мужская и женская одежда",
+   					"name" : "Ваш стиль - женская одежда от 200 руб!!",
+					"brand_id" : "1402",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=59&t=8407",
+					"status_open" : "30-06-2014",
+					"status_start" : "15-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "30-06-2014",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10 000","сбор товара рядами": "нет","орг %": "13","транспортные расходы": "на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг сбор и ЧС","раздачи": "ец","другие условия": ""},"catalog":{"14060": { 
+							"catalog_id": "14060", 
+							"name": "каталог", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3389", 
+							"vars":  {"размер": ["40;42;44;46;48;50;52;54;56;58"]}}}},"3678":{
+					"id" : "3375",
+					"purchase_admin_money" : "",
+   					"brandname" : "Знатекс - постельное белье!!! / Товары для дома. Текстиль",
+   					"name" : "Знатекс - постельное белье!! - 5 быстрая",
+					"brand_id" : "510",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=49&t=8470",
+					"status_open" : "",
+					"status_start" : "21-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "01-06-2014",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/52f154891e5aec0e170f358b13eecbaf.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "30 000","сбор товара рядами": "нет","орг %": "15%","транспортные расходы": "+ доставку делим на всех пропорционально заказу","риски и пересорт, брак": "нет","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ец","другие условия": ""},"catalog":{"13950": { 
+							"catalog_id": "13950", 
+							"name": "Простыни на резинке", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3375", 
+							"vars":  []},"13951": { 
+							"catalog_id": "13951", 
+							"name": "Прочее", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3375", 
+							"vars":  []},"13952": { 
+							"catalog_id": "13952", 
+							"name": "КПБ", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3375", 
+							"vars":  {"размер": ["Значение1;Значение2"]}},"14197": { 
+							"catalog_id": "14197", 
+							"name": "Одеяла,подушки,покрывала,наматрацники", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3375", 
+							"vars":  {"размер": ["Значение1;Значение2"]}}}},"3688":{
+					"id" : "3385",
+					"purchase_admin_money" : "",
+   					"brandname" : "Мега-товары / Товары для дома. Другое",
+   					"name" : "МЕГА-ТОВАРЫ - 10 СТОП",
+					"brand_id" : "689",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=54&t=8381",
+					"status_open" : "",
+					"status_start" : "13-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "29-05-2014",
+					"status_reorder" : "29-05-2014",
+					"status_billreciv" : "29-05-2014",
+					"status_payto" : "01-06-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/9b0113ed822ec2b849c7a51e58401347.jpg",
+					"status" : "5",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10 000","сбор товара рядами": "НЕТ","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": "МИНИМАЛЬНАЯ СУММА ЗАКАЗА 150 РУБ"},"catalog":{"14036": { 
+							"catalog_id": "14036", 
+							"name": "Новый каталог", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3385", 
+							"vars":  []}}},"3696":{
+					"id" : "3421",
+					"purchase_admin_money" : "",
+   					"brandname" : "Солнечная одежда для детей / Детская одежда",
+   					"name" : "Солнечная одежда для детей",
+					"brand_id" : "1405",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=57&t=8449",
+					"status_open" : "15-06-2014",
+					"status_start" : "19-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "27-05-2014",
+					"status_payto" : "29-05-2014",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "15-06-2014",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "10000","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг.сбор и ЧС","раздачи": "ец","другие условия": "минимальная сумма заказа 250 руб"},"catalog":{"14171": { 
+							"catalog_id": "14171", 
+							"name": "Девочки", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3421", 
+							"vars":  {"размер": ["86-92; 98-104; 110-116; 122-128; 134-140"]}},"14173": { 
+							"catalog_id": "14173", 
+							"name": "Мальчики", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3421", 
+							"vars":  {"размер": ["86-92; 98-104; 110-116; 122-128; 134-140"]}}}},"3703":{
+					"id" : "3403",
+					"purchase_admin_money" : "",
+   					"brandname" : "Обувь по низким ценам! / Мужская и женская обувь",
+   					"name" : "Мужская и женская обувь! ",
+					"brand_id" : "979",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=60&t=8409",
+					"status_open" : "",
+					"status_start" : "15-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/f08ba6c63bd93fbe6b92a2ecee844710.png",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "15 000","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг.сбор","раздачи": "ец","другие условия": ""},"catalog":{"14111": { 
+							"catalog_id": "14111", 
+							"name": "Женские", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3403", 
+							"vars":  {"Новая переменная": ["35;36"]}},"14112": { 
+							"catalog_id": "14112", 
+							"name": "Мужская", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3403", 
+							"vars":  {"размер": ["Значение1;Значение2"]}}}},"3728":{
+					"id" : "3479",
+					"purchase_admin_money" : "",
+   					"brandname" : "Волтекс - вязаный трикотаж почти бесплатно) / Мужская и женская одежда",
+   					"name" : "Волтекс - вязаный трикотаж почти бесплатно)",
+					"brand_id" : "1415",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "30-06-2014",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "30-06-2014",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "10000","сбор товара рядами": "нет","орг %": "14","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "","работа с ЧС и СС": "100% предоплата","форма оплаты штрафы": "20% орг.сбор и ЧС","раздачи": "ЕЦ","другие условия": ""},"catalog":{"14450": { 
+							"catalog_id": "14450", 
+							"name": "1111111111111", 
+							"orgrate": "15.00", 
+							"valuta": "xd0xa0xd0x", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3479", 
+							"vars":  []}}},"3777":{
+					"id" : "3480",
+					"purchase_admin_money" : "",
+   					"brandname" : "RooModa - одежда и обувь для всей семьи! / Мужская и женская одежда",
+   					"name" : "RooModa - одежда и обувь для всей семьи! ДЕШЕВО!",
+					"brand_id" : "1431",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "30-06-2014",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "30-06-2014",
+   					"request_control" : "",
+					"logo" : "",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "","сбор товара рядами": "","орг %": "","транспортные расходы": "","риски и пересорт, брак": "","работа с ЧС и СС": "","форма оплаты штрафы": "","раздачи": "","другие условия": ""},"catalog":{"14429": { 
+							"catalog_id": "14429", 
+							"name": "ЖЕНСКИЙ", 
+							"orgrate": "13.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3480", 
+							"vars":  []},"14430": { 
+							"catalog_id": "14430", 
+							"name": "Новый каталог", 
+							"orgrate": "14.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "0", 
+							"foruser": "0", 
+							"purchase_id": "3480", 
+							"vars":  {"о": ["Значение1;Значение2"]}}}},"3785":{
+					"id" : "3472",
+					"purchase_admin_money" : "",
+   					"brandname" : "Натуральные продукты / Продукты",
+   					"name" : "Б//е//л//O//е  д//e//р//e//B//o - Натуральные продукты, диабетическое и диетическое питание. Орехи, мюсли, фрутилады, виталады - 6",
+					"brand_id" : "244",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "viewtopic.php?f=55&t=8548",
+					"status_open" : "",
+					"status_start" : "27-05-2014",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/6048a78cf3df7ad1dacae1442785d1c0.jpg",
+					"status" : "4",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 0,
+					"rules":  {"минимальная партия заказа": "1000","сбор товара рядами": "нет","орг %": "12","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех","риски и пересорт, брак": "нет","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": "мин.сумма заказа 150 руб"},"catalog":{"14388": { 
+							"catalog_id": "14388", 
+							"name": "Каталог", 
+							"orgrate": "12.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "ряд", 
+							"hide": "0", 
+							"foruser": "1", 
+							"purchase_id": "3472", 
+							"vars":  {"ряд": ["*"]}}}},"3802":{
+					"id" : "3487",
+					"purchase_admin_money" : "",
+   					"brandname" : "ona*tej - одежда для модниц-интеллектуалок / Мужская и женская одежда",
+   					"name" : "o*na*tej - краси*вущие платья! - 5 РАСПРОДАЖА",
+					"brand_id" : "312",
+					"purchase_description" : "",
+					"brand_url" : "",
+					"purchase_url" : "...",
+					"status_open" : "",
+					"status_start" : "",
+					"status_fixed" : "",
+					"status_stop" : "",
+					"status_reorder" : "",
+					"status_billreciv" : "",
+					"status_payto" : "",
+					"status_shipping" : "",
+					"status_goodsreciv" : "",
+					"status_distribfrom" : "",
+					"news" : "",
+					"coment" : "",
+  					"request_end" : "",
+   					"request_control" : "",
+					"logo" : "images/brands/dab34ee935f6e9c21c2d044cfedcefba.jpg",
+					"status" : "3",
+					"delivery_to_ec" :"0",					
+					"nakl_to_ec" :"0",					
+					"auth" : 1,
+					"rules":  {"минимальная партия заказа": "10 000 руб.","сбор товара рядами": "нет","орг %": "15","транспортные расходы": "доставка из Челябинска до Магнитогорска делится на всех + доставка до ТК ( 500 руб) делим на всех пропорционально сумме заказа","риски и пересорт, брак": "нет","работа с ЧС и СС": "предоплата 100%","форма оплаты штрафы": "20% орг.сбор","раздачи": "ЕЦ","другие условия": ""},"catalog":{"14455": { 
+							"catalog_id": "14455", 
+							"name": "РАЗМЕРЫ 40-50 (цены со скидкой)", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "1", 
+							"foruser": "0", 
+							"purchase_id": "3487", 
+							"vars":  {"Размер": ["40;42;44;46;48;50"]}},"14456": { 
+							"catalog_id": "14456", 
+							"name": "МАЙ 2014", 
+							"orgrate": "15.00", 
+							"valuta": "РУБ", 
+							"course": "1", 
+							"catalog_bundle": "-1", 
+							"hide": "1", 
+							"foruser": "0", 
+							"purchase_id": "3487", 
+							"vars":  {"РАЗМЕР": ["40;42;44;46;48;50"]}}}}};
+				for (var reserv_id in purchases){
+					$($('div.reservs')).append('<div  id="reserv_'+reserv_id+'">');
+					$($('div.reservs')).append('</div>');
+					make_purchas(purchases[reserv_id],reserv_id);
+					if (purchases[reserv_id].status==3){
+						var status=true;
+					}else{
+						var status=false;
+					}
+					for (var catalog in purchases[reserv_id].catalog){
+						make_catalog(purchases[reserv_id].catalog[catalog],purchases[reserv_id].id,purchases[reserv_id]['status']);
+					}
+				}
+				var pur = 0;
+				
+				var cat = 0;
+				if (pur>0){
+					purchase_showhide(pur);
+				}
+				if (cat>0){
+					window.location.hash = 'catalog'+cat+'&sid=';
+				}
+//						
+			</SCRIPT>
+
+
+   <span class="corners-bottom"><span></span></span></div>
+</div>
+</div>
+<div id="page-footer">
+
+	<div class="navbar">
+		<div class="inner"><span class="corners-top"><span></span></span>
+
+		<ul class="linklist">
+			<li class="icon-home"><a href="./" accesskey="h">Совместные покупки</a></li>
+				
+			<li class="rightside"><a href="./memberlist.php?mode=leaders">Наша команда</a> &bull; <a href="./ucp.php?mode=delete_cookies">Удалить cookies конференции</a> &bull; Часовой пояс: UTC + 5 часов [ Летнее время ]</li>
+		</ul>
+
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+<center>
+<br>
+<!-- Yandex.Metrika informer -->
+<a href="http://metrika.yandex.ru/stat/?id=9405697&amp;from=informer"
+target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/9405697/3_0_FFFFFFFF_FAF0E6FF_0_pageviews"
+style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:9405697,type:0,lang:'ru'});return false}catch(e){}"/></a>
+<!-- /Yandex.Metrika informer --><!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function (d, w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter9405697 = new Ya.Metrika({id:9405697, enableAll: true});
+        } catch(e) { }
+    });
+    
+    var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f);
+    } else { f(); }
+})(document, window, "yandex_metrika_callbacks");
+
+// высота 
+function getClientHeight(){ 
+	var obj = document.getElementById("h1");
+	var x=0, y=0;
+
+	while(obj) 
+	{
+	y = y + parseInt(elem.offsetTop);
+	x = x + parseInt(elem.offsetLeft);
+	obj = obj.offsetParent;
+	}
+	alert (y);
+  //alert (document.compatMode=='CSS1Compat' && !window.opera?document.documentElement.clientHeight:document.body.clientHeight); 
+}
+</script>
+<noscript><div><img src="//mc.yandex.ru/watch/9405697" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</center>
+
+	<div class="copyright">
+
+	Powered by <a href="http://www.phpbb.com/">phpBB</a> &copy; 2000, 2002, 2005, 2007 phpBB Group
+		<br /><a href='http://www.phpbbguru.net/'>Русская поддержка phpBB</a><br />Time : 0.051s | 46 Queries | GZIP : On
+	</div>
+
+</div>
+
+</div>
+
+</td>
+</tr>
+</table>
+
+<div>
+	<a id="bottom" name="bottom" accesskey="z"></a>
+	
+</div>
+
+
+
+
+</div>
+</div>
+<div id="height" >
+	<input type="button"  value="Размер" onclick="getH()">
+</div>
+<script>
+function getH(){ 
+	alert(document.getElementById('height').offsetTop);
+	}
+</script>
+
+</body>
+
+</html>

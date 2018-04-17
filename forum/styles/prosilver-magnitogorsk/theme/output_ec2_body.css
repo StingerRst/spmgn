@@ -1,0 +1,63 @@
+html {height:100%;}
+body {
+	height:100%;
+	display: block;
+	margin: 8px;
+	font-size: 20pt;
+	background:#F6FCF2;
+}
+.err {background:red}
+.set {background:green}
+.unset {background:blue}
+.uname {
+	font-size: 20pt;
+}
+.theader {
+	position:fixed;
+	background:#F6FCF2;
+	width:Calc(100% - 16px);
+	z-index: 4;
+	padding-top: 8px;
+	top: 0;
+}
+
+
+input{
+	width:100%;
+	text-align: center;
+}
+label {
+    width: 32px;
+    height: 32px;
+    display: block;
+    position: relative;
+   }
+   input[type="checkbox"] + span {
+    position: absolute;
+    left: 0; top: -14;
+    width: 64px;
+    height: 64px;
+    background: url(images/icons/switch64.png) no-repeat;
+    cursor: pointer;
+   }
+   input[type="checkbox"]:checked + span {
+    background-position: 0 -64px; 
+   }
+   p{margin-bottom: 0em;}
+  .table { display: table; width:100%;border-collapse: collapse;}
+  .caption { display: table-caption; }
+  .colgroup { display: table-column-group; }
+  .col { display: table-column;}
+  .thead { display: table-header-group; background:#ccc; }
+  .tfoot { display: table-footer-group; background:#ccc; }
+  .tbody { display: table-row-group; }
+  .tr { display: table-row;}
+  .td { display: table-cell; border: 1px #cfcf95 solid; vertical-align:middle ;padding-left: 5px;}
+  .center { text-align: center;}
+  .noborder {border:none;}
+  .s {border: 2px black solid}
+  .alt {background-color:#d1feb4;}
+  .over {background-color:#F6F4D0 !important;} 
+  .some{cursor:wait !important;}
+
+

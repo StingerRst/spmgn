@@ -1,0 +1,643 @@
+ /*
+ * @author ThemeRox http://www.themerox.com
+ * @copyright Copyright (C) 2007 - 2013 ThemeRox
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
+ *
+ * Gantry uses the Joomla Framework (http://www.joomla.org), a GNU/GPLv2 content management system
+ *
+ */
+.headroom {
+    transition: transform 200ms linear;
+}
+.headroom--pinned {
+    transform: translateY(0%);
+}
+
+.headroom--unpinned {
+    transform: translateY(-100%);
+}
+
+.gf-menu.l1 li:nth-child(1){background:#e99a1e;}
+.gf-menu.l1 li:nth-child(2){background:#b01a40;}
+.gf-menu.l1 li:nth-child(3){background:#46aa1f;}
+.gf-menu.l1 li:nth-child(4){background:#408afa;}
+.gf-menu.l1 li:nth-child(5){background:#d24726;}
+.gf-menu.l1 li:nth-child(6){background:#e99a1e;}
+.gf-menu.l1 li:nth-child(7){background:#46aa1f;}
+.gf-menu.l1 li:nth-child(8){background:#b01a40;}
+.gf-menu.l1 li:nth-child(9){background:#408afa;}
+.gf-menu.l1 li:nth-child(10){background:#d24726;}
+.gf-menu .dropdown ul li{background:none !important}
+.gf-menu.l1 li:nth-child(1) div.dropdown{background:#e99a1e;}
+.gf-menu.l1 li:nth-child(2) div.dropdown{background:#b01a40;}
+.gf-menu.l1 li:nth-child(3) div.dropdown{background:#46aa1f;}
+.gf-menu.l1 li:nth-child(4) div.dropdown{background:#408afa;}
+.gf-menu.l1 li:nth-child(5) div.dropdown{background:#d24726;}
+.gf-menu.l1 li:nth-child(6) div.dropdown{background:#e99a1e;}
+.gf-menu.l1 li:nth-child(7) div.dropdown{background:#46aa1f;}
+.gf-menu.l1 li:nth-child(8) div.dropdown{background:#b01a40;}
+.gf-menu.l1 li:nth-child(9) div.dropdown{background:#408afa;}
+.gf-menu.l1 li:nth-child(10) div.dropdown{background:#d24726;}
+.gf-menu.l1 > li:hover > .item .border-fixer{background:none !important} 
+.gf-menu .dropdown{box-shadow:none !important;}
+
+div.preset-style {float: left;width:55px;margin:5px;}
+
+.purchase_full {
+	display: block;
+}
+.content {
+	  font-size: 1em;
+	  line-height: 1.7em;
+}
+.lot_full_data{
+/*	border-color: #92A645;
+	border-style: solid;
+	border-width: 1px;*/
+	margin-bottom: 5px;
+	margin:auto;
+}
+.lot_data_first,.lot_del_comment {
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+	margin-bottom: 5px;
+	float:left;
+	margin:auto;
+}
+
+
+.lot_img_main {
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.lot_img {
+	box-sizing: border-box;
+	display:block;
+	overflow:hidden;
+	width: 100%;
+	height: 120px;	
+}
+
+
+.lot_description {
+	border-color: black;
+	border-top-style: solid;
+	border-bottom-style: solid;
+	border-width: 1px;
+}
+.lot_cost {
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+	text-align:center;
+}
+.lot_status {
+	text-align:center;
+	font-size: larger;
+	word-wrap: break-word;
+	padding-top: 7px;
+	padding-bottom: 7px;
+
+}
+
+.lot_del {
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.lot_del_inner {
+	align-self: center;
+	display: block;
+	margin: 0 auto;
+}
+
+.lot_comment {
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.lot_textarea_comment {
+	box-sizing: border-box;
+	width: 100%; 
+}
+.lot_2 {
+	border-color: #92A645;
+	border-style: solid;
+	border-width: 1px;
+}
+.purchase_header{
+}
+.shadow {
+	box-shadow: 0.4em 0.4em 5px rgba(122,122,122,0.5);
+}
+.panel {
+	background-color: #e4fed4;
+	margin-bottom: 10px;
+	padding-left: 3px ;
+	padding-right: 3px ;
+	
+}
+.layer{
+	border: hsl(0, 0%, 95%);
+	border-style: solid;
+	border-width: 1px;
+	padding: 5px;
+	margin: 5px;
+}
+.purchase {
+	background-color: white; 
+}
+
+.purchase_title  {
+	box-sizing: border-box;
+	padding: 5px;
+	padding-left: 10px;	
+}
+
+
+.img_delete {
+	background:red url(./images/ic_delete_24px.svg) no-repeat ; /* Добавляем фон */
+	border-color:red;
+}
+.img_archiv {
+	background:#BA68C8 url(./images/package_24.svg) no-repeat ; /* Добавляем фон */
+	border-color:#BA68C8;
+	/*border-color:rgb(165, 130, 215);*/
+	float:left;
+	margin-left:10px !important;
+	margin-bottom:10px !important;
+}
+.img_more {
+	float:right;
+	background:rgb(45, 194, 194)  url(./images/ic_expand_more_24px.svg) no-repeat ; /* Добавляем фон */
+	border-color:rgb(45, 194, 194) ;
+}
+.img_less {
+	float:right;
+	background:rgb(45, 194, 194) url(./images/ic_expand_less_24px.svg) no-repeat ; /* Добавляем фон */
+	border-color:rgb(45, 194, 194);
+}
+.img_to_archive {
+	float:left;
+	background:#BA68C8 url(./images/ic_archive_24px.svg) no-repeat ; /* Добавляем фон */
+	border-color:#BA68C8;
+	/*border-color:rgb(165, 130, 215);*/
+}
+
+.CircleBtn{
+	box-sizing: border-box;
+	margin: auto;
+    background-size:80% auto;
+	background-position: center center;
+	width:40px;
+	height:40px;
+	border-radius: 50%;
+	border-width:2px;
+	border-style: solid;
+	box-shadow:0 10px 10px 0;
+}
+
+.CircleBtn:active  {
+	box-shadow:0 5px 5px 0;
+}
+
+.CircleBtn a{
+	display:block;
+	width:40px;
+	height:40px;
+	border-radius: 50%;
+	outline: none;
+}
+
+table {
+	padding:1px;
+}
+.row {
+	display:table-row;
+}
+.row1 {
+}
+.cell1 {
+	display:table-cell;
+	padding-left: 2px;
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	font-size: 1.3em;	
+}
+.cell2 {
+	display:table-cell;
+	padding-left: 2px;
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	font-size: 1.3em;	
+}
+.cell3 {
+	display:table-cell;
+	padding-left: 2px;
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	font-size: 1.3em;	
+}
+.cell {
+	display:table-cell;
+	padding-left: 2px;
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	font-size: 1.3em;	
+
+}
+
+.right {
+	  text-align: right;
+}
+
+.payment_data_main{
+	display:block;
+	
+}
+.left {
+  text-align: left;
+}
+.center{
+  text-align: center;
+}
+.right{
+  text-align: rught;
+}
+.payment_data1 table {
+	width:100%;
+	border-collapse: collapse;
+	border-style:solid;
+	border-width:1px;
+	border-color:#0D47A1;
+	background:#90CAF9;
+}
+.payment_data1 th {
+	background-color: #2196F3;
+	border-color:#2196F3!;
+	  
+}
+.payment_data1 td {
+	color:black ;
+	border-style:solid;
+	border-width:1px;
+	border-color:#0D47A1;
+}
+.payment_data2 table {
+	width:100%;
+	border-collapse: collapse;
+	border-style:solid;
+	border-width:1px;
+	border-color:#1B5E20;
+	background:#81C784;
+}
+.payment_data2 th {
+	background-color: #4CAF50;
+	border-color:#1B5E20;
+	  
+}
+.payment_data2 td {
+	color:black ;
+	border-style:solid;
+	border-width:1px;
+	border-color:#1B5E20;
+}
+.payment_data2 textarea {
+	box-sizing: border-box;
+	background: #E8F5E9;	
+	border-style:solid;
+	height: 115px;
+}
+.inputboxr {
+	box-sizing: border-box;
+	width:100%!important;
+	background: #E8F5E9;	
+}
+.tablesorter tbody > tr > td[contenteditable=true]:focus {
+  outline: #08f 1px solid;
+  background: #eee;
+  resize: none;
+}
+td.no-edit, span.no-edit {
+  background-color: rgba(230,191,153,0.5);
+}
+.focused {
+  color: blue;
+}
+
+/* tablesorter*/
+
+.tablesorter tbody > tr > td[contenteditable=true]:focus {
+	outline: #08f 1px solid;
+  background: #eee;
+  resize: none;
+}
+td.no-edit, span.no-edit {
+  background-color: rgba(230,191,153,0.5);
+}
+.focused {
+  color: blue;
+}
+td.editable_updated {
+  background-color: green;
+  color: white;
+}
+
+
+/* tablesorter*/
+.orderstable{
+	max-width: 700px;
+}
+.flex-container{
+	display: flex;
+	flex-wrap:wrap;
+}
+.lot {
+	width:395px;
+	margin-right: 10px;
+}	
+#modal_form {
+	width: 300px; 
+	height: 300px; /* Рaзмеры дoлжны быть фиксирoвaны */
+	border-radius: 5px;
+	border: 3px #000 solid;
+	background: #fff;
+	position: fixed; /* чтoбы oкнo былo в видимoй зoне в любoм месте */
+	top: 45%; /* oтступaем сверху 45%, oстaльные 5% пoдвинет скрипт */
+	left: 50%; /* пoлoвинa экрaнa слевa */
+	margin-top: -150px;
+	margin-left: -150px; /* тут вся мaгия центрoвки css, oтступaем влевo и вверх минус пoлoвину ширины и высoты сooтветственнo =) */
+	display: none; /* в oбычнoм сoстoянии oкнa не дoлжнo быть */
+	opacity: 0; /* пoлнoстью прoзрaчнo для aнимирoвaния */
+	z-index: 5; /* oкнo дoлжнo быть нaибoлее бoльшем слoе */
+	padding: 20px 10px;
+}
+/* Кнoпкa зaкрыть для тех ктo в тaнке) */
+#modal_form #modal_close {
+	width: 21px;
+	height: 21px;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	display: block;
+}
+/* Пoдлoжкa */
+#overlay {
+	z-index:3; /* пoдлoжкa дoлжнa быть выше слoев элементoв сaйтa, нo ниже слoя мoдaльнoгo oкнa */
+	position:fixed; /* всегдa перекрывaет весь сaйт */
+	background-color:#000; /* чернaя */
+	opacity:0.8; /* нo немнoгo прoзрaчнa */
+	-moz-opacity:0.8; /* фикс прозрачности для старых браузеров */
+	filter:alpha(opacity=80);
+	width:100%; 
+	height:100%; /* рaзмерoм вo весь экрaн */
+	top:0; /* сверху и слевa 0, oбязaтельные свoйствa! */
+	left:0;
+	cursor:pointer;
+	display:none; /* в oбычнoм сoстoянии её нет) */
+}
+@media screen and (max-width: 642px) {
+	.lot_img_main {
+		box-sizing: border-box;
+		width:100px;
+		float:left;
+
+	}
+	.lot_status {
+		box-sizing: border-box;
+		height:50px;
+	}
+	.lot_description {
+		box-sizing: border-box;
+		width: calc(75% - 100px);
+		height:172px;
+		float:left;
+		padding: 5px;
+		background: red;
+	}
+	.lot_cost {
+		box-sizing: border-box;
+		padding: 5px;
+		width:25%;
+		height:172px;
+		float:left;
+	}
+	.lot_comment{
+		box-sizing: border-box;
+		height: 5em;
+		/*min-width:65vw;*/
+		width: 75%;
+		float:left;
+		padding: 5px;
+	}
+	.lot_del{
+		box-sizing: border-box;
+		width:25%;
+		height: 5em;
+		float:left;
+		padding: 5px;
+	}
+	.lot_textarea_comment {
+		height: 4em;
+	}
+	.purchase_title  {
+		width: calc(100% - 80px);
+		float:left;
+	}
+	.payment_data1{
+		box-sizing: border-box;
+		margin: 10px;
+	}
+	.payment_data2{
+		box-sizing: border-box;
+		margin: 10px;
+	}
+	
+}
+@media screen and (min-width: 643px) and (max-width: 1000px) {
+	.lot_img_main {
+		box-sizing: border-box;
+		width:100px;
+		float:left;
+
+	}
+	.lot_status {
+		box-sizing: border-box;
+		height:50px;
+	}
+	.lot_description {
+		box-sizing: border-box;
+		width: calc(55% - 100px);
+		height:172px;
+		float:left;
+		padding: 5px;
+		background: orange;
+	
+	}
+	.lot_cost {
+		box-sizing: border-box;
+		padding: 5px;
+		width:15%;
+		height:172px;
+		float:left;
+	}
+	.lot_comment{
+		box-sizing: border-box;
+		height:172px;
+		/*min-width:65vw;*/
+		width: 20%;
+		float:left;
+		padding: 5px;
+	}
+	.lot_del{
+		box-sizing: border-box;
+		width:10%;
+		height:172px;
+		float:left;
+		padding: 5px;
+	}
+	.lot_textarea_comment {
+		height: 10em;
+	}
+	.purchase_title  {
+		width: calc(100% - 80px);
+		float:left;
+	}
+	.payment_data1{
+		box-sizing: border-box;
+		margin: 10px;
+	}
+	.payment_data2{
+		box-sizing: border-box;
+		margin: 10px;
+	}
+	
+}
+@media screen and (min-width: 1001px) and (max-width: 1285px) {
+	.lot_img_main {
+		box-sizing: border-box;
+		width:100px;
+		float:left;
+
+	}
+	.lot_status {
+		box-sizing: border-box;
+		height:50px;
+	}
+	.lot_description {
+		box-sizing: border-box;
+		width: calc(75% - 100px);
+		height:172px;
+		float:left;
+		padding: 5px;
+		background: yellow;
+	
+	}
+	.lot_cost {
+		box-sizing: border-box;
+		padding: 5px;
+		max-width:25%;
+		height:172px;
+		float:left;
+	}
+	.lot_comment{
+		box-sizing: border-box;
+		height: 5em;
+		/*min-width:65vw;*/
+		width: 75%;
+		float:left;
+		padding: 5px;
+	}
+	.lot_del{
+		box-sizing: border-box;
+		width:25%;
+		height: 5em;
+		float:left;
+		padding: 5px;
+	}
+	.lot_textarea_comment {
+		height: 4em;
+	}
+	.purchase_title  {
+		width: calc(100% - 80px);
+		float:left;
+	}
+	.payment_data1{
+		box-sizing: border-box;
+		margin: 10px;
+	}
+	.payment_data2{
+		box-sizing: border-box;
+		margin: 10px;
+	}
+	
+}
+@media screen and (min-width: 1286px)  {
+	.lot_img_main {
+		box-sizing: border-box;
+		width:100px;
+		float:left;
+
+	}
+	.lot_status {
+		box-sizing: border-box;
+		height:50px;
+	}
+	.lot_description {
+		box-sizing: border-box;
+		width: calc(75% - 100px);
+		height:172px;
+		float:left;
+		padding: 5px;
+		background: green;
+	
+	}
+	.lot_cost {
+		box-sizing: border-box;
+		padding: 5px;
+		max-width:25%;
+		height:172px;
+		float:left;
+	}
+	.lot_comment{
+		box-sizing: border-box;
+		height: 5em;
+		/*min-width:65vw;*/
+		width: 75%;
+		float:left;
+		padding: 5px;
+	}
+	.lot_del{
+		box-sizing: border-box;
+		width:25%;
+		height: 5em;
+		float:left;
+		padding: 5px;
+	}
+	.lot_textarea_comment {
+		height: 4em;
+	}
+	.purchase_title  {
+		width: calc(100% - 80px);
+		float:left;
+	}
+	.payment_data1{
+		box-sizing: border-box;
+		margin: 10px;
+	}
+	.payment_data2{
+		box-sizing: border-box;
+		margin: 10px;
+	}
+
+}

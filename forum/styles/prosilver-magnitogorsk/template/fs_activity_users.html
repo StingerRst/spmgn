@@ -1,0 +1,147 @@
+<!-- INCLUDE fs_header.html -->
+<form id="fs" method="post" action="{S_FS_ACTION}"{S_FORM_ENCTYPE}>
+<h2>{L_TITLE}</h2>
+
+<div class="panel">
+	<div class="inner_fs"><span class="corners-top"><span></span></span>
+	<h3>{L_OVERALL}</h3>
+	<table class="fs_details_list">
+		<tr>
+			<td class="col1">{L_TOTAL_MEMBERS}:</td> <td class="col2">{TOTAL_MEMBERS} ({L_INCLUDING_BOTS})</td>
+			<td class="col3">{L_TOTAL_REG_USERS}:</td> <td class="col4">{TOTAL_REG_USERS}</td>
+		</tr>
+		<tr>
+			<td class="col1">{L_MOST_ONLINE}:</td> <td class="col2" colspan="3">{MOST_ONLINE} ({L_ONLINE_ON} {MOST_ONLINE_DATE})</td>
+		</tr>		
+	</table><br />
+	<!-- IF S_GROUPS -->
+	<h3>{L_GROUPS}</h3>
+	<table class="fs_details_list">
+		<thead>
+			<td class="col1">{L_GROUPS}</td>
+			<td class="col2">{L_MEMBERS}</td><td class="col3">&nbsp;</td><td class="col4">&nbsp;</td>
+		</thead>
+		<tbody>
+		<!-- BEGIN grouprow -->
+		<tr>
+			<td class="col1">{grouprow.U_GROUP}:</td><td class="col2" colspan="3">{grouprow.COUNT}</td>
+		</tr>
+		<!-- END grouprow -->		
+		</tbody>
+	</table><br />
+	<!-- ENDIF -->
+	<!-- IF S_RANKS -->
+	<h3>{L_RANKS_POSTS}</h3>
+	<table class="fs_details_list">
+		<thead>
+			<td class="col1">{L_RANKS}</td><td class="col1">{L_RANK_MIN_POSTS}</td><td class="col1">{L_MEMBER_COUNT}</td><td class="col3">&nbsp;</td>
+		</thead>
+		<tbody>
+		<!-- BEGIN ranks_row -->
+		<tr>
+			<td class="col1"><!-- IF ranks_row.IS_MINE --><i>{ranks_row.RANK_TITLE}</i><!-- ELSE -->{ranks_row.RANK_TITLE}<!-- ENDIF -->:</td><td class="col1">{ranks_row.RANK_MIN_POSTS}</td><td class="col1">{ranks_row.COUNT}</td><td class="col3">&nbsp;</td>
+		</tr>
+		<!-- END ranks_row -->		
+		</tbody>
+	</table><br />
+	<!-- ENDIF -->
+	<!-- IF S_ONLINE -->
+	<h3>{U_WHO_IS_ONLINE}</h3>
+	<table class="fs_details_list">
+		<thead>
+			<td class="col1">{L_GROUPS}</td>
+			<td class="col2">{L_MEMBERS}</td><td class="col3">&nbsp;</td><td class="col4">&nbsp;</td>
+		</thead>
+		<tbody>
+		<!-- BEGIN online_grouprow -->
+		<tr>
+			<td class="col1">{online_grouprow.U_GROUP}:</td><td class="col2" colspan="3">{online_grouprow.COUNT} <!-- IF online_grouprow.USERS_LIST -->({online_grouprow.USERS_LIST})<!-- ENDIF --></td>
+		</tr>
+		<!-- END online_grouprow -->
+		</tbody>
+	</table><br />
+	<table class="fs_details_list">
+		<tr>
+			<td class="col1">{L_TOTAL_ONLINE}:</td><td class="col2">{TOTAL_ONLINE}</td>
+			<td class="col3">{L_TOTAL_HIDDEN}:</td><td class="col4">{TOTAL_HIDDEN}</td>
+		</tr>
+		<tr>
+			<td class="col1">{L_TOTAL_MEMBERS_ONLINE}:</td><td class="col2">{TOTAL_MEMBERS_ONLINE}</td>
+		</tr>
+	</table><br />
+	<!-- ENDIF -->
+	<h3>{TOP_USERS_BY_POSTS}</h3>
+	<table class="fs_details_graphs">
+		<!-- IF S_TOP_USERS_BY_POSTS -->
+			<colgroup span="4">
+				<col class="col_cat" />
+				<col class="col_bar" />
+				<col class="col_count" />
+				<col class="col_pct" />
+			</colgroup>
+			<thead>
+				<td>{L_USERS}</td>
+				<td></td>
+				<td>{L_COUNT}</td>
+				<td>{L_PERCENT}</td>
+			</thead>		
+		<!-- BEGIN top_by_posts_row -->
+			<tr>
+			<td>&bull; {top_by_posts_row.U_USER}</td><td><div class="graph" style="width:{top_by_posts_row.BARWIDTH}%;">&nbsp;</div></td><td>{top_by_posts_row.COUNT}</td><td>{top_by_posts_row.PCT}%</td>
+			</tr>
+		<!-- END top_by_posts_row -->
+		<!-- ELSE -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{L_NONE}
+		<!-- ENDIF -->
+	</table><br />
+	<h3>{TOP_USERS_BY_TOPICS}</h3>
+	<table class="fs_details_graphs">
+		<!-- IF S_TOP_USERS_BY_POSTS -->
+			<colgroup span="4">
+				<col class="col_cat" />
+				<col class="col_bar" />
+				<col class="col_count" />
+				<col class="col_pct" />
+			</colgroup>
+			<thead>
+				<td>{L_USERS}</td>
+				<td></td>
+				<td>{L_COUNT}</td>
+				<td>{L_PERCENT}</td>
+			</thead>		
+		<!-- BEGIN top_by_topics_row -->
+			<tr>
+			<td>&bull; {top_by_topics_row.U_USER}</td><td><div class="graph" style="width:{top_by_topics_row.BARWIDTH}%;">&nbsp;</div></td><td>{top_by_topics_row.COUNT}</td><td>{top_by_topics_row.PCT}%</td>
+			</tr>
+		<!-- END top_by_topics_row -->
+		<!-- ELSE -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{L_NONE}
+		<!-- ENDIF -->
+	</table><br />
+	<h3>{TOP_USERS_BY_RECENT_POSTS}</h3>
+	<table class="fs_details_graphs">
+		<!-- IF S_TOP_USERS_BY_RECENT_POSTS -->
+			<colgroup span="4">
+				<col class="col_cat" />
+				<col class="col_bar" />
+				<col class="col_count" />
+				<col class="col_pct" />
+			</colgroup>
+			<thead>
+				<td>{L_USERS}</td>
+				<td></td>
+				<td>{L_COUNT}</td>
+				<td>{L_PERCENT}</td>
+			</thead>		
+		<!-- BEGIN top_by_recent_posts_row -->
+			<tr>
+			<td>&bull; {top_by_recent_posts_row.U_USER}</td><td><div class="graph" style="width:{top_by_recent_posts_row.BARWIDTH}%;">&nbsp;</div></td><td>{top_by_recent_posts_row.COUNT}</td><td>{top_by_recent_posts_row.PCT}%</td>
+			</tr>
+		<!-- END top_by_recent_posts_row -->
+		<!-- ELSE -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{L_NONE}
+		<!-- ENDIF -->
+	</table><br /><div class="user_prompt"><span>{RECENT_POSTS_DAYS_LIMIT_SELECT_BOX}</span></div><br />
+	<hr /><div class="user_prompt"><span>{LIMIT_SELECT_BOX}</span></div><br />
+	<hr /><div style="text-align:right;"><span><i>{AS_ON}</i></span></div>
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+</form>
+<!-- INCLUDE fs_footer.html -->

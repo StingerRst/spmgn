@@ -1,0 +1,115 @@
+ <head>
+  <style>
+	table#main {
+    table-layout: auto; /* Фиксированная ширина ячеек */
+    width: 100%; /* Ширина таблицы */
+	page-break-inside: avoid;
+	border:1px solid black;
+	border-collapse: collapse;
+	border:1px solid black
+	}
+	table#external {
+    table-layout: auto; /* Фиксированная ширина ячеек */
+    width: 100%; /* Ширина таблицы */
+	page-break-inside: avoid;
+	border:1px solid black;
+	border-collapse: collapse;
+	border:1px solid red
+	NOWRAP
+	}
+	table#middle {
+    table-layout: auto; /* Фиксированная ширина ячеек */
+    width: 100%; /* Ширина таблицы */
+	page-break-inside: avoid;
+	border:1px solid black;
+	border-collapse: collapse;
+	border:0px solid green
+	}
+
+	td#i0 {border:1px solid black;}
+	td#i1 {border:1px solid black}
+	td#i2 {border:1px solid black}
+	td#i3 {word-break:break-all;border:1px solid black}
+	td#i4 {border:1px solid black}
+	td#i5 {border:1px solid black;}
+	td#i6 {border:1px solid black;}
+	@media print {
+	}
+  </style>
+ </head>
+ 
+ 
+
+<form  method="post" sid = {sid}>
+<!-- IF .order-->
+	<!-- BEGIN order-->
+		<!-- IF  order.NEW_USER -->
+			<table id ="external">
+				<tr>
+					<td nowrap>&nbsp;</td>
+					<td>
+						<table id ="middle">
+						<tr ><td colspan="2" align="center"><H3>Накладная № &nbsp;{PURCHASE_ID}-{order.PUOR_ID}&nbsp;От&nbsp;{DATE}</H3></td></tr>
+						<tr ><td colspan="2" align="center">Заказ:&nbsp; № &nbsp;{PURCHASE_ID}-{order.PUOR_ID}&nbsp;Закупка:&nbsp;{PURCHASE_NAME}&nbsp; Организатор:&nbsp;{ORG_NAME}</td></tr>
+						<tr><td>&nbsp;</td></tr>
+						<tr ><td colspan="2" ><table id ="main">
+							<tr align="center">
+								<Th width="5%"><B>№ п/п</B></Th>
+								<Th width="25%"><B>Каталог</B></Th>
+								<Th width="30%"><B>Лот</B></Th>
+								<Th width="25%"><B>Свойство</B></Th>
+								<Th width="5%"><B>Кол-во</B></Th>
+								<Th width="10%"><B>Цена</B></Th>
+							</tr>
+		<!-- ENDIF -->
+							<tr>
+								<td id = "i0" align="center">{order.N_PP}</td>
+								<td id = "i1">{order.CATALOG_NAME}</td>
+								<td id = "i2">{order.LOT_NAME}</td>
+								<td id = "i3">{order.ORDER_PROPERTIES}</td>
+								<td id = "i5" align="center">{order.KOLVO}</td>
+								<td id = "i6" align="center">{order.LOT_COST} &nbsp; р.</td>
+							</tr>
+		<!-- IF  order.LAST_RECORD -->
+						<!-- IF  order.DOSTAVKA > 0 -->
+							<tr>
+							<td colspan="4" align="right" >Доставка:&nbsp;</td>
+							<td id = "i5" align="center"></td>
+							<td id = "i6" align="center">{order.DOSTAVKA} &nbsp; р.</td>
+							</tr>
+						<!-- ENDIF -->
+		
+						<!-- IF  order.DISKOUNT < 0 -->
+							<tr>
+							<td colspan="4" align="right" >Доп. Наценка:&nbsp;</td>
+							<td id = "i5" align="center"></td>
+							<td id = "i6" align="center">{order.UPKOUNT} &nbsp; р.</td>
+							</tr>
+						<!-- ENDIF -->
+						<!-- IF  order.DISKOUNT > 0 -->
+							<tr>
+							<td colspan="4" align="right" >Скидка:&nbsp;</td>
+							<td id = "i5" align="center"></td>
+							<td id = "i6" align="center">{order.DISKOUNT} &nbsp; р.</td>
+							</tr>
+						<!-- ENDIF -->
+						
+						<tr>
+							<td colspan="4" align="right" >Итого:&nbsp;</td>
+							<td id = "i5" align="center">{order.TOVAR_COUNT}</td>
+							<td id = "i6" align="center">{order.SUMMA} &nbsp; р.</td>
+						</tr>	
+						</table>
+						</td></tr>
+						<tr><td>&nbsp;</td></tr>
+						<tr><td align="center">Поставил:&nbsp;{ORG_NAME}</td><td align="center">Принял:&nbsp;{order.USERNAME}</td></tr>
+						<tr><td align="center">{ORG_REALNAME}</td><td align="center">{order.USER_REALNAME}</td></tr>
+						<tr><td>&nbsp;</td></tr>
+						<tr><td>&nbsp;</td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		<!-- ENDIF -->
+	<!-- END order.-->
+<!-- ENDIF --> </form>

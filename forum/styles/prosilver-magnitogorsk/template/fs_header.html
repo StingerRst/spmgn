@@ -1,0 +1,40 @@
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_headerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_header.html -->
+<!-- ENDIF -->
+
+
+<h2>{L_FS}</h2>
+
+<div id="tabs">
+	<ul>
+		<!-- BEGIN t_block1 -->
+		<li <!-- IF t_block1.S_SELECTED -->class="activetab"<!-- ENDIF -->><a href="{t_block1.U_TITLE}"><span>{t_block1.L_TITLE}</span></a></li>
+		<!-- END t_block1 -->
+	</ul>
+</div>
+
+<div class="panel bg3">
+	<div class="inner"><span class="corners-top"><span></span></span>
+
+	
+
+	<div id="cp-menu">
+		<div id="navigation">
+			<ul>
+			<!-- BEGIN t_block2 -->
+				<!-- IF (S_PRIVMSGS and t_block2.S_LAST_ROW) or not S_PRIVMSGS -->
+					<!-- IF t_block2.S_SELECTED -->
+						<li id="active-subsection"><a href="{t_block2.U_TITLE}"><span>{t_block2.L_TITLE}</span></a></li>
+					<!-- ELSE -->
+						<li><a href="{t_block2.U_TITLE}"><span>{t_block2.L_TITLE}</span></a></li>
+					<!-- ENDIF -->
+				<!-- ENDIF -->
+			<!-- END t_block2 -->
+			</ul>
+		</div>
+		
+		</div>
+	</div>
+	<div id="cp-main" class="fs">

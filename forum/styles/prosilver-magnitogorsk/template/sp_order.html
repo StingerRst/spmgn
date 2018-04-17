@@ -1,0 +1,126 @@
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_headerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_header.html -->
+<!-- ENDIF -->
+
+
+<div id="page-body">
+	<font size=2>
+		<div class="panel">
+			<span class="corners-top"><span></span></span>
+			<div class="inner">
+				<div class="content">
+					<div id="debug"></div>
+					<!--p><a href="order_archive.php?bbsa_=405">Архив заказов</a></p-->
+					<br>
+					<span>
+						<table width="100%">
+							<tr>
+								<td align="right" width="50%"><b>Ваш псевдоним на форуме:</b></td>
+								<td>{SP_USER_NAME}</td>
+							</tr>
+							<tr>
+								<td align="right" width="50%"><b>Ваш индивидуальный номер пользователя:</b></td>
+								<td><b><font color="red">{SP_USER_ID}</font></b></td>
+							</tr>
+							<tr>
+								<td align="right" width="50%"><b>Контактная информация для Организаторов СП:</b></td>
+								<td id="contact_info">{SP_USER_CONTACT}</td>
+							</tr>
+						</table>
+					</span>
+					<span id="contact_info_warning"></span>
+					<br><br>
+					<span id="orders"></span>
+					<div id="date_picker" style="display:none;position:absolute;top:0px;left:0px;z-index:100;"></div>
+					<style type="text/css">
+						<!--
+							#mycalendar-panel img, #mycalendar-panel select {
+								vertical-align: middle;
+							}
+							ol {
+								list-style: none;
+							}
+							.calendar_panel{
+								background-color: #ECF1F3;
+								border: solid 1px #536482;
+							}
+							.calendar, .monthyear, .dayheaders {
+								width: 18em;
+								overflow: hidden;
+								margin: 0px;
+								padding: 0px;
+								padding-left: 0.25em;
+								text-align: center;
+							}
+							.calendar li a {
+								display: block;
+								background-image: url(../phpBB3/styles/prosilver/imageset/corners.gif);
+							}
+							.calendar li {
+								width: 2.3em;
+								height: 2.3em;
+								margin: 0.1em;
+								background-position: top left;
+								display: inline; /* For IE */
+							}
+							.calendar li a {
+								display: block;
+								width: 2.3em;
+								height: 1.8em;
+								padding-top: 0.5em;
+								background-position: bottom right;
+							}
+							.monthyear li {
+								display: block;
+								height: 2em;
+								width: 12em;
+							}
+							.content ol {
+								margin: 0;
+							}
+							.monthyear li.previous, .monthyear li.next {
+								width: 2.5em;
+							}
+							.dayheaders li.left {
+								width: 2.5em;
+							}
+							.dayheaders li {
+								display: block;
+								width: 2.5em;
+								height: 1.5em;
+							}
+							.calendar li, .monthyear li, .dayheaders li {
+								float: left;
+							}
+							.calendar a {
+								text-decoration: none;
+							}
+							.calendar li:hover {
+								background-color: #ccb;
+							}
+							.sundaystart .firstday { margin-left: 0.1px; }
+							.mondaystart .firstday { margin-left: 2.6em; }
+							.tuesdaystart .firstday { margin-left: 5.1em; }
+							.wednesdaystart .firstday { margin-left: 7.6em; }
+							.thursdaystart .firstday { margin-left: 10.1em; }
+							.fridaystart .firstday { margin-left: 12.6em; }
+							.saturdaystart .firstday { margin-left: 15.1em; }
+						-->
+					</style>
+					<script language="javascript" src="/sp/ajax/JsHttpRequest.js"></script>
+					<script language="javascript" src="/sp/ajax/order.js"></script>
+				</div>
+			</div>
+			<span class="corners-bottom"><span></span></span>
+		</div>
+	</font>
+</div>
+
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_footerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_footer.html -->
+<!-- ENDIF -->
+ 

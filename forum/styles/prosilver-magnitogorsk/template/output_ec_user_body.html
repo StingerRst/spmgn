@@ -1,0 +1,105 @@
+<!-- INCLUDE org_header.html -->
+<H3>Выдача заказов пользователю </H3>
+<form  method="post" sid = {sid}>
+<SELECT type="submit" name ="UserSelect" id="OrderOutput" onchange=form.submit()>
+  <OPTION value="0">Выбрать...</OPTION>
+  <!-- BEGIN users -->
+   <!-- IF  users.ID == USERSELECT -->
+     <OPTION selected value="{users.ID}">{users.NAME}&nbsp;(&nbsp;{users.FULLNAME}&nbsp;)</OPTION>
+   <!-- ELSE -->  
+     <OPTION value="{users.ID}">{users.NAME}&nbsp;(&nbsp;{users.FULLNAME}&nbsp;)</OPTION>
+   <!-- ENDIF -->
+  <!-- END users -->
+</SELECT>
+</form>
+
+<form  method="post" sid = {sid}>
+  <!-- IF .order -->
+  <table border="1" width="70%" cellspacing = "0">
+  <THEAD>
+    <tr align="center">
+  	  <td>Закупка</td>
+	  <td>Лот</td>
+	  <td>Цена</td>
+	  <td>Доставка</td>
+	  <td>Выбор</td>
+    </tr>
+  </THEAD>
+  <!-- BEGIN order -->
+    <tr>
+ 	  <td>
+             <a href="adm.php?i=1&mode=otchet&p={order.PURCHASE_ID}&sid={SID}" class="button2">{order.PURCHASE_NAME}</a>
+          </td>
+	  <td>{order.LOT_NAME}</td>
+	  <td>{order.LOT_COST}</td>
+	  <td>{order.ORDER_DELIVERY}</td>
+	  <TD  align="center" valign="center"> <INPUT id="order{order.ORDER_ID}" type="checkbox" checked> </td>
+    </tr>
+   <!-- END order -->
+  </table>
+ <input type="button" value="Выдать" onClick="add_orders();"/>
+ <!-- ENDIF -->
+</form>
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<SCRIPT language="javascript">
+
+var orders={ORDERS};
+
+function change_orders_state( o, st,pr)
+{
+	$.ajax({
+                type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "change_orders_state",
+			'orders': o,
+			'state': st
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			var po = result["processed"];
+			if (null!=po)
+			{
+				for (var j=0; j<po.length; j++)
+				{
+					var id = po[j];
+					set_order_state( id, st);
+				}
+			}
+
+			if ("ok" == result["state"])
+			{
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении статуса заказов!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	})
+}
+
+
+function add_orders()
+{
+	var st = 6;
+	var o = new Array;
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id);
+		if (el.checked)
+		{
+			o.push( id);
+		}
+	}
+
+	change_orders_state( o, st);
+        location.reload();
+}
+
+</SCRIPT>
+<!-- INCLUDE org_footer.html -->

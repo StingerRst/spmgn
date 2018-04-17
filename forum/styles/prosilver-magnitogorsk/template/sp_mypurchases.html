@@ -1,0 +1,31 @@
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_headerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_header.html -->
+<!-- ENDIF -->
+
+
+<div id="page-body">	
+	<font size=2>
+		<div class="panel">
+			<div class="inner">
+				<span class="corners-top"><span></span></span>
+				<div class="content">
+					<div id="debug"></div>
+					<!--p><a href="mypurchases.php?archive=1">архив закупок</a></p-->
+					<script language="javascript" src="/sp/ajax/JsHttpRequest.js"></script>
+					<div id="purchases"></div>
+					<script src="/sp/ajax/common_mypurchases.js" language="javascript"></script>
+				</div>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+		</div>
+	</font>
+</div>
+
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_footerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_footer.html -->
+<!-- ENDIF -->
+ 

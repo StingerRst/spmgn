@@ -1,0 +1,87 @@
+.lot {
+display: inline-block;
+margin-top: 5px; 
+margin-left: 5px;
+border: pink;
+border-style: solid;
+
+}
+.lot_img{
+background-repeat:no-repeat;
+background-position: center center;
+background-size: contain;	
+}	
+
+@media screen and  (max-device-width: 479px) {
+	.lot {
+	width: 275px;
+	height: 300px;
+	border: yellow;
+	border-style: solid;
+	}
+	.lot_img{
+	height: 210px;
+	width: 265px;
+	}
+	
+	#results table.nav div.icon {
+	    background: transparent url(images/i/icon-blueback.gif) no-repeat 0 0;
+		background-size: 70%;
+		padding-left: 5px;
+		text-align: left;
+
+	}
+	#results table.nav div.icona  {
+	    background: transparent url(images/i/icon-redback.gif) no-repeat 0 0;
+		background-size: 70%;
+		padding-left: 5px;
+		text-align: left;
+	}	
+	#results table.nav .icon img,#results table.nav div.icona,#results table.nav div.icon{
+		width: 64px;
+		height: 64px;
+		font-size: 3em;
+	}
+}
+@media screen and  (min-device-width: 480px) and  (max-device-width: 1100px) {
+	.lot {
+	width: 320px;
+	height: 340px;
+	border: blue;
+	border-style: solid;
+	}
+	.lot_img{
+	height: 245px;
+	width: 310px;
+	}
+}
+
+
+@media only screen and (min-width: 11000px) and (max-width: 11199px) {
+	.lot {
+	width: 300px;
+	height: 340px;
+	border: violet;
+	border-style: solid;
+	}
+	.lot_img{
+	height: 240px;
+	width: 300px;
+	}
+}
+@media only screen and (min-width: 11280px) and (max-width: 11599px) {
+	.lot {
+	width: 300px;
+	height: 340px;
+	border: green;
+	border-style: solid;
+	}
+	.lot_img{
+	height: 240px;
+	width: 300px;
+	}
+}
+
+@media only screen and (min-width: 11600px) and (max-width: 51000px) {
+
+}

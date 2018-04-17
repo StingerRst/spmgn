@@ -1,0 +1,29 @@
+<!-- INCLUDE overall_header.html -->
+
+
+<div class="panel" id="message">
+	<div class="inner"><span class="corners-top"><span></span></span>
+		<h2>{MESSAGE_TITLE}</h2>
+		<p>{MESSAGE_TEXT}</p>
+		<!-- IF not S_IS_BOT and not S_USER_LOGGED_IN -->	
+			<div class="content">
+				<p style="font-size: 16pt;">Авторизоваться на сайте можно через аккаунты соцсетей :</p>
+				<script type="text/javascript">document.write('<div id="uLogin2" x-ulogin-params="display=panel&fields=first_name,last_name,email,photo&optional=bdate,country,city&providers={ULOGIN_SHOWN}&hidden={ULOGIN_HIDDEN}&redirect_uri=http%3A%2F%2Fspmgn.ru%2Findex.php%3Foption%3Dcom_ulogin%26task%3Dlogin%26backurl%3D'+base64encode(document.URL)+'"></div>');</script>
+				<p style="font-size: 16pt;">	
+					<script type="text/javascript">document.write('Либо через<a style="color: blue;" href="http://www.spmgn.ru/index.php?option=com_users&view=login&return='+base64encode(document.URL)+'"> форму авторизации</a>');</script>
+				</p>	
+				<p style="font-size: 12pt;">
+						Если у вас не получается пройти авторизацию - пожалуйста напишите об этом в <a style="color: blue;" href="http://spmgn.ru/#Adres">обратную связь</a> , c указанием ошибки.
+					Всем, кто пишет в обратную связь,  я отвечаю по почте. Пожалуйста, смотрите почту, возможно письма попадают в спам или в нежелательную почту.
+				</p>
+			</div>		
+		<!-- ENDIF -->
+		<!-- IF SCRIPT_NAME == "search" and not S_BOARD_DISABLED and not S_NO_SEARCH and L_RETURN_TO_SEARCH_ADV -->
+			<p><a href="{U_SEARCH}" class="{S_CONTENT_FLOW_BEGIN}">{L_RETURN_TO_SEARCH_ADV}</a></p>
+		<!-- ENDIF -->
+		<span class="corners-bottom"><span></span></span></div>
+</div>
+
+
+
+<!-- INCLUDE overall_footer.html -->

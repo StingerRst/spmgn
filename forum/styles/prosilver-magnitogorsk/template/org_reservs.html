@@ -1,0 +1,125 @@
+<!-- INCLUDE org_header.html -->
+<!-- IF S_USER_IS_ORGANIZER -->
+
+<script type="text/javascript">
+
+function checkbrand() {
+		var form = $("#brand");
+		var options = {
+			url : "checkbrand.php{SID}",
+			target : "#status"
+		};
+		$(form).ajaxSubmit(options);
+	}
+	
+</script>
+
+<form id="brand" method="post">
+
+<h2>Мои брони</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	<p>{RESERVS_INFO}</p>
+	<hr />
+	<p>ВНИМАНИЕ!</p>
+	<a href="{U_RESERVS_RULES}">Правила бронирования</a><br>
+	{RESERVS_RULES}
+	<hr />
+	
+	<fieldset>
+	
+	<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+<table width="100%" border="0">
+	<tr>
+		<td width="250px"><label for="brandname"><b>Наименование бренд:</b></label></td>
+		<td>
+			<input type="text" name="brandname" id="brandname" maxlength="255" style="width:250px" value="{BRANDNAME}" class="inputbox" onchange="checkbrand()"/>
+			<div id="status">Введите данные о бренде для проверки статуса</div>
+		</td>
+	</tr>
+	<tr>
+		<td width="250px"><label for="brandurl"><b>Сайт бренда:</b></label></td>
+		<td>
+<input type="text" name="brandurl" id="brandurl" style="width:250px" maxlength="255" value="{BRANDURL}" class="inputbox" onchange="checkbrand()"/>
+		</td>
+	</tr>
+	<tr>
+		<td width="250px"><label for="catid"><b>Категория товара:</b></label></td>
+		<td>
+<select name="catid" id="catid" onchange="checkbrand()" >{CATID_OPTIONS}</select>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="descritpion"><b>Описание:</b></label></td>
+		<td>
+<textarea name="description" id="description" style="height:50px"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="request_end"><b>Открою до:</b></label></td>
+		<td>
+<input type="text" name="request_end" id="request_end" class="datebox">
+		</td>
+	</tr>
+</table>
+
+	</fieldset>
+	<hr />
+	<span class="corners-bottom"><span></span></span></div>		
+</div>
+<fieldset class="submit-buttons">
+	{S_HIDDEN_FIELDS}<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp; 
+	<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+	{S_FORM_TOKEN}
+</fieldset>
+</form>
+
+
+<div >
+	<h2 align="center">Мои текущие брони</h2>
+  <DIV class="forabg" >
+    <DIV class="inner" >
+		<ul class="topiclist">
+			<li class="header"><dl class="icon">
+			<dd style="width: 13%; text-align: center;"> Наименование бренда</dd>
+			<dd style="width: 10%; text-align: center;"> Статус</dd>
+			<dd style="width: 12%; text-align: center;"> Дата заявки</dd>
+			<dd style="width: 12%; text-align: center;"> Дата подтверждения</dd>
+			<dd style="width: 12%; text-align: center;"> Открыть закупку до</dd>
+			<dd style="width: 20%; text-align: center;"> Управление</dd>
+			<dd style="width: 20%; text-align: center;"> Комментарий администрации</dd>
+			</dl></li>
+		</ul>
+		<ul class="topiclist cplist pmlist">
+		<!-- BEGIN myreservs -->
+			<li class="row bg1"><div><dl class="icon">
+			<dd style="width: 13%; text-align: center;" class="posts"><a href="{myreservs.BRANDURL}"><b> {myreservs.BRANDNAME}</b></a><br/>{myreservs.PRODUCT_LABEL}</dd>
+			<dd style="width: 10%; text-align: center;" class="posts"> {myreservs.STATUS}</dd>
+			<dd style="width: 12%; text-align: center;" class="posts"> {myreservs.REQUEST_SEND}</dd>
+			<dd style="width: 12%; text-align: center;" class="posts"> {myreservs.REQUEST_CONFIRM}</dd>
+			<dd style="width: 12%; text-align: center;" class="posts"> {myreservs.REQUEST_END}</dd>
+			<dd style="width: 20%; text-align: center;" class="posts"> {myreservs.REQUEST_CONTROL}</dd>
+			<dd style="width: 20%; text-align: center;" class="posts"> {myreservs.REQUEST_MESSAGE}</dd>
+			</dl></div></li>
+		<!-- END myreservs -->
+		</ul>
+		<br>
+    </DIV>
+  </DIV>		
+</div>
+
+<center>
+<h2>ГОРЯЧИЕ ОРГ-НОВОСТИ И СООБЩЕНИЯ ОТ АДМИНИСТРАЦИИ</h2>
+
+<table width="95%" bgcolor="#FFFFFF" color="#000000" >
+<tr><td>
+{NEWS}
+</td></tr>
+</table>
+
+</center>
+ 
+
+<!-- ENDIF -->
+<!-- INCLUDE org_footer.html -->

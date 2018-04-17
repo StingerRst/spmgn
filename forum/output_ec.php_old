@@ -1,0 +1,244 @@
+<?php
+// Указываем всем подключающимся скриптам,
+// что они вызывается из главного файла.
+// Для защиты от вызова их напрямую.
+define('IN_PHPBB', true);
+
+// Создаем переменную, содержащую
+// путь к корню сайта.
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
+ 
+// Указываем расширение к подключаемым файлам.
+// Обычно .php.
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+ 
+// Подключаем ядро phpBB.
+include($phpbb_root_path . 'common.' . $phpEx);
+include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+
+
+// Запускаем инициализацию сессии.
+$user->session_begin();
+$auth->acl($user->data);
+$user->setup('viewforum');
+
+if ($user->data['user_id'] == ANONYMOUS)
+{
+    login_box('', $user->lang['LOGIN']);
+}
+// определение группы пользователя
+$sql = "SELECT " . USER_GROUP_TABLE . ".group_id" 
+    . " FROM " . USER_GROUP_TABLE 
+    . " WHERE " . USER_GROUP_TABLE . ".user_id=" . $user->data['user_id']." and ". USER_GROUP_TABLE . ".group_id=14";
+	$result=$db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+
+	if (!$row){ // если не Оператор ЕЦ - не пускать
+		trigger_error('Доступ только Операторам ЕЦ');
+	}	
+$output = (!empty($_POST['output'])) ? true : false;
+$marked		= $_POST['mark'];
+//var_dump($marked);
+
+//echo sizeof($marked);
+
+if (sizeof($marked))
+{
+	//$sql_in = array();
+	foreach ($marked as $mark)
+	{
+		$param = explode("!", $mark);	
+		$purchase_id=$param[0];
+		$member_id=$param[1];
+		// выставляем заказу статус выдано
+		$sql ="UPDATE phpbb_orders RIGHT OUTER JOIN phpbb_lots ON phpbb_orders.lot_id = phpbb_lots.lot_id RIGHT OUTER JOIN phpbb_catalogs \n"
+		. "ON phpbb_lots.catalog_id = phpbb_catalogs.catalog_id RIGHT OUTER JOIN phpbb_purchases ON phpbb_catalogs.purchase_id = phpbb_purchases.purchase_id \n"
+		. "SET order_status =6 , Out_EC_Date = curdate()  \n"
+		. "WHERE phpbb_orders.order_status = \"5\" AND phpbb_purchases.purchase_id =".$purchase_id." AND phpbb_orders.user_id =".$member_id;
+//echo $sql;
+		$db->sql_query($sql);
+		// если закупка у пользователя не учтена - учитываем
+		$sql = 'SELECT user_id, purchase_id FROM phpbb_user_purchases_count WHERE user_id = '.$member_id.' AND purchase_id = '.$purchase_id;
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		if (!$row) {
+			$sql1='INSERT INTO phpbb_user_purchases_count (user_id, purchase_id) VALUES ( '.$member_id.' , ' .$purchase_id. ')';
+			$result1 = $db->sql_query($sql1);
+		}
+
+		// смотрим количество закупок участника
+		$sql1='SELECT  COUNT(purchase_id) AS cnt FROM phpbb_user_purchases_count WHERE user_id = '.$member_id;
+		$result1 = $db->sql_query($sql1);
+		$row1 = $db->sql_fetchrow($result1);
+		$p_cnt=$row1['cnt'];
+		if ($p_cnt >2){ // если больше 2 то добавляем участника в узкий круг
+			$sql1='SELECT user_id, group_id FROM phpbb_user_group
+				   WHERE  group_id = 17 AND user_id = '.$member_id;
+			$result1 = $db->sql_query($sql1);
+			$row1 = $db->sql_fetchrow($result1);
+			if (!$row1) {
+				$sql1='INSERT INTO phpbb_user_group (group_id, user_id) VALUES (17,'.$member_id.')';
+				$result1 = $db->sql_query($sql1);
+			}
+		
+		}
+		$sql1 = 'SELECT
+				  phpbb_purchases.reserv_id,
+				  phpbb_reservs.user_id
+				FROM phpbb_purchases
+				  LEFT OUTER JOIN phpbb_reservs
+					ON phpbb_purchases.reserv_id = phpbb_reservs.reserv_id
+				WHERE phpbb_purchases.purchase_id ='.$purchase_id;
+		$result1 = $db->sql_query($sql1);
+		$row1 = $db->sql_fetchrow($result1);
+			$reserv_id=$row1['reserv_id'];
+			$org_id=$row1['user_id'];
+
+
+		// Проверяем не открыта ли закупка постоянно
+		$sql1='SELECT
+				  phpbb_reservs.always_open
+				FROM phpbb_purchases
+				  LEFT OUTER JOIN phpbb_reservs
+					ON phpbb_purchases.reserv_id = phpbb_reservs.reserv_id
+				WHERE  phpbb_purchases.purchase_id ='.$purchase_id;
+		$result1 = $db->sql_query($sql1);
+		$row1 = $db->sql_fetchrow($result1);
+		$always_open= $row1['always_open'];
+		if (!$always_open) { //если  закупка не открыта постоянно проверяем на закрытие
+			//проверяем сколько заказов в закупке не выдано и не отказано
+			$sql1='SELECT  COUNT( phpbb_orders.order_status) AS cnt
+					FROM phpbb_catalogs
+					  LEFT OUTER JOIN phpbb_lots
+						ON phpbb_catalogs.catalog_id = phpbb_lots.catalog_id
+					  LEFT OUTER JOIN phpbb_orders
+						ON phpbb_lots.lot_id = phpbb_orders.lot_id
+					WHERE phpbb_catalogs.purchase_id = '.$purchase_id.' AND phpbb_orders.order_status IN (0,1,2,4,5)';
+			$result1 = $db->sql_query($sql1);
+			$row1 = $db->sql_fetchrow($result1);
+			$orders_count= $row1['cnt'];
+			if (!$orders_count) { //если в закупке заказов не осталось - закрываем закупку
+				$db->sql_query('UPDATE ' . RESERVS_TABLE . ' SET status=6 WHERE reserv_id='.$reserv_id);
+				// если закупка не учтена - учитываем
+				$sql1='SELECT user_id, reserv_id
+						FROM phpbb_org_purchases_count
+						WHERE user_id = '.$org_id.' AND reserv_id ='.$reserv_id;
+				$result1 = $db->sql_query($sql1);
+				$row1 = $db->sql_fetchrow($result1);
+				if (!$row1) {
+					$db->sql_query('INSERT INTO phpbb_org_purchases_count (user_id, reserv_id) VALUES ('.$org_id.', '.$reserv_id.')');
+				}
+				
+			}
+		}			
+
+	}
+	unset($param);
+	unset($marked);
+	unset($mark);
+}
+// баланс по ЕЦ
+$sql = "SELECT
+		  phpbb_users.username,
+		  phpbb_users.user_realname,
+		  phpbb_users.user_phone,
+		  phpbb_purchases.purchase_name,
+		  COUNT(phpbb_lots.lot_cost) AS cost_count,
+		  SUM(phpbb_lots.lot_cost) AS cost,
+		  SUM(phpbb_orders.order_delivery) AS delivery,
+		  phpbb_users_1.Org_Dostavka AS Dostavka,
+		  phpbb_orders.In_EC_Date,
+		  phpbb_brands.brand_label,
+		  phpbb_users.user_id,
+		  phpbb_purchases.purchase_id
+		FROM phpbb_orders
+		  LEFT OUTER JOIN phpbb_lots
+			ON phpbb_orders.lot_id = phpbb_lots.lot_id
+		  LEFT OUTER JOIN phpbb_catalogs
+			ON phpbb_lots.catalog_id = phpbb_catalogs.catalog_id
+		  LEFT OUTER JOIN phpbb_purchases
+			ON phpbb_catalogs.purchase_id = phpbb_purchases.purchase_id
+		  LEFT OUTER JOIN phpbb_users
+			ON phpbb_orders.user_id = phpbb_users.user_id
+		  LEFT OUTER JOIN phpbb_reservs
+			ON phpbb_purchases.reserv_id = phpbb_reservs.reserv_id
+		  LEFT OUTER JOIN phpbb_users phpbb_users_1
+			ON phpbb_reservs.user_id = phpbb_users_1.user_id
+		  LEFT OUTER JOIN phpbb_brands
+			ON phpbb_reservs.brand_id = phpbb_brands.brand_id
+		WHERE phpbb_orders.order_status = '5'
+		GROUP BY phpbb_users.username,
+				 phpbb_users.user_realname,
+				 phpbb_purchases.purchase_name,
+				 phpbb_users_1.Org_Dostavka,
+				 phpbb_brands.brand_label,
+				 phpbb_users.user_id,
+				 phpbb_purchases.purchase_id
+		ORDER BY UPPER(phpbb_users.username), UPPER(phpbb_purchases.purchase_name)";
+
+
+//	echo ($sql);
+
+	$result=$db->sql_query($sql);
+
+	$i=0;
+	$Oldi=1;
+	$OldUsername='';
+	while ($row = $db->sql_fetchrow($result)) {
+		$i++;
+		$orders[$i]['username'] = $row['username'];
+		if ($row['username'] != $OldUsername) {
+			$orders[$i]['NewUser'] = '1';
+			if ($i >1 )$orders[$OldI]['UCnt'] = $UCnt;
+			$OldI=$i;
+			$UCnt=0;
+		} else {
+			$orders[$i]['NewUser'] = '0';
+		}
+		$UCnt++;
+		$OldUsername = $row['username'];
+		$orders[$i]['user_realname'] = $row['user_realname'];
+		$orders[$i]['purchase_name'] = $row['purchase_name'];
+		$orders[$i]['user_phone'] = $row['user_phone'];
+		$orders[$i]['cost'] = number_format($row['cost'],0);
+		$orders[$i]['cost_count'] = $row['cost_count'];
+		$orders[$i]['Dostavka'] = number_format( $row['Dostavka'],0);
+		$orders[$i]['purchase_id'] = $row['purchase_id'];
+		$orders[$i]['user_id'] = $row['user_id'];
+		$orders[$i]['In_EC_Date'] = $row['In_EC_Date'];
+		$orders[$i]['Brand_Label'] = $row['brand_label'];
+	}	
+	$orders[$OldI]['UCnt'] = $UCnt;
+	
+	foreach($orders as $k=>$v){
+	$template->assign_block_vars('balance', array(
+           'USERNAME' => $orders[$k]['username'],
+           'USER_REALNAME' => $orders[$k]['user_realname'],
+           'PURCHASE_NAME' => $orders[$k]['purchase_name'],
+           'USER_PHONE' => $orders[$k]['user_phone'],
+           'COST' => number_format($orders[$k]['cost'],0),
+           'COST_COUNT' => $orders[$k]['cost_count'],
+		   'DELIVERY' =>number_format( $orders[$k]['Dostavka'],0),
+		   'IN_EC_DATE' => $orders[$k]['In_EC_Date'],
+		   'PURCHASE_ID' => $orders[$k]['purchase_id'],
+		   'USER_ID' => $orders[$k]['user_id'],
+		   'NEW_USER' => $orders[$k]['NewUser'],
+		   'USER_COUNT' => $orders[$k]['UCnt'],
+		   'BRAND_LABEL' => $orders[$k]['Brand_Label']			   
+		  ));
+	}
+	 
+$template->assign_var('DATE_PRINT',date ("d.m.Y", time()));
+
+
+page_header('Выдача');
+
+
+$template->set_filenames(array(
+	'body' => 'output_ec_body.html',
+));
+
+make_jumpbox(append_sid("{$phpbb_root_path}viewforum.$phpEx"));
+page_footer();
+
+?>

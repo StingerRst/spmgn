@@ -1,0 +1,115 @@
+<!-- INCLUDE adm_header.html -->
+
+<h2>Организаторы</h2>
+<br>
+<h2>Участники</h2>
+<div class="panel bg3" id="message">
+  <DIV class="forabg" >
+    <DIV class="inner" >
+		<ul class="topiclist">
+			<li class="header"><div><dl class="icon">
+			<dd style="width: 20%; text-align: center;"> Имя пользователя</dd>
+			<dd style="width: 20%; text-align: center;"> Зарегистрирован</dd>
+			<dd style="width: 20%; text-align: center;"> Сообщения</dd>
+			<!--<dd style="width: 20%; text-align: center;"> Договор</dd>-->
+			<dd style="width: 19%; text-align: center;"> Управление</dd>
+			</dl></div></li>
+		</ul>
+		<ul class="topiclist cplist pmlist">
+		<!-- BEGIN orguser -->
+
+			<li class="row bg1"><div><dl class="icon">
+			<dd style="width: 20%; text-align: center;"> {orguser.NAME}</dd>
+			<dd style="width: 20%; text-align: center;"> {orguser.DAT}</dd>
+			<dd style="width: 20%; text-align: center;"> {orguser.POST}</dd>
+			<!--<dd style="width: 20%; text-align: center;"> {orguser.DOG}</dd>-->
+			<dd style="width: 19%; text-align: center;"> 
+				<form method="post">
+					<input type="hidden" value="not" name="cmd">
+					<input type="hidden" value="{orguser.NAME_ID}" name="id">
+					<input type="submit" name="submit" value="Заблокировать" class="button1" />
+				</form>
+			</dd>
+			</dl></div></li>
+		<!-- END orguser -->
+		</ul>
+		<br>
+    </DIV>
+  </DIV>		
+</div>
+
+<br>
+<h2>Кандидаты на вступление</h2>
+<div class="panel bg3" id="message">
+  <DIV class="forabg" >
+    <DIV class="inner" >
+		<ul class="topiclist">
+			<li class="header"><div><dl class="icon">
+			<dd style="width: 20%; text-align: center;"> Имя пользователя</dd>
+			<dd style="width: 20%; text-align: center;"> Зарегистрирован</dd>
+			<dd style="width: 20%; text-align: center;"> Сообщения</dd>
+			<!--<dd style="width: 20%; text-align: center;"> Договор</dd>-->
+			<dd style="width: 19%; text-align: center;"> Управление</dd>
+			</dl></div></li>
+		</ul>
+		<ul class="topiclist cplist pmlist">
+		<!-- BEGIN orguser1-->
+
+			<li class="row bg1"><div><dl class="icon">
+			<dd style="width: 20%; text-align: center;"> {orguser1.NAME}</dd>
+			<dd style="width: 20%; text-align: center;"> {orguser1.DAT}</dd>
+			<dd style="width: 20%; text-align: center;"> {orguser1.POST}</dd>
+			<!--<dd style="width: 20%; text-align: center;"> {orguser1.DOG}</dd>-->
+			<dd style="width: 19%; text-align: center;"> 
+				<form method="post">
+					<input type="hidden" value="yes" name="cmd">
+					<input type="hidden" value="{orguser1.NAME_ID}" name="id">
+					<input type="submit" name="submit" value="Одобрить" class="button1" />
+				</form>
+			</dd>
+			</dl></div></li>
+		<!-- END orguser1 -->
+		</ul>
+		<br>
+    </DIV>
+  </DIV>		
+</div>
+
+<br>
+<h2>Заблокированые</h2>
+<div class="panel bg3" id="message">
+  <DIV class="forabg" >
+    <DIV class="inner" >
+		<ul class="topiclist">
+			<li class="header"><div><dl class="icon">
+			<dd style="width: 20%; text-align: center;"> Имя пользователя</dd>
+			<dd style="width: 20%; text-align: center;"> Зарегистрирован</dd>
+			<dd style="width: 20%; text-align: center;"> Сообщения</dd>
+			<!--<dd style="width: 20%; text-align: center;"> Договор</dd>-->
+			<dd style="width: 19%; text-align: center;"> Управление</dd>
+			</dl></div></li>
+		</ul>
+		<ul class="topiclist cplist pmlist">
+		<!-- BEGIN orguser2 -->
+
+			<li class="row bg1"><div><dl class="icon">
+			<dd style="width: 20%; text-align: center;"> {orguser2.NAME}</dd>
+			<dd style="width: 20%; text-align: center;"> {orguser2.DAT}</dd>
+			<dd style="width: 20%; text-align: center;"> {orguser2.POST}</dd>
+			<!--<dd style="width: 20%; text-align: center;"> {orguser2.DOG}</dd>-->
+			<dd style="width: 19%; text-align: center;"> 
+				<form method="post">
+					<input type="hidden" value="yes" name="cmd">
+					<input type="hidden" value="{orguser2.NAME_ID}" name="id">
+					<input type="submit" name="submit" value="Востановить" class="button1" />
+				</form>
+			</dd>
+			</dl></div></li>
+		<!-- END orguser2 -->
+		</ul>
+		<br>
+    </DIV>
+  </DIV>		
+</div>
+
+<!-- INCLUDE adm_footer.html -->

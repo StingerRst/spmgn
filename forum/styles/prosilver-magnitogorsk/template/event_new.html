@@ -1,0 +1,398 @@
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_headerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_header.html -->
+<!-- ENDIF -->
+
+
+<form action="events.php?mode={U_ACTION}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" method="post" id="postform">
+		<div class="panel bg3">
+			<div class="inner">
+				<span class="corners-top"><span></span></span>
+				<div style="width: 100%;">
+					<h2>{L_EVENT_A}</h2>
+<div id="cp-main" class="ucp-main">
+	
+	<div class="panel" id="postingbox">
+		<div class="inner"><span class="corners-top"><span></span></span>
+
+
+			<fieldset class="fields1">
+				
+				<!-- IF S_EDIT -->
+				<dl style="clear: left; height: 20px; line-height: 20px;">
+					<dt><label for="subject">Отправитель:</label></dt>
+					<dd>{AUTHOR}</dd>
+				</dl>
+				<!-- ELSE -->
+				<!-- IF CALENDAR_ADMIN -->
+				<dl style="clear: left;">
+					<dt><textarea id="username_list" name="username_list" class="inputbox" cols="50" rows="5">{USER_LIST}</textarea></dt>
+					<dd><span><a href="./memberlist.php?mode=searchuser&amp;form=postform&amp;field=username_list&amp;select_single=<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" onclick="find_username(this.href); return false;">Найти пользователя</a></span></dd>
+				</dl>
+				<!-- ENDIF -->
+				<!-- ENDIF -->
+				
+				<dl style="clear: left; height: 20px; line-height: 20px;">
+					<dt><label for="subject">Заголовок:</label></dt>
+					<dd><input disable="true" type="text" name="subject" id="subject" size="45" maxlength="64" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
+				</dl>
+
+	            <style type="text/css">
+<!--
+	#mycalendar-panel img, #mycalendar-panel select {
+		vertical-align: middle;
+	}
+	ol {
+		list-style: none;
+	}
+	.calendar_panel{
+		background-color: #ECF1F3;
+		border: solid 1px #536482;
+	}
+	.calendar, .monthyear, .dayheaders {
+		width: 18em;
+		overflow: hidden;
+		margin: 0px;
+		padding: 0px;
+		padding-left: 0.25em;
+		text-align: center;
+	}
+	.calendar li a {
+		display: block;
+		background-image: url({T_THEME_PATH}/../imageset/corners.gif);
+	}
+	.calendar li {
+		width: 2.3em;
+		height: 2.3em;
+		margin: 0.1em;
+		background-position: top left;
+		display: inline; /* For IE */
+	}
+	.calendar li a {
+		display: block;
+		width: 2.3em;
+		height: 1.8em;
+		padding-top: 0.5em;
+		background-position: bottom right;
+	}
+	.monthyear li {
+		display: block;
+		height: 2em;
+		width: 12em;
+	}
+	.content ol {
+		margin: 0;
+	}
+	.monthyear li.previous, .monthyear li.next {
+		width: 2.5em;
+	}
+	.dayheaders li.left {
+		width: 2.5em;
+	}
+	.dayheaders li {
+		display: block;
+		width: 2.5em;
+		height: 1.5em;
+	}
+	.calendar li, .monthyear li, .dayheaders li {
+		float: left;
+	}
+	.calendar a {
+		text-decoration: none;
+	}
+	.calendar li:hover {
+		background-color: #ccb;
+	}
+	.sundaystart .firstday { margin-left: 0.1px; }
+	.mondaystart .firstday { margin-left: 2.6em; }
+	.tuesdaystart .firstday { margin-left: 5.1em; }
+	.wednesdaystart .firstday { margin-left: 7.6em; }
+	.thursdaystart .firstday { margin-left: 10.1em; }
+	.fridaystart .firstday { margin-left: 12.6em; }
+	.saturdaystart .firstday { margin-left: 15.1em; }
+
+	#cp-main .panel ol {
+		font-size:1em;
+		margin-left:0em;
+	}
+
+-->
+</style>
+<script language="Javascript" src="./js/mycalendar.js"></script>
+<SCRIPT language="Javascript">
+// <![CDATA[
+
+var calendarFormat = 'd-m-y';
+var calendarMonths = new Array('Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь');
+var calendarWeekdaysShort = new Array("Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб");
+var calendarWeekdays = new Array("Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота");
+var previous_month = 'Предыдущий месяц';
+var next_month = 'Следующий месяц';
+var image_previous = '{T_THEME_PATH}/images/arrow_left.gif';
+var image_next = '{T_THEME_PATH}//images/arrow_right.gif';
+var weekday_start = 1;
+
+var insert_id = 'date_picker';
+
+var today = new Date();
+var day = today.getDate();
+var month = today.getMonth();
+var year  = y2k(today.getYear());
+
+var currentDay = day;
+var currentMonth = month;
+var currentYear = year;
+
+var targetDateField;
+
+function change_payment(source)
+{
+	var text = document.getElementById(source).value;
+	var new_text = text.replace(/^\s+|\s+$/g,"");
+	var reg;
+		reg=/^(?:([0-2]{0,1})\d):(?:[0-5]\d)$/i;
+		var regres;
+		if (!reg.test(new_text)) {
+			alert('Поле "Время" не соответствует заданному формату.\n Пример правильного заполнения 12:30');
+			//document.getElementById( "payment"+source + purchase_id ).value = payment_timeMsg;
+			return;
+		}else {
+			regres = reg.exec(new_text);
+			if (regres[1]=="") new_text="0"+new_text;
+			document.getElementById(source).value = new_text;
+		}
+}
+
+function select_date(formField)
+{
+	// get the reference to the target element and setup the date
+	targetDateField = formField;
+	var dateString = targetDateField.value;
+
+	if ((dateString != '')&&(dateString != '00-00-0000'))
+	{
+		// convert the user format of the date into something we can parse to make a javascript Date object
+		// we need to pad with placeholders to get the rigth offset
+		tmp_format = calendarFormat.replace(/m/i, 'mm').replace(/d/i, 'dd').replace(/y/i, 'yyyy');
+		tmp_yOffset = tmp_format.indexOf('y');
+		tmp_mOffset = tmp_format.indexOf('m');
+		tmp_dOffset = tmp_format.indexOf('d');
+		var today = new Date(dateString.substring(tmp_yOffset, tmp_yOffset + 4), dateString.substring(tmp_mOffset, tmp_mOffset + 2) - 1, dateString.substring(tmp_dOffset, tmp_dOffset + 2));
+		if ((today == "Invalid Date") || (isNaN(today)))
+		{
+   			var today = new Date();
+		}
+	} else
+	{
+		var today = new Date();
+	}
+	day = today.getDate();
+	month = today.getMonth();
+	year  = y2k(today.getYear());
+	fill_div(insert_id, build_calendar(month, day, year));
+	fill_calendar(month, year);
+	document.getElementById(insert_id).style.top = getBounds(formField).top+"px";
+	document.getElementById(insert_id).style.left = 100 +"px";
+	document.getElementById(insert_id).style.display = 'block';
+}
+
+function fill_calendar(month, year)
+{
+	for (i = 1; i <= calendarDays[month]; i++)
+	{
+		fill_day(i, '<a href="javascript: void(0);" onclick="sendDate(' + (month + 1) + ', ' + i + ', ' + year + ');" title="' + formatDate(month + 1, i, year) + '">' + i + '</a>');
+	}
+}
+
+function sendDate(month, day, year)
+{
+	targetDateField.value = formatDate(month, day, year);
+	var dest = document.getElementById(insert_id);
+	dest.style.display = 'none';
+}
+// ]]>
+</SCRIPT>
+<dl style="clear: left; height: 20px; line-height: 20px;">
+	<dt><label for="date_begin">Дата начала:</label></dt>
+	<dd>
+		<input type="text" class="inputbox autowidth" size="7" maxlength="6" title="Время оплаты. Пример правильного заполнения 12:30" id="time_begin" name="time_begin"
+			onChange="javascript:change_payment('time_begin');" onclick="javascript:if(strequ(this.value,'00:00'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='00:00';" value="{NOW_TIME1}"/>
+		<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Дата оплаты. Пример правильного заполнения 07/11/2009" id="date_begin" name="date_begin"
+			value="{TODAY1}"/>
+		<a href="javascript: void(0);" onClick="select_date(document.getElementById('date_begin'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>
+	</dd>
+</dl>
+<dl style="clear: left; height: 20px; line-height: 20px;">
+	<dt><label for="date_end">Дата окончания:</label></dt>
+	<dd>
+		<input type="text" class="inputbox autowidth" size="7" maxlength="6" title="Время оплаты. Пример правильного заполнения 12:30" id="time_end" name="time_end"
+			onChange="javascript:change_payment('time_end');" onclick="javascript:if(strequ(this.value,'00:00'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='00:00';" value="{NOW_TIME2}"/>
+		<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Дата оплаты. Пример правильного заполнения 07/11/2009" id="date_end" name="date_end"
+			value="{TODAY2}"/>
+		<a href="javascript: void(0);" onClick="select_date(document.getElementById('date_end'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>
+	</dd>
+</dl>
+	<!--	onClick="javascript:if(strequ(this.value,'00/00/0000'))this.value='';"
+	onChange="javascript:change_payment(' + purchase.id + ',\'_date\');"  -->
+	<!--	value="'+(purchase.payment_date!=""?esc_tags(purchase.payment_date):'00-00-0000')+'" -->
+		<div id="date_picker" style="display:none;position:absolute;top:0px;left:0px;z-index:100;">
+		</div>
+
+				<div style="clear: left;">
+					<label for="icon"><b>Флаг события:</b></label></div>
+			
+						<div style="height:40px">{FLAG}</div>
+				
+
+				<script type="text/javascript">
+// <![CDATA[
+	var form_name = 'postform';
+	var text_name = 'message';
+	var load_draft = false;
+	var upload = false;
+
+	// Define the bbCode tags
+	var bbcode = new Array();
+	var bbtags = new Array('[b]','[/b]','[i]','[/i]','[u]','[/u]','[quote]','[/quote]','[code]','[/code]','[list]','[/list]','[list=]','[/list]','[img]','[/img]','[url]','[/url]','[flash=]', '[/flash]','[size=]','[/size]');
+	var imageTag = false;
+
+	// Helpline messages
+	var help_line = {
+		b: 'Жирный текст: [b]text[/b]',
+		i: 'Наклонный текст: [i]text[/i]',
+		u: 'Подчеркнутый текст: [u]text[/u]',
+		q: 'Цитата: [quote]text[/quote]',
+		c: 'Код: [code]code[/code]',
+		l: 'Список: [list]text[/list]',
+		o: 'Нумерованный список: [list=]text[/list]',
+		p: 'Вставить изображение: [img]http://image_url[/img]',
+		w: 'Вставить ссылку: [url]http://url[/url] или [url=http://url]URL text[/url]',
+		a: 'Вставить вложение в текст сообщения: [attachment=]filename.ext[/attachment]',
+		s: 'Цвет шрифта: [color=red]text[/color] Совет: Вы можете использовать также конструкцию color=#FF0000',
+		f: 'Размер шрифта: [size=85]small text[/size]',
+		e: 'Список: добавить элемент списка',
+		d: 'Флэш: [flash=width,height]http://url[/flash]'
+		
+	}
+
+	var panels = new Array('options-panel', 'attach-panel', 'poll-panel');
+	var show_panel = 'options-panel';
+
+
+// ]]>
+</script>
+<script type="text/javascript" src="./js/editor.js"></script>
+
+
+<div id="colour_palette" style="display: none;">
+	<dl style="clear: left;">
+		<dt><label>Цвет шрифта:</label></dt>
+		<dd>
+		<script type="text/javascript">
+		// <![CDATA[
+			function change_palette()
+			{
+				dE('colour_palette');
+				e = document.getElementById('colour_palette');
+				
+				if (e.style.display == 'block')
+				{
+					document.getElementById('bbpalette').value = 'Скрыть панель цветов';
+				}
+				else
+				{
+					document.getElementById('bbpalette').value = 'Цвет шрифта';
+				}
+			}
+
+			colorPalette('h', 15, 10);
+		// ]]>
+		</script>
+		</dd>
+	</dl>
+</div>
+
+<div id="format-buttons">
+	<input type="button" class="button2" accesskey="b" name="addbbcode0" value=" B " style="font-weight:bold; width: 30px" onclick="bbstyle(0)" title="Жирный текст: [b]text[/b]" />
+	<input type="button" class="button2" accesskey="i" name="addbbcode2" value=" i " style="font-style:italic; width: 30px" onclick="bbstyle(2)" title="Наклонный текст: [i]text[/i]" />
+	<input type="button" class="button2" accesskey="u" name="addbbcode4" value=" u " style="text-decoration: underline; width: 30px" onclick="bbstyle(4)" title="Подчеркнутый текст: [u]text[/u]" />
+	
+		<input type="button" class="button2" accesskey="q" name="addbbcode6" value="Quote" style="width: 50px" onclick="bbstyle(6)" title="Цитата: [quote]text[/quote]" />
+	
+	<input type="button" class="button2" accesskey="c" name="addbbcode8" value="Code" style="width: 40px" onclick="bbstyle(8)" title="Код: [code]code[/code]" />
+	<input type="button" class="button2" accesskey="l" name="addbbcode10" value="List" style="width: 40px" onclick="bbstyle(10)" title="Список: [list]text[/list]" />
+	<input type="button" class="button2" accesskey="o" name="addbbcode12" value="List=" style="width: 40px" onclick="bbstyle(12)" title="Нумерованный список: [list=]text[/list]" />
+	<input type="button" class="button2" accesskey="t" name="addlitsitem" value="[*]" style="width: 40px" onclick="bbstyle(-1)" title="Элемент списка: [*]text[/*]" />
+	
+		<input type="button" class="button2" accesskey="p" name="addbbcode14" value="Img" style="width: 40px" onclick="bbstyle(14)" title="Вставить изображение: [img]http://image_url[/img]" />
+	
+		<input type="button" class="button2" accesskey="w" name="addbbcode16" value="URL" style="text-decoration: underline; width: 40px" onclick="bbstyle(16)" title="Вставить ссылку: [url]http://url[/url] или [url=http://url]URL text[/url]" />
+	
+	<select name="addbbcode20" onchange="bbfontstyle('[size=' + this.form.addbbcode20.options[this.form.addbbcode20.selectedIndex].value + ']', '[/size]');this.form.addbbcode20.selectedIndex = 2;" title="Размер шрифта: [size=85]small text[/size]">
+		<option value="50">Очень маленький</option>
+		<option value="85">Маленький</option>
+		<option value="100" selected="selected">Нормальный</option>
+		
+			<option value="150">Большой</option>
+			
+				<option value="200">Огромный</option>
+			
+	</select>
+	<input type="button" class="button2" name="bbpalette" id="bbpalette" value="Цвет шрифта" onclick="change_palette();" title="Цвет шрифта: [color=red]text[/color] Совет: Вы можете использовать также конструкцию color=#FF0000" />
+	
+</div>
+
+
+				<div id="smiley-box">
+		<!-- IF S_SMILIES_ALLOWED and .smiley -->
+			<strong>Смайлики</strong><br />
+			<!-- BEGIN smiley -->
+				<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+			<!-- END smiley -->
+		<!-- ENDIF -->
+		<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED-->
+			<br /><a href="{U_MORE_SMILIES}" onclick="popup(this.href, 300, 350, '_phpbbsmilies'); return false;">Добавить смайлики…</a>
+		<!-- ENDIF -->
+					
+					
+
+				</div>
+
+				<div id="message-box">
+					<textarea name="message" id="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
+				</div>
+			</fieldset>
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+
+	<div class="panel bg2">
+	<div class="inner"><span class="corners-top"><span></span></span>
+		<fieldset class="submit-buttons">
+			<input type="hidden" name="purchase_id" value="{PURCHASE_ID}" />
+			<input type="hidden" name="purchase_name" value="{PURCHASE_NAME}" />
+			<input type="hidden" name="purchase_url" value="{PURCHASE_URL}" />
+			<!-- IF S_EDIT -->
+			<input type="hidden" name="event_id" value="{EVENT}" />
+			<!-- ENDIF -->
+  		<input type="submit" accesskey="s" tabindex="6" name="post_event" value="Отправить" class="button1" />&nbsp;
+		</fieldset>
+	<span class="corners-bottom"><span></span></span></div>
+	</div>
+
+</div>
+
+					<div class="clear"></div>
+				</div>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+		</div>
+	</form>
+
+
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_footerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_footer.html -->
+<!-- ENDIF -->
+ 

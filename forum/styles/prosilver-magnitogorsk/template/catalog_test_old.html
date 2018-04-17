@@ -1,0 +1,1725 @@
+	<!-- INCLUDE overall_header.html -->
+<div id="bg" class="my_bg" style="
+	display: none;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+	position: fixed;
+	background-color: #404040;
+	opacity:.4;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=40);
+	">
+</div>
+<div id='full_results' class="my_popup" style='
+	display: none;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	z-index: 1000;
+	left: 0px;
+	top: 0px'>
+
+</div>
+
+<script type="text/javascript">
+
+function detectIE6()
+{
+  var browser = navigator.appName;
+  if (browser == "Microsoft Internet Explorer"){
+    var b_version = navigator.appVersion;
+    var re = /\MSIE\s+(\d\.\d\b)/;
+    var res = b_version.match(re);
+    if (res[1] <= 6){
+      return true;
+    }
+  }
+  return false;
+}
+
+function patch_bg_size()
+{
+	el.style.setExpression('height','eval(document.getElementById("bottom").offsetTop - document.getElementById("bg").offsetTop) + "px"');
+}
+
+var IE6 = detectIE6();
+
+if (IE6)
+{
+	var el = document.getElementById('full_results');
+	el.style.setExpression('top','eval(document.documentElement.scrollTop) + "px"');
+	el.style.position = "absolute";
+	el = document.getElementById('bg');
+	el.style.setExpression('top','eval(document.documentElement.scrollTop) + "px"');
+	el.style.position = "absolute";
+
+	document.documentElement.style.backgroundImage = "url('{T_THEME_PATH}/images/i/e.gif')";
+	document.documentElement.style.backgroundAttachment = "fixed";
+	
+	onload_functions.push("patch_bg_size()");
+}
+
+</script>
+
+
+ <script type="text/javascript">
+ 
+ var first_full = 0;
+ function addHandler(object, event, handler)
+{
+  if (typeof object.addEventListener != 'undefined')
+    object.addEventListener(event, handler, false);
+  else if (typeof object.attachEvent != 'undefined')
+    object.attachEvent('on' + event, handler);
+  else
+    throw "Incompatible browser";
+}
+
+function removeHandler(object, event, handler)
+{
+  if (typeof object.removeEventListener != 'undefined')
+    object.removeEventListener(event, handler, false);
+  else if (typeof object.detachEvent != 'undefined')
+    object.detachEvent('on' + event, handler);
+  else
+    throw "Incompatible browser";
+}
+
+function InitPage() {
+//catalog_search_keywords
+    addHandler(document.getElementById("catalog_search_keywords"),"keypress",sendSearchByKey);
+    //addHandler(document.getElementById("pagenumber"),"keypress",sendPageByKey);
+//     alert(1);    
+};
+
+function sendSearchByKey(e) {
+    var key = (!e.charCode? e.keyCode : e.charCode);
+    if (key == 13) {
+        update_catalog_filter();
+    };
+};
+
+function is_numeric(value) {
+	var preg = /^\d*$/;
+	return preg.test(value);
+}
+
+// function sendPageByKey(e) {
+//     var key = (!e.charCode? e.keyCode : e.charCode);
+//     var page = document.getElementById("pagenumber").value;
+//     var pagecount = Math.floor((n-1)/(onpage)) + 1;
+//     if (key == 13 && is_numeric(page) && page>0 && page<=pagecount) {
+//         goto_page(page);
+//     };
+// };
+
+function page_selector_goto_page(page)
+{
+	var pagecount = Math.floor((n-1)/(onpage)) + 1;
+	if (is_numeric(page) && page>0 && page<=pagecount)
+	{
+		goto_page(page);
+	};
+}
+
+</script>
+
+<SCRIPT language="Javascript" src="js/common1.js"></SCRIPT>
+<!--<SCRIPT language="Javascript" src="js/browser.js"></SCRIPT>-->
+<link rel="stylesheet" type="text/css" href="{T_THEME_PATH}/css.css" media="screen" />
+
+<div class="panel">
+   <div class="inner"><span class="corners-top"><span></span></span>
+
+<h2>Каталоги</h2>
+
+<!-- INFO SEARCH -->
+<!-- IF S_USER_IS_ORGANIZER -->
+<a href="org.php?i=1&mode=edit&cat={CATALOG_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">Редактировать</a><br><br>
+<!-- ENDIF -->
+<table id="infosearch" class="w100">
+<tr>
+
+<td class="info">
+
+	<table class="heading w100">
+	<tr>
+	<td><img src="{T_THEME_PATH}/images/i/bg-corner-l.gif" style="width: 15px; height: 30px;"></td>
+	<td class="vam text nowrap bold white em13">Информация о закупке</td>
+	<td><img src="{T_THEME_PATH}/images/i/icon-info.gif" style="width: 30px; height: 30px; border: 0px solid;"></td>
+	<td class="crnr" style="width: 50%;"></td>
+	</tr>
+	</table>
+
+	
+	<div style="padding: 10px">
+	<table class="data w100">
+	<tr>
+	<td class="text w30">Закупка</td>
+	<td class="text w70"><a href="{PURCHASES_URL}" class="blue">{PURCHASES_NAME}</a></td>
+	</tr>
+	<tr>
+	<td colspan="2" class="dotline"></td>
+
+	</tr>
+	<tr>
+	<td class="text">Каталог</td>
+	<td class="text">{CATALOG_NAME}</td>
+	</tr>
+	<tr>
+	<td colspan="2" class="dotline"></td>
+	</tr>
+
+	<tr>
+	<td class="text">Организатор</td>
+	<td class="text"><a href="memberlist.php?do_=188&amp;mode=viewprofile&amp;u={USER_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">{USERNAME}</a></td>
+	</tr>
+	<tr>
+	<td colspan="2" class="dotline"></td>
+	</tr>
+	<tr>
+
+	<td class="text">Состояние</td>
+	<td class="text">{STATUS}</td>
+	</tr>
+	<tr>
+	<td colspan="2" class="dotline"></td>
+	</tr>
+	</table>
+	</div>
+
+</td>
+
+<td style="background: #fff;"><img src="{T_THEME_PATH}/images/i/e.gif" style="width: 20px;"><br /></td>
+
+<td class="search">
+
+	<table class="heading w100">
+	<tr>
+	<td><img src="{T_THEME_PATH}/images/i/bg-corner-l.gif" style="width: 15px; height: 30px;"></td>
+	<td class="vam text nowrap bold white em13">Поиск по каталогу</td>
+	<td><img src="{T_THEME_PATH}/images/i/icon-search.gif" style="width: 30px; height: 30px; border: 0px solid;"></td>
+
+	<td class="crnr" style="width: 50%"></td>
+	</tr>
+	</table>
+	
+	<div style="padding: 10px">
+	<table class="data" style="width: 90%">
+	<tr>
+	<td class="text">
+		<table>
+		<tr class="vam" id="searchrow">
+
+		<td><input type="Checkbox" id="catalog_search_article" checked></td>
+		<td class="pr1" >Артикул</td>
+		<td><input type="Checkbox" id="catalog_search_name" checked></td>
+		<td class="pr1" >Название</td>
+		<td><input type="Checkbox" id="catalog_search_desc"></td>
+		<td class="pr1">Описание</td>
+		<td id="tdbefore_search"><input type="Checkbox" id="catalog_search_results"></td>
+		<td class="pr1">В найденном</td>
+		</tr>
+
+		</table>
+	</td>
+	</tr>
+	
+	<tr><td class="dotline"></td></tr>
+	
+	<tr>
+	<td>
+		<table>
+		<tr>
+		<td class="w100"><input type="Text" style="width: 99%" onblur="if(this.value=='')this.value=defMsg;" onclick="if(this.value==defMsg)this.value='';" value="Поиск в каталоге…" title="Ключевые слова" id="catalog_search_keywords" onkeypress="sendSearchByKey(event);" name="keywords" /></td>
+
+		<td class="pl05"><img src="{T_THEME_PATH}/images/i/button-search.gif" title="Применить фильтр" onclick="javascript:update_catalog_filter();"></td>
+		<td class="pl05"><img src="{T_THEME_PATH}/images/i/button-reset.gif" title="Сброс фильтров" onclick="javascript:reset_catalog_filter();"></td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+	
+	<tr><td class="dotline"></td></tr>
+	
+	<tr>
+	<td class="text green em11" id="sort_block">
+
+	
+    </td>
+	</tr>
+	
+	</table>
+	</div>
+
+</td>
+
+</tr>
+</table>
+
+<div class="clear em1"><br /></div>
+<!-- LAYERS -->
+
+<table id="layers">
+<tr>
+<td class="active" id="catalog_header_corner"><img src="{T_THEME_PATH}/images/i/bg-corner-l.gif" style="width: 15px; height: 30px;"></td>
+<td class="active vam nowrap bold blue em13 pr2 pl05" id="catalog_header"><a href="#" onclick="change_catalog_header(0);return false;" title="Все позиции каталога">Все позиции каталога</a></td>
+<td class="vam nowrap bold em13 pr2 pl1" id="catalog_header_cmp"><a href="#" onclick="change_catalog_header(1);return false;" id="cmp_header_link" title="Список сравнения">Список сравнения (0)</a></td>
+<td id="catalog_header_corner_cmp"><img src="{T_THEME_PATH}/images/i/bg-corner-rsm.gif" style="width: 15px; height: 30px;" ></td>
+<td style="background: transparent;display:none" class="vam" id="clear_cmp"><a href="javascript:clear_cmp_list();" title="Очистить список">Очистить список</a></td>
+</tr>
+</table>
+
+<!-- RESULTS -->
+<div id="results" style="width: 98%;">
+
+<table class="nav w100">
+	<tr>
+		<td class="w25 dotline"><span class="desc">Внешний вид:</span></td>
+		<td class="w50 dotline"><span class="desc">Позиций на странице:</span></td>
+		<td class="w25 dotline"><span class="desc">Управление страницами:</span></td>
+	</tr>
+
+	<tr>
+
+		<td>
+			<table class="mt1 ml1">
+				<tr id="cols_selector">
+				</tr>
+			</table>
+		</td>
+
+		<td class="p105" id="show_how_many_td">
+		</td>
+
+		<td>
+			<table class="mt1 ml1">
+				<tr>
+					<td class="icon" id="pagefirst"><a href="" id="pagefirst_link" title="Первая страница"><img src="{T_THEME_PATH}/images/i/icon-first.gif"></a><img id="pagefirst_empty" src="{T_THEME_PATH}/images/i/e.gif" style="display:none"></td>
+					<td class="icon" id="pageback"><a href="" id="pageback_link" title="Предыдущая страница"><img src="{T_THEME_PATH}/images/i/icon-back.gif"></a><img id="pageback_empty" src="{T_THEME_PATH}/images/i/e.gif" style="display:none"></td>
+					<td class="icon"><input id="pagenumber"  onChange="javascript:page_selector_goto_page(this.value);" type="Text" class="red bold" style="border: 1px solid rgb(161, 195, 230); padding: 7px 5px 0pt; height: 23px; width: 20px;"></td>
+
+					<td class="icon vam em11 blue" id="pagecount"> из 0 </td>
+					<td class="icon" id="pagenext"><a href="" id="pagenext_link" title="Следующая страница"><img src="{T_THEME_PATH}/images/i/icon-next.gif"></a><img id="pagenext_empty" src="{T_THEME_PATH}/images/i/e.gif" style="display:none"></td>
+					<td class="icon" id="pagelast"><a href="" id="pagelast_link" title="Последняя страница"><img src="{T_THEME_PATH}/images/i/icon-last.gif"></a><img id="pagelast_empty" src="{T_THEME_PATH}/images/i/e.gif" style="display:none"></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	
+	<tr>
+
+		<td class="dotline" colspan="3"><br/></td>
+	</tr>
+</table>
+<!-- IF FORUSER -->
+<a class="button2" href="#" onclick="show_add();return false;">Добавить и заказать позицию</a>
+<!-- ENDIF -->
+<div id="catalog_results" class="class_result" style="word-break: break-word;">
+</div>
+
+<table class="nav w100">
+	<tr>
+		<td class="w25 dotline"><span class="desc">Внешний вид:</span></td>
+		<td class="w50 dotline"><span class="desc">Позиций на странице:</span></td>
+
+		<td class="w25 dotline"><span class="desc">Управление страницами:</span></td>
+	</tr>
+
+	<tr>
+		<td>
+			<table class="mt1 ml1">
+				<tr id="cols_selector_bottom">
+				</tr>
+			</table>
+
+		</td>
+                        
+		<td class="p105" id="show_how_many_td_bottom">
+		<!-- <a href=""><div class="icon white bold em11 tahoma fleft">20</div></a>
+		<a href=""><div class="icona white bold em11 tahoma fleft">40</div></a> -->
+		<!-- <div class="mt2 em12" id="show_how_many">Показаны 21-40 из 98</div> -->
+		</td>
+
+		<td>
+			<table class="mt1 ml1">
+				<tr>
+
+					<td class="icon" id="pagefirst_bottom"><a href="" id="pagefirst_link_bottom" title="Первая страница"><img src="{T_THEME_PATH}/images/i/icon-first.gif"></a><img id="pagefirst_empty_bottom" src="{T_THEME_PATH}/images/i/e.gif" style="display:none"></td>
+					<td class="icon" id="pageback_bottom"><a href="" id="pageback_link_bottom" title="Предыдущая страница"><img src="{T_THEME_PATH}/images/i/icon-back.gif"></a><img id="pageback_empty_bottom" src="{T_THEME_PATH}/images/i/e.gif" style="display:none"></td>
+					<td class="icon"><input id="pagenumber_bottom" onChange="javascript:page_selector_goto_page(this.value);" type="Text" class="red bold" style="border: 1px solid rgb(161, 195, 230); padding: 7px 5px 0pt; height: 23px; width: 20px;"></td>
+					<td class="icon vam em11 blue" id="pagecount_bottom"> из 0 </td>
+					<td class="icon" id="pagenext_bottom"><a href="" id="pagenext_link_bottom" title="Следующая страница"><img src="{T_THEME_PATH}/images/i/icon-next.gif"></a><img id="pagenext_empty_bottom" src="{T_THEME_PATH}/images/i/e.gif" style="display:none"></td>
+					<td class="icon" id="pagelast_bottom"><a href="" id="pagelast_link_bottom" title="Последняя страница"><img src="{T_THEME_PATH}/images/i/icon-last.gif"></a><img id="pagelast_empty_bottom" src="{T_THEME_PATH}/images/i/e.gif" style="display:none"></td>
+				</tr>
+			</table>
+
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="dotline" colspan="3"><br/></td>
+	</tr>
+</table>
+
+
+</div>
+
+   <span class="corners-bottom"><span></span></span></div>
+</div>
+
+<SCRIPT language="Javascript">
+	function add_save_order(){
+			var form = $("#postimg_00");
+			var options = {
+				url : "function_po.php{SID}",
+				target : "#status00",
+				dataType: 'json',
+				success : function(result, errors)
+				{
+					if ("ok"==result.res){
+						alert('Товар успешно добавлен.');
+						//window.location.href = 'catalog.php?catalog_id={CATALOG_ID}&lot_id='+result.id+'<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->';
+						window.location.href = 'catalog.php?catalog_id={CATALOG_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->';
+					}
+				},
+				errorr:    function() { 
+					alert('Errorr!!!'); 
+				} 
+			};
+			$(form).ajaxSubmit(options);
+ 		close_full();
+	}
+	function replace() {
+		document.getElementById("edit_price_00").value = document.getElementById("edit_price_00").value.replace(/^\.|\d+\..*\.|[^\d\.{1}]/,'') ;
+	} ;
+	function show_add ()
+	{
+
+		var wheight = get_wh();
+		
+		var html = "";
+			//html += '<div class="bg" style="top: 0px; height: expression(eval(document.getElementById("bottom").offsetTop)+\'px\');"></div>';
+			html += '<div id = "show_add" class="full_results" style="height: 325px;width: 400px; margin-top:' + (wheight && wheight < 680 ? (wheight - 480)/2 : 100) + 'px">';
+			
+			html += '<table style="height: 30px;" class="pl"><tr>';
+			html += '<td class="head w100">Добавление и заказ новой позиции</td>';
+			html += '<td class="text"><a href="#" onclick="return close_full();" title="Закрыть">Закрыть</a></td>';
+			html += '<td class="img"><a href="#" onclick="return close_full();" title="Закрыть"><img src="{T_THEME_PATH}/images/i/icon-close.gif"></a></td>';
+			html += '</tr>';
+			html += '</table>';
+			
+			html += '<FORM ACTION="function_po.php" METHOD="post" ENCTYPE="multipart/form-data" ACCEPT="image/png,image/gif,image/jpeg,image/bmp" id="postimg_00">';
+			html += '<TABLE height="250" class="w100">';
+			html += '<TR>';
+			// make edit controls
+			html += '<TD height="250">';
+
+			html += '<TABLE class="w100">';
+			html += '<TR><TD align="right">';
+			html += '<B>Название: </B></TD><TD>';
+			html += '<INPUT ID="edit_name_00" NAME="edit_name_00" TYPE="TEXT" VALUE="">';
+			html += '</TD></TR>';
+		
+			html += '<TR><TD align="right">';
+			html += '<B>Цена: </B></TD><TD>';
+			html += '<INPUT ID="edit_price_00" NAME="edit_price_00" TYPE="TEXT" VALUE="" onkeyup="replace()">';
+			html += '</TD></TR>';
+
+			html += '<TR><TD align="right">';
+			html += '<B>Описание: </B></TD><TD>';
+			html += '<TEXTAREA style="width:95%" ID="edit_desc_00" NAME="edit_desc_00" ROWS="5" COLS="30"></TEXTAREA>';
+			html += '</TD></TR>';
+		
+	<!-- BEGIN prop -->
+			html += '<TR><TD align="right">';
+			html += '<B>{prop.NAME}: </B></TD><TD>';
+			html += '<INPUT ID="edit_{prop.NAME}_00" NAME="edit_{prop.NAME}_00" TYPE="TEXT" VALUE="">';
+			html += '</TD></TR>';
+	<!-- END prop -->
+			html += '<TR><TD align="right">';
+			html += '<B>Изображение: </B></TD><TD>';
+			html += '<INPUT TYPE="HIDDEN" NAME="MAX_FILE_SIZE" VALUE="500000" />'
+			html += '<INPUT ID="img_fp_00" NAME="img_fp_00" TYPE="FILE"><br/>';
+			html += '<div id="status00"></div>';
+			html += '</TD></TR>';
+			html += '<TR><TD align="right">';
+			html += '<B>Изображение по URL: </B></TD><TD>';
+			html += '<INPUT ID="edit_img_00" NAME="edit_img_00" TYPE="TEXT" VALUE=""><br/>';
+			html += '<div id="status00"></div>';
+			html += '</TD></TR>';
+			// make options
+			html += '</TABLE>';
+			html += '</TD></TR>';
+			html += '</TABLE>';
+			html += '<input type="hidden" value="add_save_order" name="cmd" id="cmd">';
+			html += '<input type="hidden" value="{CATALOG_ID}" name="catalog_id_00" id="catalog_id_00">';
+			html += "</FORM>";
+			
+			html += '<table style="height: 30px;" class="pl">';
+			html += '<tr>';
+			html += '<td class="img" id="fullloadb00" style="display:none"><img src="{T_THEME_PATH}/images/i/load-blue.gif"></a></td>';
+			html += '<td class="img"><a href="javascript:add_save_order();" title="Сохранить и Добавить в корзину"><img src="{T_THEME_PATH}/images/i/icon-cart.gif"></a></td>';
+			html += '<td class="text red"><a href="javascript:add_save_order();" class="red" title="Сохранить и Добавить в корзину">Сохранить&nbsp;и&nbsp;Добавить&nbsp;в&nbsp;корзину</a></td>';
+			html += '<td class="img" id="fullload00" style="display:none"><img src="{T_THEME_PATH}/images/i/load.gif"></a></td>';
+			html += '</tr>';
+			html += '</table>';
+			html += '</div>';
+
+			document.getElementById('full_results').innerHTML = html;
+	//        make_bigimg_selector(id);
+					
+					document.getElementById('full_results').style.display = 'block';
+	//				document.getElementById('bg').style.display = 'block';
+
+	document.getElementById('full_results').style.display = 'block';
+	document.getElementById('bg').style.display = 'block';
+	$(document).mousemove(function(event){
+		$('div#show_add').css('top',$(window.parent).scrollTop()-$("iframe", top.document).offset().top);
+	});
+
+	};
+
+function esc_tags2(s)
+{
+	s = s.toString();
+	s = s.replace(/</g,'&lt;');
+	s = s.replace(/>/g,'&gt;');
+	s = s.replace(/"/g,'&quot;');
+	s = s.replace(/\n/g,'<br>');
+	return s;
+}
+
+function clear_cmp_list() {
+    if (view_cmp) {
+        items = {};
+        change_catalog_header(0);
+        setCmpHeader();
+    }
+    else {
+        items_cmp = {};
+        setCmpHeader();
+    };
+    view_catalog_header();
+};
+
+function object_copy(src)
+{
+	var o = new Object;
+	for (var key in src)
+	{
+		o[key] = src[key];
+	}
+	return o;
+}
+
+
+function reset_catalog_filter()
+{
+	article = document.getElementById("catalog_search_article").checked = true;
+	name = document.getElementById("catalog_search_name").checked = true;
+	desc = document.getElementById("catalog_search_desc").checked = false;
+	search_in_results = document.getElementById("catalog_search_results").checked = false;
+	document.getElementById("catalog_search_keywords").value = defMsg;
+	var vars = new Object();
+	{
+		var v = new Array();
+		for (var id in items_back)
+		{
+			v = items_back[id].vars;
+			break;
+		}
+		
+		for (var key in v)
+		{		
+			var id = 'catalog_search_' + esc_tags(key);
+			document.getElementById(id).checked = false;
+		}
+	}
+	update_catalog_filter();
+}
+
+
+function update_catalog_filter()
+{
+    change_catalog_header(0);
+	var article = document.getElementById("catalog_search_article").checked;
+	var name = document.getElementById("catalog_search_name").checked;
+	var desc = document.getElementById("catalog_search_desc").checked;
+	var search_in_results = document.getElementById("catalog_search_results").checked;
+	var keywords = document.getElementById("catalog_search_keywords").value;
+	var vars = new Object();
+	{
+		var v = new Array();
+		for (var id in items_back)
+		{
+			v = items_back[id].vars;
+			break;
+		}
+		
+		for (var key in v)
+		{		
+			var id = 'catalog_search_' + esc_tags(key);
+			vars[key] = document.getElementById(id).checked;
+		}
+	}
+	
+	if (defMsg==keywords)
+	{
+		items = object_copy(items_back);
+	}
+	else
+	{
+		// filter
+		if (!search_in_results)
+		{
+			items = object_copy(items_back);
+		}
+		var re = new RegExp(keywords.replace(/([\()<>.?*:])/g,'\\$1'),"i");
+		for (var id in items)
+		{
+			var good = false;
+			var item = items[id];
+			if (article && -1!=item.article.search(re))
+				good = true;
+			if (name && -1!=item.name.search(re))
+				good = true;
+			else if (desc && -1!=item.desc.search(re))
+				good = true;
+			else
+			{
+				for (var key in item.vars)
+				{
+					if (vars[key] && -1!=item.vars[key].toString().search(re))
+					{
+						good = true;
+						break;
+					}
+				}
+			}
+			if (!good)
+			{
+				delete items[id];
+			}
+		}
+		
+	}
+	n = 0;
+	for (var id in items)
+	{
+		n++;
+	}
+
+	if (n)
+	{
+		document.getElementById("catalog_results").innerHTML = "<center>Найдено " + n + " позиций</center>";
+ 		//for (v in items) {
+ 		//  alert(v);
+ 		//};
+		goto_page(1);
+	}
+	else
+	{
+		document.getElementById("catalog_results").innerHTML = '<center><h3><font color="red">Ничего не найдено</font></h3></center>';
+		fill_right();
+		goto_page(0);
+	}
+}
+
+
+function compare_name( a, b)
+{
+	return a.name.localeCompare( b.name);
+}
+
+function compare_name_desc( a, b)
+{
+	return -compare_name( a, b);
+}
+
+function compare_price( a, b)
+{
+	var aa = parseFloat(a.price);
+	var bb = parseFloat(b.price);
+	if (aa<bb)
+		return -1;
+	if (aa>bb)
+		return 1;
+	return 0;
+}
+
+function compare_price_desc( a, b)
+{
+	return -compare_price( a, b);
+}
+
+function compare_id( a, b)
+{
+	aa = parseInt(a.id);
+	bb = parseInt(b.id);
+	if (aa<bb)
+		return -1;
+	if (aa>bb)
+		return 1;
+	return 0;
+}
+
+function sort_items( compare_func)
+{
+	var a = new Array;
+	var i = 0;
+	for (id in items)
+	{
+		a[i++] = items[id];
+	}
+	a.sort( compare_func);
+	items = new Array;
+	for (var i=0; i<a.length; i++)
+	{
+		items[i] = a[i];
+	}
+}
+
+function do_clock(id,inc)
+{
+	var s = document.getElementById("status_" + id);
+	if (isNaN(s.cnt))
+	{
+		s.cnt = 0;
+	}
+	if (inc>0)
+	{
+		if (0==s.cnt)
+		{
+			s.innerHTML = '<img src="images/icons/clock.gif">';
+		}
+		s.cnt ++;
+	}
+	else
+	{
+		s.cnt --;
+		if (0==s.cnt)
+		{
+			s.innerHTML = '<img src="images/icons/empty.png">';
+		}
+	}				
+}
+
+
+function first_key(a)
+{
+	var i;
+	for (i in a)
+	{
+		return i;
+	}
+}
+
+
+function first_item(a)
+{
+	var i;
+	for (i in a)
+	{
+		return a[i];
+	}
+}
+
+function make_sort_vars() {
+    var sorts = new Array("sort_by_id","sort_by_name","sort_by_price");
+    var sorts_name = new Array("порядку добавления","алфавиту","цене");
+    var el = document.getElementById("sort_block");
+    el.innerHTML = '<span class="pr1"><strong>Сортировать по:</strong></span>';
+    for (var s in sorts) {
+        if (sorts[s] == sort_by) {
+            el.innerHTML += '<span class="bold red"><a class="red" href="javascript:set_sort_by(\''+sorts[s]+'\');set_sort_order(\''+(sort_asc?'sort_desc':'sort_asc')+'\');" title="Отсортировано по '+sorts_name[s]+'">'+sorts_name[s]+'</a> <span class="em13">'+(sort_asc?'&uarr;':'&darr;')+'</span></span> | ';
+        }
+        else {
+            el.innerHTML += '<span><a class="green" href="javascript:set_sort_by(\''+sorts[s]+'\');set_sort_order(\'sort_asc\');" title="Сортировать по '+sorts_name[s]+'">'+sorts_name[s]+'</a> </span> | ';
+        };
+    };
+//     if (sort_asc) {
+//         document.getElementById("sort_order_asc_active").style.display="";
+//         document.getElementById("sort_order_asc_noactive").style.display="none";
+//         document.getElementById("sort_order_desc_active").style.display="none";
+//         document.getElementById("sort_order_desc_noactive").style.display="";                
+//     }
+//     else {
+//         document.getElementById("sort_order_asc_active").style.display="none";
+//         document.getElementById("sort_order_asc_noactive").style.display="";
+//         document.getElementById("sort_order_desc_active").style.display="";
+//         document.getElementById("sort_order_desc_noactive").style.display="none";    
+//     };
+};
+
+function set_sort_by(sb) {
+    sort_by = sb;
+    //make_sort_vars();
+    //change_sort();
+};
+
+function set_sort_order(so) {
+    if (so == "sort_asc") {
+        sort_asc = true;
+    }
+    else {
+        sort_asc = false;
+    };
+    make_sort_vars();
+    change_sort();
+};
+
+function set_cols_number(cn) {
+    cols = cn;
+    goto_page(1);
+    make_icon_thumb()
+		//createCookie( "catalog" + catalog_id + "_cols", cn, 14);
+		createCookie( "catalog_cols", cn, 14);
+};
+
+
+function make_icon_thumb1(el) {
+    clear_tr( el );
+    for (var i=1;i<4;i++) {
+        var src = '';
+        var cn = 0;
+        var td = document.createElement("TD");
+        td.className = "icon";
+        
+        if (i==0) {
+            src = '{T_THEME_PATH}/images/i/icon-auto';
+            cn = 0;
+        };
+        if (i==3) {
+            src = '{T_THEME_PATH}/images/i/icon-thumb';
+            cn = 4;
+        };
+        if (i==1) {
+            src = '{T_THEME_PATH}/images/i/icon-onecol';
+            cn = 1;
+        };
+        if (i==2) {
+            src = '{T_THEME_PATH}/images/i/icon-twocol';
+            cn = 2;
+        };
+        if (cn==cols) src += '-a';
+        src += '.gif';
+        td.innerHTML = '<a href="javascript:set_cols_number('+cn+')" title="Колонок: ' + cn + '"><img src="'+src+'"/></a>';
+        el.appendChild(td);
+    };
+    
+//     alert(document.getElementById("cols_selector"));
+//     document.getElementById("cols_selector").innerHTML = html;
+};
+
+function make_icon_thumb()
+{
+	make_icon_thumb1( document.getElementById("cols_selector") );
+	make_icon_thumb1( document.getElementById("cols_selector_bottom") );
+}
+
+function make_search_vars()
+{
+	var html = new Array();
+	var vars = new Array();
+	for (var id in items)
+	{
+		vars = items[id].vars;
+		break;
+	}
+	for (var key in vars)
+	{
+        var tdname = document.createElement("td");
+        var tdbox = document.createElement("td");
+        tdbox.innerHTML = '<input type="checkbox" id="catalog_search_' + esc_tags(key) + '" />';
+        tdname.innerHTML = esc_tags(key);
+        tdname.className = "pr1";
+        document.getElementById("searchrow").insertBefore(tdbox,document.getElementById("tdbefore_search"));
+        document.getElementById("searchrow").insertBefore(tdname,document.getElementById("tdbefore_search"));		
+	}
+
+}
+
+
+function make_option(id,nm,v)
+{
+	var html = "";
+    html += '<td>';
+    html += '<div><strong>'+esc_tags(nm)+':</strong></div>';
+    html += '<table class="radio">';
+    var step=1;
+    if (nm == 'размер') step = 2;
+
+    for (var i=0; i<v.length; i=i+step)
+    {
+    	
+    	html += '<tr>';
+    	for (var j=0;j<step;j++) {
+    	   var r_id = id + '_' + (i+j);   
+				if ((i+j)<v.length) {
+				html += '<td><nobr><input type="radio" ' + (1==v.length?'checked="true" ':'') + 'id="' + r_id + '" name="' + id + '" value="' + esc_tags(v[i+j]) + '"/ > <label for="' + r_id + '" title="'+esc_tags(v[i+j])+'">'+esc_tags(v[i+j])+'</label></nobr></td>';
+				}
+				else {
+				 html += '<td>&nbsp;</td>';
+				};
+    	};
+    	html += '</tr>';
+    }
+    html += '</table>';
+    html += '</td>';
+    return html;
+}
+
+
+function make_option_for_full(id,nm,v)
+{
+	var html = "";
+    html += '<br />';
+    html += '<div><strong>'+esc_tags(nm)+':</strong></div>';
+    html += '<table class="radio">';
+    for (var i=0; i<v.length; i++)
+    {
+    	var r_id = id + '_' + i;
+    	html += '<tr>';
+    	html += '<td><nobr><input type="radio" ' + (1==v.length?'checked="true" ':'') + 'id="big_' + r_id + '" name="' + id + '" value="' + esc_tags(v[i]) + '"/ ><label for="big_' + r_id + '" title="'+esc_tags(v[i])+'">'+esc_tags(v[i])+'</label></nobr></td>';
+    	html += '</tr>';
+    }
+    html += '</table>';
+    return html;
+}
+
+function clear_tr(id) {
+    var tr = id;
+    if (tr) {
+        var tds = new Array();
+        for (var i=0;i<tr.childNodes.length;i++) {
+            tds[i] = tr.childNodes[i];
+        };
+        for (var i=0;i< tds.length;i++) {
+            tr.removeChild(tds[i]);
+        };
+    };
+};
+
+function make_img_selector(id)
+{
+	html = "";
+	var i = 1;
+	var sel = document.getElementById( "img_sel_" + id);
+	clear_tr(sel);
+	var count = 0;
+	for (var img_id in items[id].image_urls) count++;
+	if (count<=1) return;
+	
+	for (var img_id in items[id].image_urls)
+	{
+	    var td = document.createElement('TD')
+		if (img_id == items[id].curImg) {
+		    td.className = "active";
+            td.innerHTML = '<div>'+i+'</div>';
+        }   
+		else {
+		    td.innerHTML = ' <A href="javascript:select_image(' + id + ',' + img_id + ');" title="'+ i +'">' + '<div>'+ i +'</div>'+ '</A>';
+		};
+		sel.appendChild(td);
+		i ++;
+	}
+}
+
+function make_bigimg_selector(id)
+{
+	html = "";
+	var i = 1;
+	var sel = document.getElementById( "bigimages_pages_" + id);
+	clear_tr(sel);
+	var count = 0;
+	for (var img_id in items[id].image_urls) count++;
+	if (count<=1) return;	
+	for (var img_id in items[id].image_urls)
+	{
+	    var td = document.createElement('TD')
+		if (img_id == items[id].big_curImg) {
+		    td.className = "active";
+            td.innerHTML = '<div>'+i+'</div>';
+        }   
+		else {
+		    td.innerHTML = ' <A href="javascript:select_big_image(' + id + ',' + img_id + ');" title="' + i + '">' + '<div>'+ i +'</div>'+ '</A>';
+		};
+		sel.appendChild(td);
+		i ++;
+	}
+}
+
+
+function make_page_selectors1(sx)
+{
+    var pagecount = Math.floor((n-1)/(onpage)) + 1;
+    document.getElementById("pagenumber" + sx).value = page;
+    if (page==1 || page==0) {
+        document.getElementById("pagefirst_link" + sx).style.display = "none";
+        document.getElementById("pageback_link" + sx).style.display = "none";
+        document.getElementById("pagefirst_empty" + sx).style.display = "";
+        document.getElementById("pageback_empty" + sx).style.display = "";        
+    }
+    else {
+        document.getElementById("pagefirst_link" + sx).style.display = "";
+        document.getElementById("pageback_link" + sx).style.display = "";
+        document.getElementById("pagefirst_empty" + sx).style.display = "none";
+        document.getElementById("pageback_empty" + sx).style.display = "none";            
+    };
+    if (page>=pagecount) {
+        document.getElementById("pagelast" + sx).style.display = "none";
+        document.getElementById("pagenext" + sx).style.display = "none";
+        document.getElementById("pagelast_empty" + sx).style.display = "";
+        document.getElementById("pagenext_empty" + sx).style.display = "";        
+    }
+    else {
+        document.getElementById("pagelast" + sx).style.display = "";
+        document.getElementById("pagenext" + sx).style.display = "";
+        document.getElementById("pagelast_empty" + sx).style.display = "none";
+        document.getElementById("pagenext_empty" + sx).style.display = "none";            
+    };
+    
+        
+    document.getElementById("pagefirst_link" + sx).href="javascript:goto_page(1);";
+    document.getElementById("pagelast_link" + sx).href="javascript:goto_page("+pagecount+");";
+    document.getElementById("pageback_link" + sx).href="javascript:goto_page("+(page>1?page-1:1)+");";
+    document.getElementById("pagenext_link" + sx).href="javascript:goto_page("+(page<pagecount?page+1:pagecount)+");";
+    document.getElementById("pagecount" + sx).innerHTML = " из "+pagecount;
+
+    
+    var pages_array = new Array(20,40);
+    document.getElementById("show_how_many_td" + sx).innerHTML = '';
+    for (var i in pages_array) {
+        if (onpage == pages_array[i]) {
+            document.getElementById("show_how_many_td" + sx).innerHTML += '<div class="icona white bold em11 tahoma fleft">'+pages_array[i]+'</div>'
+        }
+        else {
+            document.getElementById("show_how_many_td" + sx).innerHTML += '<a class="n-underline" href="#" onclick="setonpage('+pages_array[i]+');return false;" title="По '+pages_array[i]+'"><div class="icon white bold em11 tahoma fleft">'+pages_array[i]+'</div></a>'
+        }
+    };
+    if (n==0)
+        document.getElementById("show_how_many_td" + sx).innerHTML += '';
+    else       
+        document.getElementById("show_how_many_td" + sx).innerHTML += '<div class="mt2 pl1 em12">Показаны '+(((page-1)*onpage)+1)+"-"+(page==pagecount?n:page*onpage)+" из "+n+'</div>';
+}
+
+
+function make_page_selectors()
+{
+	make_page_selectors1("");
+	make_page_selectors1("_bottom");
+}
+
+
+function setonpage (onp) {
+    onpage = onp;
+    goto_page(1);
+		//createCookie( "catalog" + catalog_id + "_onpage", onp, 14);
+		createCookie( "catalog_onpage", onp, 14);
+};
+
+function make_item(id) {
+    var html=""
+    if (cols == 1) {
+        html += '<td class="w25 box">';
+        html += '<a name="item_'+items[id].id+'"></a>';
+        html += '<a href="#" onclick="show_full(this,'+id+');return false;" title="' + esc_tags( items[id].name ) + ' подробнее"><div class="w100" style="height: 240px; width: 240px;"><center><img ID="item_' + id + '" src="'+item_thumb_url(id)+'"></center></div></a>';
+     	html += '<table align="right" class="pages"><tr id="img_sel_' + id + '"></tr></table>';
+    	html +=	'<\/td>';
+    	
+        html += '<td><img style="width: 20px;" src="{T_THEME_PATH}/images/i/e.gif"> </td>';
+        
+        
+        html += '<td class="w75 box" style="height: 270px;">';
+            html += '<table class="desc" style="height: 210px;">';
+                html += '<tr><td colspan="3"><h2><a class="green" href="#" onclick="show_full(this,'+id+');return false;" title="' + esc_tags( items[id].name ) + ' подробнее">'+esc_tags( items[id].name)+'</a></h2></td></tr>';
+				html += '<tr><td>';
+                
+                html += '<div>Цена: <span class="red em14">'+format_money(esc_tags(items[id].price))+' '+items[id].valuta+'</span></div>';
+                if (items[id].course !=1) html += '<div>Цена: <span class="red em14">'+format_money(esc_tags(items[id].price * items[id].course))+' р.'+'</span></div>';
+				html += '<div>%(орг): '+format_money(esc_tags(items[id].org_fee))+'</div>';
+                html += '<div><a class="blue" href="catalog.php?catalog_id={CATALOG_ID}&lot_id=' + items[id].id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Ссылка на модель ' + esc_tags( items[id].name ) + ' в каталоге">Ссылка на эту модель</a></div>';
+                html += '</td>';
+        		var vars = items[id].vars;
+        		var opt_idx = 0;
+        		for (v in vars)
+        		{
+        			html +=	make_option( "item" + id + "_opt" + opt_idx, v, vars[v]);
+        			opt_idx ++;
+        		}   
+            html += '</tr></table>';    
+
+            html += '<table class="pl" style="height: 30px;">';
+            html += '<tr>';
+                html += '<td class="img"><a href="#" onclick="show_full(this,'+id+');return false;" title="Подробно"><img src="{T_THEME_PATH}/images/i/icon-zoom.gif"/></a></td>';
+                html += '<td class="text"><a href="#" onclick="show_full(this,'+id+');return false;" title="Подробно">Подробнее</a></td>';
+                if (!view_cmp) html += '<td class="img"><a href="javascript:addToCmp(' + id + ');" title="Сравнить"><img src="{T_THEME_PATH}/images/i/icon-add.gif"/></a></td>';
+                if (!view_cmp) html += '<td class="text"><a href="javascript:addToCmp(' + id + ');" title="Сравнить">Сравнить</a></td>';
+                if (view_cmp) html += '<td class="img"><a href="javascript:deleteFromCmp(' + id + ');" title="Удалить"><img src="{T_THEME_PATH}/images/i/icon-close.gif"/></a></td>';
+                if (view_cmp) html += '<td class="text"><a href="javascript:deleteFromCmp(' + id + ');" title="Удалить">Удалить</a></td>';
+//                html += '<td class="img"><!-- <a href="#" onclick="postpone(' + id + ',0);return false;" title="Отложить"> --><img src="{T_THEME_PATH}/images/i/icon-save.gif"/><!-- </a> --></td>';
+//                html += '<td class="text"><div><!-- <a href="#" onclick="postpone(' + id + ',0);return false;" title="Отложить"> -->Отложить <!--</a> --></div></td>';
+                html += '<td class="img" id="loadb'+id+'" style="display:none"><img src="{T_THEME_PATH}/images/i/load-blue.gif"></a></td>';                                
+                html += '<td class="img"><a href="javascript:add_to_order(' + id + ',0);" title="Добавить в корзину"><img src="{T_THEME_PATH}/images/i/icon-cart.gif"/></a></td>';
+                html += '<td class="text red"><div><a class="red" href="javascript:add_to_order(' + id + ',0);" title="Добавить в корзину">Добавить в корзину</a></div></td>';
+                html += '<td class="img" id="load'+id+'" style="display:none"><img src="{T_THEME_PATH}/images/i/load.gif"></a></td>';
+                //html += '<td class="img"><img src="{T_THEME_PATH}/images/i/load.gif"/></td>';
+            html += '</tr>';
+            html += '</table>';
+        
+        html += '</td>';
+    };
+    
+    if (cols==4) {
+
+        html += '<td class="w25 box">';
+        html += '<a name="item_'+items[id].id+'"></a>';
+        html += '<a href="#" onclick="show_full(this,'+id+');return false;"><div сlass="w100" title="' + esc_tags( items[id].name ) + ' подробнее" style="height: 240px; width: 240px;"><center><img ID="item_' + id + '" src="'+item_thumb_url(id)+'"></center></div></a>';
+        html += '<table class="pl">';
+        html += '<tbody><tr>';
+        html += '<td class="price">'+format_money(esc_tags(items[id].price))+'</td>';
+        html += '<td class="img"><a href="#" onclick="show_full(this,'+id+');return false;" title="Подробно"><img src="{T_THEME_PATH}/images/i/icon-zoom.gif"/></a></td>';
+        if (!view_cmp) html += '<td class="img"><a href="javascript:addToCmp(' + id + ');" title="Сравнить"><img src="{T_THEME_PATH}/images/i/icon-add.gif"/></a></td>';
+        if (view_cmp) html += '<td class="img"><a href="javascript:deleteFromCmp(' + id + ');" title="Удалить"><img src="{T_THEME_PATH}/images/i/icon-close.gif"/></a></td>';
+//        html += '<td class="img"><!-- <a href="#" onclick="postpone(' + id + ',0);return false;" title="Отложить"> --> <img src="{T_THEME_PATH}/images/i/icon-save.gif"/> <!--</a> --></td>';
+        html += '<td class="img" id="loadb'+id+'" style="display:none"><img src="{T_THEME_PATH}/images/i/load-blue.gif"></a></td>';
+        html += '<td class="img" id="load'+id+'" style="display:none"><img src="{T_THEME_PATH}/images/i/load.gif"></a></td>';        
+        html += '</tr>';
+        html += '</tbody></table>';
+        html += '</td>';
+        
+    };	
+    
+    if (cols==2) {
+        html += '<td class="w50 box" style="vertical-align: top; height: 100%;">';
+        
+        html += '<div style="height: 450px; overflow: auto; "><table>';
+        html += '<tr>';
+        
+        html += '<td>';
+        html += '<a name="item_'+items[id].id+'"></a>';
+        html += '<a href="#" onclick="show_full(this,'+id+');return false;" title="' + esc_tags( items[id].name ) + ' подробнее"><div style="height: 240px; width: 240px;"><center><img ID="item_' + id + '" src="'+item_thumb_url(id)+'"></center></div></a>';
+        html += '<table align="right" class="pages"><tr id="img_sel_' + id + '"></tr></table>';;
+        html += '</td>';
+        
+        html += '<td>';
+            html += '<table class="desc"><tr>';
+                html += '<td>';
+                html += '<h2><a class="green" href="#" onclick="show_full(this,'+id+');return false;" title="' + esc_tags( items[id].name ) + ' подробнее">'+esc_tags( items[id].name)+'</a></h2>';
+                html += '<div>Цена: <span class="red em14">'+format_money(esc_tags(items[id].price))+'</span></div>';
+                html += '<div>%(орг): '+format_money(esc_tags(items[id].org_fee))+'</div>';
+                html += '<div>Артикул: ' + esc_tags( items[id].article ) + ' </div>';
+				html +='<div><strong>Описание:</strong></div><div  >'+esc_tags2( items[id].desc ).replace(/\[br\]/gi,"<br>")+'</div>'
+                html += '<div><a class="blue" href="catalog.php?catalog_id={CATALOG_ID}&lot_id=' + items[id].id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Ссылка на модель ' + esc_tags( items[id].name ) + ' в каталоге">Ссылка на эту модель</a></div>';
+                html += '</td>';
+	            html += '</tr>';
+ 	       html += '</table>';
+             
+        html += '</td>';
+        html += '</tr>';
+        html += '<tr><td colspan="2"><table class="desc" style="padding-top: 0 !important;"><tr>';
+  		var vars = items[id].vars;
+		var opt_idx = 0;
+		for (v in vars)
+		{
+			html +=	make_option( "item" + id + "_opt" + opt_idx, v, vars[v]);
+			opt_idx ++;
+		}   
+        html += '</tr></table></td></tr>';
+        html += '</table></div>';
+        
+
+        
+            html += '<div class="relative" style="bottom: 0;"><table class="pl" style="height: 30px;">';
+            html += '<tr>';
+                html += '<td class="img"><a href="#" onclick="show_full(this,'+id+');return false;" title="Подробно"><img src="{T_THEME_PATH}/images/i/icon-zoom.gif"/></a></td>';
+                if (!view_cmp) html += '<td class="img"><a href="javascript:addToCmp(' + id + ');" title="Сравнить"><img src="{T_THEME_PATH}/images/i/icon-add.gif"/></a></td>';                                
+                if (view_cmp) html += '<td class="img"><a href="javascript:deleteFromCmp(' + id + ');" title="Удалить"><img src="{T_THEME_PATH}/images/i/icon-close.gif"/></a></td>';
+                if (view_cmp) html += '<td class="text"><a href="javascript:deleteFromCmp(' + id + ');" title="Удалить">Удалить</a></td>';
+//                html += '<td class="img"><!-- <a href="#" onclick="postpone(' + id + ',0);return false;" title="Отложить"> --> <img src="{T_THEME_PATH}/images/i/icon-save.gif"/> <!--</a> --></td>';                
+//                html += '<td class="text"><!-- <a href="#" onclick="postpone(' + id + ',0);return false;" title="Отложить"> -->Отложить <!--</a> --></td>';
+                html += '<td class="img" id="loadb'+id+'" style="display:none"><img src="{T_THEME_PATH}/images/i/load-blue.gif"></a></td>';
+                html += '<td class="img"><a href="javascript:add_to_order(' + id + ',0);" title="В корзину"><img src="{T_THEME_PATH}/images/i/icon-cart.gif"/></a></td>';
+                html += '<td class="text red"><div><a class="red" href="javascript:add_to_order(' + id + ',0);" title="В корзину">Добавить в корзину</a></div></td>';
+                html += '<td class="img" id="load'+id+'" style="display:none"><img src="{T_THEME_PATH}/images/i/load.gif"></a></td>';                
+                //html += '<td class="img"><img src="{T_THEME_PATH}/images/i/load.gif"/></td>';
+            html += '</tr>';
+            html += '</table></div>';
+        
+        html += '</td>';
+    };
+    
+	return html;
+}
+
+
+function fill_right()
+{
+	var html='';
+	var rows = onpage / cols;
+	html += '<TABLE class="results">';
+	var i=0;
+	for (id in items)
+	{
+		if (i>=((page-1)*onpage)&&i<(page*onpage))
+		{
+			if (0==(i%cols))
+				html += '<TR>';
+			
+		
+			html += make_item(id);
+//             if (cols==4 && (i+1)%cols!=0) {
+//                 html += '<td ><img style="width: 20px;" src="{T_THEME_PATH}/images/i/e.gif"/></td>';
+//             };    			
+			
+			if (0==((i+1)%cols)) {
+				html += "</tr>";
+                html += '<tr><td><img src="{T_THEME_PATH}/images/i/e.gif" style="height: 20px;"></td></tr>';				
+			}
+			else {
+			    html += '<td><img style="width: 20px;" src="{T_THEME_PATH}/images/i/e.gif"/></td>';
+			};
+				
+		}
+		
+		i++;						
+	}
+	html += "</TABLE>";
+	var d=document.getElementById("catalog_results").innerHTML = html;
+	if (cols == 1 || cols == 2) {
+	    i = 0;   
+	    for (id in items) {
+            if (i>=((page-1)*onpage)&&i<(page*onpage)) {
+                make_img_selector(id);
+            };
+            i++
+        };
+    };   
+}			
+
+
+function goto_page(n)
+{
+	page = n;
+	make_page_selectors();
+	fill_right();
+}
+										
+
+
+
+
+function select_image( id, img_id)
+{
+	items[id].curImg = img_id;
+	items[id].big_curImg = img_id;
+	var im = document.getElementById("item_" + id);
+	make_img_selector(id);
+	im.src = item_thumb_url( id );
+}
+
+function select_big_image( id, img_id)
+{
+	items[id].big_curImg = img_id;
+	var im = document.getElementById("bigimage_" + id);
+	make_bigimg_selector(id);
+  im.src = item_image_url( id );
+}
+
+
+function item_image_url(id)
+{
+	for (var image_id in items[id].image_urls)
+	{
+		url = esc_tags(items[id].image_urls[items[id].big_curImg]);
+		return "./images/lots/" + url;
+	}
+	return "./images/icons/noimage.png";
+}
+
+
+function item_thumb_url(id)
+{
+	for (var image_id in items[id].image_urls)
+	{
+		url = "" + esc_tags(items[id].image_urls[items[id].curImg]);
+ 		return "./images/lots/thumb/" + url;
+	}
+	return "./images/icons/noimage.png";
+}
+
+function postpone( item_id,from_full)
+{
+/*
+    document.getElementById((from_full?"full":"")+'loadb'+item_id).style.display = '';
+    alert('Отложить');
+    document.getElementById((from_full?"full":"")+'loadb'+item_id).style.display = 'none';	
+*/		
+}
+
+
+function add_to_order( item_id,from_full)
+{
+	if (registered_user)
+	{
+	//alert ('status:'+{RESERV_STATUS});
+	if ({RESERV_STATUS}==4)
+		{
+		var vars = items[item_id].vars;
+		var item_vars = new Array();
+		var opt_idx = 0;
+		for (k in vars)
+		{
+			var bFound = false;
+			for (var i=0; i<vars[k].length; i++)
+			{		
+				var el=document.getElementById( (from_full?"big_":"")+"item" + item_id + "_opt" + opt_idx + "_" + i);
+				if (true == el.checked)
+				{
+					item_vars[k] = el.value;
+					bFound = true;
+					break;
+				}
+			}
+			if (!bFound)
+			{
+				alert("Не заполнен " + k);
+				if (document.getElementById((from_full?"full":"")+'load'+item_id)) document.getElementById((from_full?"full":"")+'load'+item_id).style.display = 'none';
+				return;
+			}
+			opt_idx ++;
+		}
+		
+		
+    if (document.getElementById((from_full?"full":"")+'load'+item_id)) document.getElementById((from_full?"full":"")+'load'+item_id).style.display = '';
+		var item_var='';
+		for (k in item_vars)
+			item_var+=k+':'+item_vars[k]+';';
+		$.ajax({
+			type : 'POST',
+			url : 'function_po.php{SID}',
+			data : {
+ 				'cmd': "add_to_order",	
+ 				'lot_id': items[item_id].id,
+ 				'lot_vars': item_var,
+ 				'purchase_id': purchase_id
+ 			},
+ 			// Function is called when an answer arrives. 
+ 			success : function(result, errors) 
+ 			{
+				if (document.getElementById((from_full?"full":"")+'load'+item_id)) document.getElementById((from_full?"full":"")+'load'+item_id).style.display = 'none';
+ 				if ("ok" == result)
+ 				{
+ 					alert("Успешно добавлено в заказ!");
+ 				}
+ 				else
+ 				{
+ 					alert("Произошла ошибка при добавлении в заказ!\n" + errors);
+ 					// Write errors to the debug div.
+ 					//document.getElementById("debug").innerHTML = errors; 
+ 				}
+ 			}
+		}
+ 		);	
+		}
+		else {
+		alert ("В закупке объявлен стоп - добавление заказов невозможно!");
+		}
+	}
+	else
+	{
+		alert("Для добавления в заказ необходимо сначала войти в систему!");
+	}
+}
+
+
+function close_full () {
+//     var div = document.getElementById('fr'+id);
+// //     alert(div.childNodes[0].parent);
+//     hs.close();
+       document.getElementById('full_results').style.display = "none";
+       document.getElementById('bg').style.display = "none";
+//     hs.htmlExpand(link, {align: 'middle center', contentId: 'full_results',wrapperClassName: 'highslide-wrapper', minHeight: 600 } );
+//     hs.close(); 
+//     document.body.removeChild(div);
+    return false;    
+};
+
+
+function get_ww()
+{
+	var frameWidth=800;
+	if (self.innerWidth)
+			frameWidth = self.innerWidth;
+	else if (document.documentElement && document.documentElement.clientWidth)
+			frameWidth = document.documentElement.clientWidth;
+	else if (document.body)
+			frameWidth = document.body.clientWidth;
+	return frameWidth;
+}
+
+
+function get_wh()
+{
+	var frameHeight=640;
+	if (self.innerHeight)
+			frameHeight = self.innerHeight;
+	else if (document.documentElement && document.documentElement.clientHeight)
+			frameHeight = document.documentElement.clientHeight;
+	else if (document.body)
+			frameHeight = document.body.clientHeight;
+	return frameHeight;
+}
+
+
+function show_full (link,id)
+{
+
+		var wheight = get_wh();
+	
+    var html = "";
+		//html += '<div class="bg" style="top: 0px; height: expression(eval(document.getElementById("bottom").offsetTop)+\'px\');"></div>';
+        html += '<div id = "show_full" name = "qwe" class="full_results" style="margin-top:' + (wheight && wheight < 680 ? (wheight - 580)/2 : 50) + 'px">';
+        html += '<table style="height: 30px;" class="pl"><tr>';
+        html += '<td class="head w100">'+esc_tags( items[id].name)+'</td>';
+        html += '<td class="text"><a href="#" onclick="return close_full();" title="Закрыть">Закрыть</a></td>';
+        html += '<td class="img"><a href="#" onclick="return close_full();" title="Закрыть"><img src="{T_THEME_PATH}/images/i/icon-close.gif"></a></td>';
+        html += '</tr>';
+        html += '</table>';
+        html += '<table class="w100">';
+        html += '<tr>';
+        html += '<td style="width: 450px; height: 520px;">';
+        html += '<div title="Закрыть"><a href="#" onclick="return close_full();"><table style="height: 480px; width: 450px;"><tr><td align="center" style="vertical-align: middle;"><img id="bigimage_'+id+'" src="'+item_image_url(id)+'"></td></tr></table></a></div>';
+        html += '<table class="pages" align="right"><tr id="bigimages_pages_'+id+'"><td></td></tr></table>';        
+            html += '<td><div style="height: 520px; overflow: auto;"><table class="desc"><tr><td>';
+        	html += '<h2 class="green">'+esc_tags( items[id].name)+'</h2>';
+        	html += '<div>Цена: <span class="red em14">'+format_money(esc_tags(items[id].price))+'</span></div>';
+        	html += '<div>%(орг): '+format_money(esc_tags(items[id].org_fee))+'</div>';
+        	html += '<div><a href="catalog.php?catalog_id={CATALOG_ID}&lot_id=' + items[id].id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Ссылка на модель ' + esc_tags( items[id].name ) + ' в каталоге" class="blue">Ссылка на эту модель</a></div>';
+    		var vars = items[id].vars;
+    		var opt_idx = 0;
+    		for (v in vars)
+    		{
+    			html +=	make_option_for_full( "item" + id + "_opt" + opt_idx, v, vars[v]);
+    			opt_idx ++;
+    		} 
+			
+        	html += '<br /><div class="text"><strong>Описание:</strong></div><div>'+esc_tags2( items[id].desc ).replace(/\[br\]/gi,"<br>")+'</div>';
+        	html += '</td>';
+        	html += '</tr>';
+        	html += '</table>';
+        html += '</div></td>';
+        html += '</tr>';
+        html += '</table>';
+        
+        
+        html += '<table style="height: 30px;" class="pl">';
+        html += '<tr>';
+        html += '<td class="img"><a href="javascript:addToCmp(' + id + ');" '+(view_cmp?'style="display:none"':'')+' title="Сравнить"><img src="{T_THEME_PATH}/images/i/icon-add.gif"></a></td>';
+        html += '<td class="text"><a href="javascript:addToCmp(' + id + ');"  '+(view_cmp?'style="display:none"':'')+' title="Сравнить">Сравнить</a></td>';
+//                html += '<td class="img"><!-- <a href="#" onclick="postpone(' + id + ',1);return false;" title="Отложить"> --> <img src="{T_THEME_PATH}/images/i/icon-save.gif"/> <!-- </a> --></td>';                
+//                html += '<td class="text w100"><!-- <a href="#" onclick="postpone(' + id + ',1);return false;" title="Отложить"> --> Отложить <!-- </a> --></td>';
+                html += '<td class="img" id="fullloadb'+id+'" style="display:none"><img src="{T_THEME_PATH}/images/i/load-blue.gif"></a></td>';
+        html += '<td class="img"><a href="javascript:add_to_order(' + id + ',1);" title="Добавить в корзину"><img src="{T_THEME_PATH}/images/i/icon-cart.gif"></a></td>';
+        html += '<td class="text red"><a href="javascript:add_to_order(' + id + ',1);" class="red" title="Добавить в корзину">Добавить&nbsp;в&nbsp;корзину</a></td>';
+        html += '<td class="img" id="fullload'+id+'" style="display:none"><img src="{T_THEME_PATH}/images/i/load.gif"></a></td>';
+        html += '</tr>';
+        html += '</table>';
+        html += '</div>';
+
+        document.getElementById('full_results').innerHTML = html;
+        make_bigimg_selector(id);
+				
+				document.getElementById('full_results').style.display = 'block';
+				document.getElementById('bg').style.display = 'block';
+		$(document).mousemove(function(event){
+			$('div#show_full').css('top',$(window.parent).scrollTop()-$("iframe", top.document).offset().top);
+		});
+    
+};
+
+function change_sort()
+{
+	var asc = sort_asc;
+	var func = "compare_id";
+	if (sort_by == "sort_by_name")
+		func = asc ? "compare_name" : "compare_name_desc";
+	else if (sort_by == "sort_by_price")
+		func = asc ? "compare_price" : "compare_price_desc";
+	sort_items( eval(func));
+// 	if (current_item_id in items)
+// 	{
+// 		select_item( current_item_id );
+// 	}
+// 	else
+// 	{
+		goto_page(1);
+// 	}
+	//createCookie( "catalog" + catalog_id + "_sort", func, 14);
+	createCookie( "catalog_sort", func, 14);
+}
+
+
+var edit_mode = 0;
+var items_cmp = {
+};
+var items = {{LOTS} };
+var n = {NOM};
+var registered_user = {REGISTERED_USER};
+var catalog_id = {CATALOG_ID};
+var catalog_org_fee = {CATALOG_ORGRATE};
+var select_item_id = {ITEM_ID};
+var bundle_var = "{CATALOG_BUNDLE}";
+var purchase_id={PURCHASE_ID};
+
+
+
+
+var defMsg = 'Поиск в каталоге…';
+// sort_by_id sort_by_name sort_by_price
+var cols=2;
+var sort_by = "sort_by_id" 
+var sort_asc = true;
+var page=1;
+var onpage = 20;
+
+var tmp_cols=1;
+var tmp_sort_by = "sort_by_id" 
+var tmp_sort_asc = true;
+var tmp_page=1;
+var tmp_onpage = 20;		
+
+
+//  remember number of columns
+var mode_cols = readCookie("catalog" + catalog_id + "_cols");
+if (null==mode_cols)
+	mode_cols = readCookie("catalog_cols");
+if (1 == mode_cols || 2 == mode_cols || 4 == mode_cols)
+{
+	cols = parseInt(mode_cols);
+}
+// remember number of items on page
+var mode_onpage = readCookie("catalog" + catalog_id + "_onpage");
+if (null==mode_onpage)
+	mode_onpage = readCookie("catalog_onpage");
+if (null!=mode_onpage)
+{
+	onpage = parseInt(mode_onpage);
+}
+// for (var i=0; i<pages_array.length; i++)
+// {
+// 	if (pages_array[i] == mode_onpage)
+// 	{
+// 		onpage = parseInt(mode_onpage);
+// 		break;
+// 	}
+// }
+
+
+// var rows=2;
+make_icon_thumb();
+// make items backup
+var view_cmp = 0;
+var items_back = object_copy(items);
+
+
+function addToCmp(id) {
+    if (!view_cmp) {
+        items_cmp[id] = items[id];
+        setCmpHeader();
+    };
+};
+
+function deleteFromCmp(id) {
+    if (view_cmp) {
+        delete items[id];
+        setCmpHeader();
+        n--;
+        goto_page(page);
+    };
+};
+
+function setCmpHeader() {
+    var n = 0;
+    if (view_cmp) {
+        for (var v in items) {
+            n++;
+        };    
+    }
+    else {
+        for (var v in items_cmp) {
+            n++;
+        };
+    };
+    document.getElementById('cmp_header_link').innerHTML = 'Список сравнения (' + n + ')';
+    view_catalog_header();
+};
+
+function view_catalog_header() {
+    var n = 0;
+    if (view_cmp == 1) {
+        document.getElementById('catalog_header').className = "vam nowrap bold blue em13 pr2 pl05";
+        document.getElementById('catalog_header_corner').className = "";
+        document.getElementById('catalog_header_cmp').className = "active vam nowrap bold em13 pr2 pl1";
+        document.getElementById('catalog_header_corner_cmp').className = "active";
+        for (var v in items) {
+            n++;
+        };
+        if (n>0) {
+            document.getElementById('clear_cmp').style.display = '';            
+        }
+        else {
+            document.getElementById('clear_cmp').style.display = 'none';
+        }                
+    }
+    else {
+        document.getElementById('catalog_header').className = "active vam nowrap bold blue em13 pr2 pl05";
+        document.getElementById('catalog_header_corner').className = "active";
+        document.getElementById('catalog_header_cmp').className = "vam nowrap bold em13 pr2 pl1";
+        document.getElementById('catalog_header_corner_cmp').className = "";
+        for (var v in items_cmp) {
+            n++;
+        };
+        if (n>0) {
+            document.getElementById('clear_cmp').style.display = '';            
+        }
+        else {
+            document.getElementById('clear_cmp').style.display = 'none';
+        }            
+    };      
+};
+
+function catalogs_changes() {
+    var items_tmp = object_copy(items_cmp);
+    items_cmp = object_copy(items);
+    items = object_copy(items_tmp);
+    n = 0;
+    for (v in items_tmp) {
+        n++;
+    };
+
+    
+
+    var ftmp_cols=cols;
+    var ftmp_sort_by = sort_by; 
+    var ftmp_sort_asc = sort_asc;
+    var ftmp_page=page;
+    var ftmp_onpage = onpage;
+
+    cols=tmp_cols;
+    sort_by = tmp_sort_by; 
+    sort_asc = tmp_sort_asc;
+    page=tmp_page;
+    onpage = tmp_onpage;
+
+    tmp_cols=ftmp_cols;
+    tmp_sort_by = ftmp_sort_by; 
+    tmp_sort_asc = ftmp_sort_asc;
+    tmp_page=ftmp_page;
+    tmp_onpage = ftmp_onpage;
+        
+    set_cols_number(cols);    
+    view_catalog_header();    
+};
+
+function change_catalog_header(cmp) {
+//     alert(view_cmp);
+//     alert(cmp);
+    if (view_cmp != cmp) {
+        view_cmp = cmp; 
+        view_catalog_header();
+        catalogs_changes();
+        //reset_catalog_filter();
+        //make_search_vars();
+        make_sort_vars();
+        make_page_selectors();        
+        goto_page(1);
+    };
+};
+
+// set current image
+for (var id in items)
+{
+	for (var img_id in items[id].image_urls)
+	{
+		items[id].curImg = img_id;
+		items[id].big_curImg = img_id;
+		break;
+	}
+}		
+// sort items
+var sort_func = readCookie("catalog" + catalog_id + "_sort");
+if (null==sort_func)
+	sort_func = readCookie("catalog_sort");
+if (null!=sort_func)
+{
+	if ("compare_name" == sort_func)
+	{
+		set_sort_by( "sort_by_name" );
+	}
+	else if ("compare_price" == sort_func)
+	{
+		set_sort_by( "sort_by_price" );
+	}
+	else
+	{
+		set_sort_by( "sort_by_id" );
+	}
+}
+else
+{
+	set_sort_by( "sort_by_id" );
+}
+set_sort_order( "sort_asc" );
+ 
+
+
+// delete unnecessary cookies
+var ca = document.cookie.split(';'); 
+for (var i = 0; i < ca.length; i++)
+{
+	var c = ca[i];
+	if (-1!=c.search(/ *catalog[0-9]+_/))
+	{
+		document.cookie = c + ";expires=Thu, 01-Jan-1970 00:00:01 GMT" + style_cookie_settings; 
+	}
+}
+
+
+
+// document.getElementById("catalog_search_vars").innerHTML = make_search_vars();
+make_search_vars();
+make_sort_vars();
+
+var found = false;
+if (select_item_id>=0)
+{
+	var i=0;
+	for (idi in items)
+	{
+		if (items[idi].id == select_item_id)
+		{
+			goto_page(page = Math.floor(i / onpage) + 1);
+			//show_full(null, idi);
+			//window.location.href = "#item_" + select_item_id;
+			location.hash = "item_" + select_item_id;
+			show_full(null, idi);
+			found = true;
+			break;
+		}
+		i++;
+	}
+}
+	
+if (!found)
+{
+	goto_page(1);
+}
+
+InitPage();
+</SCRIPT>
+
+ <!-- INCLUDE overall_footer.html -->

@@ -1,0 +1,414 @@
+  <style>
+	table{
+    width: 100%; /* Ширина таблицы */
+	border-collapse: collapse;
+	
+	}
+
+td.editable_updated {
+	background-color: green!important;
+	color: white!important;
+}	
+th.tablesorter-header.resizable-false {
+  background-color: #e6bf99;
+}
+/* ensure box-sizing is set to content-box, if using jQuery versions older than 1.8;
+ this page is using jQuery 1.4 */
+*, *:before, *:after {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+/* overflow table */
+.wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 450px;
+}
+.wrapper table {
+  width: auto;
+  table-layout: fixed;
+}
+.wrapper .tablesorter td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 10px;
+}
+.wrapper .tablesorter th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 10px;
+}
+	@media print {
+	}
+  </style>
+
+<H3>Отчет по Оргам </H3>
+</br>
+
+  <table border="1" cellspacing = "0" id="myTable" class="tablesorter"style="width:auto">
+  <colgroup>
+	<col width="1" >
+	<col width="300" >
+	<col width="1" >
+	<col width="1" >
+	<col width="300" >
+	<col width="1" >
+	<col width="1" >
+	<col width="1" >	
+	<col width="1" >
+  </colgroup>
+  <thead>
+    <tr align="center">
+  	  <th >ID</td>
+	  <th >Закупка</td>
+<!--	  <th class="filter-select filter-parsed">Орг</td> -->
+	  <th >Орг</td>
+	  <th >Отпр. в ЕЦ</td>
+	  <th >Примечание</td>
+	  <th >2 %</td>
+	  <th >За_ЕЦ</td>
+	  <th >Всего</td>
+	  <th >Оплата</td>
+    </tr>
+  </thead>
+  <tbody> 
+    <tr>  
+	  <td align="left">{otchet.PURCHASE_ID}&nbsp;</td>
+	  <td align="left"><a href="adm.php?i=1&mode=otchet&p={otchet.PURCHASE_ID}">{otchet.PURCHASE_NAME}</a></td>
+	  <td align="center" class="org"> <a href="ucp.php?i=pm&mode=compose&u={otchet.USER_ID}">{otchet.USERNAME}</a></td>
+	  <td align="center">{otchet.TO_EC}</td>
+	  <td align="lefft">{otchet.PURCHASE_ADMIN_PAYMENT}&nbsp;</td>
+	  <td align="center">{otchet.2PERCENT}&nbsp; р.</td>
+	  <td align="center">{otchet.V_EC}&nbsp; р.</td>
+	  <td align="center">{otchet.ITOGO}&nbsp; р.</td>
+	  <td align="center">{otchet.ZAPLACHENO}</TD>
+	  
+	</tr>
+   </tbody> 
+  </table>
+
+  
+		<div class="pager">
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/first.png" class="first" alt="First" />
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/prev.png" class="prev" alt="Prev" />
+		<span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/next.png" class="next" alt="Next" />
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/last.png" class="last" alt="Last" />
+		<select class="pagesize" title="Select page size">
+			<option value="10">10</option>
+			<option value="100">100</option>
+			<option value="300">300</option>
+		</select>
+		<select class="gotoPage" title="Select page number"></select>
+	</div>
+ 
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<script type="text/javascript" src="http://code.jquery.com/jquery-git2.min.js"></script>        
+	
+<SCRIPT language="javascript">
+var hide_pay = {HIDE};
+if (hide_pay==1) {hide_pay=true; document.getElementById("hide_pay").checked = true;}
+
+
+function set_money($this,idp,text)
+{
+	$this.addClass( 'editable_updated' );	
+	$.ajax({
+		type : 'POST',
+		url : 'includes/function_adm.php{SID}',
+		data : {
+			'cmd': "change_purchase_admin_maney",
+			'purchase_id': idp,
+			'text':text
+		},
+		dataFilter: function (data, type) {
+				return data;
+		},
+		//dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			if ("ok" == result)
+			{
+				// do nothing
+				$this.removeClass( 'editable_updated' );
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении информации об оплате!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	}
+	);
+}
+$(function(){
+
+  // Initialize tablesorter
+  // ***********************
+  $(".tablesorter")
+    .tablesorter({
+      theme: 'green',
+	  dateFormat : "ddmmyyyy", // set the default date format
+      widthFixed: false,
+      sortLocaleCompare: true, // needed for accented characters in the data
+      sortList: [ [0,1] ],
+      //widgets: ['zebra', 'filter', 'pager'],
+	  widgets: ["zebra", "filter", "resizable", "pager", "stickyHeaders","editable","storage"],
+      widgetOptions: {
+		//----------- resizable
+		//resizable_addLastColumn : true,
+		resizable: true,
+		// These are the default column widths which are used when the table is
+		// initialized or resizing is reset; note that the "Age" column is not
+		// resizable, but the width can still be set to 40px here
+		resizable_widths : [ '55px', '8%', '100px','100px','40%','75px','75px','80px','80px'],
+	  //----------- Filter
+			  // filter_anyMatch options was removed in v2.15; it has been replaced by the filter_external option
+
+			  // If there are child rows in the table (rows with class name from "cssChildRow" option)
+			  // and this option is true and a match is found anywhere in the child row, then it will make that row
+			  // visible; default is false
+			  filter_childRows : false,
+
+			  // if true, filter child row content by column; filter_childRows must also be true
+			  filter_childByColumn : false,
+
+			  // if true, include matching child row siblings
+			  filter_childWithSibs : true,
+
+			  // if true, a filter will be added to the top of each table column;
+			  // disabled by using -> headers: { 1: { filter: false } } OR add class="filter-false"
+			  // if you set this to false, make sure you perform a search using the second method below
+			  filter_columnFilters : true,
+
+			  // if true, allows using "#:{query}" in AnyMatch searches (column:query; added v2.20.0)
+			  filter_columnAnyMatch: true,
+
+			  // extra css class name (string or array) added to the filter element (input or select)
+			  filter_cellFilter : '',
+
+			  // extra css class name(s) applied to the table row containing the filters & the inputs within that row
+			  // this option can either be a string (class applied to all filters) or an array (class applied to indexed filter)
+			  filter_cssFilter : '', // or []
+
+			  // add a default column filter type "~{query}" to make fuzzy searches default;
+			  // "{q1} AND {q2}" to make all searches use a logical AND.
+			  filter_defaultFilter : {},
+
+			  // filters to exclude, per column
+			  filter_excludeFilter : {},
+
+			  // jQuery selector (or object) pointing to an input to be used to match the contents of any column
+			  // please refer to the filter-any-match demo for limitations - new in v2.15
+			  filter_external : '',
+
+			  // class added to filtered rows (rows that are not showing); needed by pager plugin
+			  filter_filteredRow : 'filtered',
+
+			  // add custom filter elements to the filter row
+			  // see the filter formatter demos for more specifics
+			  filter_formatter : null,
+
+			  // add custom filter functions using this option
+			  // see the filter widget custom demo for more specifics on how to use this option
+			  filter_functions : null,
+
+			  // hide filter row when table is empty
+			  filter_hideEmpty : true,
+
+			  // if true, filters are collapsed initially, but can be revealed by hovering over the grey bar immediately
+			  // below the header row. Additionally, tabbing through the document will open the filter row when an input gets focus
+			  filter_hideFilters : false,
+
+			  // Set this option to false to make the searches case sensitive
+			  filter_ignoreCase : true,
+
+			  // if true, search column content while the user types (with a delay)
+			  filter_liveSearch : false,
+
+			  // a header with a select dropdown & this class name will only show available (visible) options within that drop down.
+			  filter_onlyAvail : 'filter-onlyAvail',
+
+			  // default placeholder text (overridden by any header "data-placeholder" setting)
+			  filter_placeholder : { search : '', select : '' },
+
+			  // jQuery selector string of an element used to reset the filters
+			  filter_reset : 'button.reset',
+
+			  // Use the $.tablesorter.storage utility to save the most recent filters (default setting is false)
+			  filter_saveFilters : true,
+
+			  // Delay in milliseconds before the filter widget starts searching; This option prevents searching for
+			  // every character while typing and should make searching large tables faster.
+			  filter_searchDelay : 500,
+
+			  // allow searching through already filtered rows in special circumstances; will speed up searching in large tables if true
+			  filter_searchFiltered: true,
+
+			  // include a function to return an array of values to be added to the column filter select
+			  filter_selectSource  : null,
+
+			  // if true, server-side filtering should be performed because client-side filtering will be disabled, but
+			  // the ui and events will still be used.
+			  filter_serversideFiltering : false,
+
+			  // Set this option to true to use the filter to find text from the start of the column
+			  // So typing in "a" will find "albert" but not "frank", both have a's; default is false
+			  filter_startsWith : false,
+
+			  // Filter using parsed content for ALL columns
+			  // be careful on using this on date columns as the date is parsed and stored as time in seconds
+			  filter_useParsedData : false,
+
+			  // data attribute in the header cell that contains the default filter value
+			  filter_defaultAttrib : 'data-value',
+
+			  // filter_selectSource array text left of the separator is added to the option value, right into the option text
+			  filter_selectSourceSeparator : '|',
+		
+		//----------- Pagr
+        // output default: '{page}/{totalPages}'
+        // possible variables: {size}, {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+        // also {page:input} & {startRow:input} will add a modifiable input in place of the value
+        pager_output: '{startRow} - {endRow} / {filteredRows} ({totalRows})', //'{startRow} to {endRow} of {totalRows} rows', // '{page}/{totalPages}'
+
+        // apply disabled classname to the pager arrows when the rows at either extreme is visible
+        pager_updateArrows: true,
+
+        // starting page of the pager (zero based index)
+        pager_startPage: 0,
+
+        // Number of visible rows
+        pager_size: 50,
+
+        // Save pager page & size if the storage script is loaded (requires $.tablesorter.storage in jquery.tablesorter.widgets.js)
+        pager_savePages: true,
+
+        // if true, the table will remain the same height no matter how many records are displayed. The space is made up by an empty
+        // table row set to a height to compensate; default is false
+        pager_fixedHeight: false,
+
+        // remove rows from the table to speed up the sort of large tables.
+        // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+        pager_removeRows: false, // removing rows in larger tables speeds up the sort
+        pager_ajaxUrl: 't2.php?+{filterList:filter}&{sortList:column}&page={page}&size={size}',
+
+        // use this option to manipulate and/or add additional parameters to the ajax url
+        pager_customAjaxUrl:  function(table, url) {
+			a=$(".tablesorter").data( 'lastSearch' );
+			b1=a.join(',');
+			c1=decodeURI(b1);
+			c2 =c1.split(',');
+			//$(table).data( 'lastSearch',c2 );
+			$(".tablesorter").data( 'lastSearch',c2 );
+			str = url.replace(/%25/g, "%" );
+            $(table).trigger('changingUrl', str);
+            return str;
+        },
+
+        // ajax error callback from $.tablesorter.showError function
+        pager_ajaxError: null,
+
+        // modify the $.ajax object to allow complete control over your ajax requests
+        pager_ajaxObject: {
+          dataType: 'json'
+        },
+		// Данные передаются объектом, в котором строка передается массивом
+		pager_ajaxProcessing: function(data){
+          if (data && data.hasOwnProperty('rows')) {
+            var indx, r, row, c, d = data.rows,
+            // total number of rows (required)
+            total = data.total_rows,
+            rows = data.rows
+			$('.tablesorter').find('tbody').html(rows);
+//			return [ total, rows ];
+			return [ total];
+          }
+        },
+		
+        // css class names of pager arrows
+        pager_css: {
+          container   : 'tablesorter-pager',
+          errorRow    : 'tablesorter-errorRow', // error information row (don't include period at beginning)
+          disabled    : 'disabled'              // class added to arrows @ extremes (i.e. prev/first arrows "disabled" on first page)
+        },
+
+        // jQuery selectors
+        pager_selectors: {
+          container   : '.pager',       // target the pager markup (wrapper)
+          first       : '.first',       // go to first page arrow
+          prev        : '.prev',        // previous page arrow
+          next        : '.next',        // next page arrow
+          last        : '.last',        // go to last page arrow
+          gotoPage    : '.gotoPage',    // go to page selector - select dropdown that sets the current page
+          pageDisplay : '.pagedisplay', // location of where the "output" is displayed
+          pageSize    : '.pagesize'     // page size selector - select dropdown that sets the "size" option
+
+        },
+		//---------- Editable
+			editable_columns       : [8],       // or "0-2" (v2.14.2); point to the columns to make editable (zero-based index)
+			editable_enterToAccept : true,          // press enter to accept content, or click outside if false
+			editable_autoAccept    : true,          // accepts any changes made to the table cell automatically (v2.17.6)
+			editable_autoResort    : false,         // auto resort after the content has changed.
+			editable_validate      : null,          // return a valid string: function(text, original, columnIndex){ return text; }
+			editable_focused       : function(txt, columnIndex, $element) {
+			  // $element is the div, not the td
+			  // to get the td, use $element.closest('td')
+			  $element.addClass('focused');
+			},
+			editable_blur          : function(txt, columnIndex, $element) {
+			  // $element is the div, not the td
+			  // to get the td, use $element.closest('td')
+			  $element.removeClass('focused');
+			},
+			editable_selectAll     : function(txt, columnIndex, $element){
+			  // note $element is the div inside of the table cell, so use $element.closest('td') to get the cell
+			  // only select everthing within the element when the content starts with the letter "B"
+			  return /^b/i.test(txt) && columnIndex === 0;
+			},
+			editable_wrapContent   : '<div>',       // wrap all editable cell content... makes this widget work in IE, and with autocomplete
+			editable_noEdit        : 'no-edit',     // class name of cell that is not editable
+			editable_editComplete  : 'editComplete' // event fired after the table content has been edited
+		//--------------------
+      }
+
+    })
+    .children('tbody').on('editComplete', 'td', function(event, config){
+      var $this = $(this),
+        newContent = $this.text(),
+        cellIndex = this.cellIndex, // there shouldn't be any colspans in the tbody
+        rowIndex = $this.closest('tr').attr('id'); // data-row-index stored in row id
+		p_id=$this.prev().prev().prev().prev().prev().prev().prev().prev().text().trim();
+		set_money($this, p_id, newContent);
+      /*
+      $.post("mysite.php", {
+        "row"     : rowIndex,
+        "cell"    : cellIndex,
+        "content" : newContent
+      });
+      */
+    });	
+});
+
+</SCRIPT>
+
+<!-- choose a theme file -->
+<link rel="stylesheet" href="./js/tablesorter/css/theme.green.css">
+
+<!-- load jQuery and tablesorter scripts -->
+<script type="text/javascript" src="./js/tablesorter/jquery.tablesorter.js"></script>
+
+<!-- tablesorter widgets (optional) -->
+<script type="text/javascript" src="./js/tablesorter/jquery.tablesorter.widgets.js"></script>
+<script type="text/javascript" src="./js/tablesorter/widgets/widget-editable.js"></script>
+<script type="text/javascript" src="./js/tablesorter/widgets/widget-pager.js"></script>
+<script type="text/javascript" src="./js/tablesorter/widgets/widget-storage.js"></script>
+<script type="text/javascript" src="./js/tablesorter/widgets/widget-filter.js"></script>
+
+<link type="text/css" rel="stylesheet" href="{T_THEME_PATH}/rox_menu_test.css"/>
+<link type="text/css" rel="stylesheet" href="{T_THEME_PATH}/custom.css"/>

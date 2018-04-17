@@ -1,0 +1,248 @@
+<!-- INCLUDE overall_header.html -->
+
+
+<style type="text/css">
+.calendar-mini, .monthyear-mini, .dayheaders-mini, .days {
+	overflow: hidden;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+	background-color:#F9F9F9;
+}
+.calendar-mini td {
+	height:2.5em;
+	cursor:default;
+}
+.monthyear-mini td{
+	font-weight: bold;
+}
+.dayheaders-mini td {
+	height: 1.5em;
+	background-color:#ECF3F7;
+}
+td.days {
+	background-color:#f6f6db;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #8F8F8F;
+	border-top: 1px solid #FFFFFF;
+	border-bottom: 1px solid #8F8F8F;
+	cursor:pointer;
+}
+td.notaday {
+	cursor:pointer;
+}
+td.today {
+	border-left: 0.2em solid #1C89EF;
+	border-right: 0.2em solid  #115799;
+	border-top: 0.2em solid #1C89EF;
+	border-bottom: 0.2em solid #115799;
+}
+td.select_day {
+	background: #F9F9F9;
+}
+td.isev{
+	font-weight: bold;
+}
+td.isever{
+	font-weight: bold;
+	color: #D31141;
+}
+.cp-mini {
+	background-color:#F9F9F9;
+    width:220px;
+}
+#navigation {
+	padding-top:0px;
+}
+#wrap {	
+	min-width:1000px;
+}
+table {
+	font-size:10px !important;
+}
+table td {
+	font-size:10px !important;
+}
+</style>
+<div style="margin:12px 0;">
+<A NAME="begin"> </A>
+<form action="events.php{SID}" method="post" id="postform">
+	<div class="panel bg3">
+		<div class="inner">
+			<span class="corners-top"><span></span></span>
+
+
+<table>
+	<tr>
+		<td width="230px" valign="top">
+	<div id="cp-menu" style="width:100%">
+
+<script type="text/javascript">
+// <![CDATA[
+	var save_background = '';
+                   //
+	function highlight_event(id, restore)
+	{
+		var element = document.getElementById(id);
+		if (element)
+		{
+			if (restore)
+			{
+				element.style.background = save_background;
+			} else
+			{
+				save_background = element.style.background;
+				element.style.background = '#EBEBEB';
+			}
+		}
+	}
+// ]]>
+</script>
+
+
+
+<!-- IF CALENDAR_VIEW_OPTIONS -->
+		<a href="/events.php?mode=new<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">
+			<img src="{NEW_EVENT_IMG}" alt="Новое событие"  />
+		</a>
+<!-- ENDIF -->
+
+<div id="cal-mini">
+<div class="cp-mini">
+	<div class="inner">
+		<span class="corners-top"><span></span></span>
+			<div class="calendar-mini">
+				<table width="100%">
+					<tbody>
+						<tr class="monthyear-mini">
+							<td class="notaday" onclick=top.location.href="event_calendar.php?view={VIEW}&selectday={PREV_MONTH}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Предыдущий месяц">«</td>
+							<td colspan="5">{MONTH}&nbsp;{YEAR}</td>
+							<td class="notaday" onclick=top.location.href="event_calendar.php?view={VIEW}&selectday={NEXT_MONTH}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Следующий месяц">»</td>
+						</tr>
+						<tr class="dayheaders-mini">
+							<td title="Понедельник">Пн</td>
+							<td title="Вторник">Вт</td>
+							<td title="Среда">Ср</td>
+							<td title="Четверг">Чт</td>
+							<td title="Пятница">Пт</td>
+							<td title="Суббота">Сб</td>
+							<td title="Воскресенье">Вс</td>
+						</tr>
+						{CALENDAR_BODY}
+					</tbody>
+				</table>
+			</div>
+		<span class="corners-bottom"><span></span></span>
+	</div>
+</div>
+</div>
+
+<div id="navigation">
+	<hr />
+	<ul>
+		<li id="{SUBSECTION_DAY}"><a href="{U_CALENDAR}?view=day&selectday={SELECTDAY}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->"><span>День</span></a></li>
+		<li id="{SUBSECTION_WEEK}"><a href="{U_CALENDAR}?view=week&selectday={SELECTDAY}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->"><span>Неделя</span></a></li>
+		<li id="{SUBSECTION_ALL}"><a href="{U_CALENDAR}?view=all&selectday={SELECTDAY}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->"><span>Все</span></a></li>
+		<li id="{SUBSECTION_ALLNEW}"><a href="{U_CALENDAR}?view=allnew&selectday={SELECTDAY}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->"><span>Все новые</span></a></li>
+	</ul>
+	<hr />
+</div>
+
+<div class="cp-mini">
+	<div class="inner">
+		<span class="corners-top"><span></span></span>
+			<dl class="mini">
+				<dt>Отметки событий</dt>
+				<table>
+				<tr>
+				<td><img src="./images/events/clock_color.png"></td><td>&nbsp;&nbsp;Новые</td>
+				</tr>
+				<tr>
+				<td><img src="./images/events/clock.png"></td><td>&nbsp;&nbsp;Прочтенные</td>
+				</tr>
+				<tr>
+				<td><img src="./images/events/clock_done.png"></td><td>&nbsp;&nbsp;Выполненные</td>
+				</tr>
+				<tr>
+				<td><img src="./images/events/clock_err.png"></td><td>&nbsp;&nbsp;Невыполненные</td>
+				</tr>
+				</table>
+			</dl>
+		<span class="corners-bottom"><span></span></span>
+	</div>
+</div>
+								
+	</div>
+
+		</td>
+		<td width="6px">&nbsp;</td>
+		<td valign="top" width="750px">
+		
+<div id="cp-main" class="ucp-main">
+	<h2>{SELECT_FILTER}</h2><br />
+
+<div class="panel">
+	<div class="inner">
+{EVENTS_TAPE}
+	</div>
+</div>
+<br/>
+
+<div id="viewfolder" style="width:100%">
+	<div class="panel">
+		<div class="inner">
+<span class="corners-top"><span></span></span>
+
+<table width="100%">
+	<tr>
+		<td align="left"><b>СОБЫТИЕ</b></td>
+		<td align="right" class="mark"><b>ОТМЕТИТЬ</b></td>
+	</tr>
+</table>
+
+<ul class="topiclist cplist pmlist">
+	<span id="messages">{MESSAGE_BLOCK}</span>
+</ul>
+
+<fieldset class="display-actions">
+<select id="mode" name="mode"><option value="done">Пометить как выполненные</option><option value="del">Удалить отмеченные</option></select>&nbsp;
+<input type="submit" class="button2" value="Перейти"/>
+<div><a href="#" onclick="checkall(); return false;">Отметить все</a> &bull; <a href="#" onclick="uncheckall(); return false;">Снять выделение</a></div>
+</fieldset>
+
+<span class="corners-bottom"><span></span></span>
+		</div>
+	</div>
+</div>
+
+<SCRIPT language="Javascript">
+function checkall() {
+	$("input:checkbox").removeAttr('checked');
+	$("li:visible :checkbox").attr('checked', 'checked');
+}
+function uncheckall() {
+	$("input:checkbox").removeAttr('checked');
+}
+function event_showhide (event_id) {
+	var event_box=$('#event_'+event_id);
+  var event_blocks=$("li", event_box);
+	$(event_blocks).each (
+		function () {
+			this.style.display=(this.style.display == 'none') ? 'block' : 'none';
+			$("li:hidden :checkbox").removeAttr('checked');
+	});
+}
+</SCRIPT>
+
+</div>
+		</td>
+	</tr>
+</table>
+							
+<div class="clear"></div>
+	<span class="corners-bottom"><span></span></span>
+		</div>
+			</div>
+</form>
+</div>
+<!-- INCLUDE overall_footer.html -->

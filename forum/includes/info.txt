@@ -1,0 +1,7 @@
+Вставлены строки:
+
+// ----- http://web2.0-developer.ru/sp/ -----
+	
+include($phpbb_root_path . 'sp/menu.' . $phpEx);
+	
+// ----- http://web2.0-developer.ru/sp/ -----

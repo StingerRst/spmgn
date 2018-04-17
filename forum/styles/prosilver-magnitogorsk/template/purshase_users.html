@@ -1,0 +1,32 @@
+<!-- INCLUDE overall_header.html -->
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<script type="text/javascript" src="./js/jquery.autocomplete.min.js"></script>
+
+<input id="brand">
+<br>
+<select name="brand" >
+	<option></option>
+	<!-- BEGIN otchet -->
+		<option value="{otchet.BRAND_ID}" >{otchet.BRAND_LABEL}-&nbsp;{otchet.BRAND_URL}&nbsp;({otchet.ORG_NAME})</option>
+	<!-- END otchet -->
+</select>
+<input type="submit" value="Сформировать">
+<br>
+<textarea id="users">
+</textarea>
+<SCRIPT language="Javascript">
+$('#brand').autocomplete({
+    serviceUrl: 'service/autocomplete.ashx', // Страница для обработки запросов автозаполнения
+    minChars: 2, // Минимальная длина запроса для срабатывания автозаполнения
+    delimiter: /(,|;)\s*/, // Разделитель для нескольких запросов, символ или регулярное выражение
+    maxHeight: 400, // Максимальная высота списка подсказок, в пикселях
+    width: 300, // Ширина списка
+    zIndex: 9999, // z-index списка
+    deferRequestBy: 0, // Задержка запроса (мсек), на случай, если мы не хотим слать миллион запросов, пока пользователь печатает. Я обычно ставлю 300.
+    params: { country: 'Yes'}, // Дополнительные параметры
+    onSelect: function(data, value){ }, // Callback функция, срабатывающая на выбор одного из предложенных вариантов,
+    lookup: ['January', 'February', 'March'] // Список вариантов для локального автозаполнения
+});
+
+</SCRIPT>

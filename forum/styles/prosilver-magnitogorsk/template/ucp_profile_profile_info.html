@@ -1,0 +1,228 @@
+<!-- INCLUDE ucp_header.html -->
+
+<form id="ucp" method="post" action="{S_UCP_ACTION}"{S_FORM_ENCTYPE}>
+
+<h2>{L_TITLE}</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	<p>{L_PROFILE_INFO_NOTICE}</p>
+
+	<fieldset>
+	<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+	<dl>
+		<dt><label for="realname">{L_UCP_REALNAME}:</label></dt>
+		<dd><input type="text" name="realname" id="realname" maxlength="255" value="{REALNAME}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="icq">{L_UCP_ICQ}:</label></dt>
+		<dd><input type="text" name="icq" id="icq" maxlength="15" value="{ICQ}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="aim">{L_UCP_AIM}:</label></dt>
+		<dd><input type="text" name="aim" id="aim" maxlength="255" value="{AIM}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="msn">{L_UCP_MSNM}:</label></dt>
+		<dd><input type="text" name="msn" id="msn" maxlength="255" value="{MSN}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="yim">{L_UCP_YIM}:</label></dt>
+		<dd><input type="text" name="yim" id="yim" maxlength="255" value="{YIM}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="jabber">{L_UCP_JABBER}:</label></dt>
+		<dd><input type="text" name="jabber" id="jabber" maxlength="255" value="{JABBER}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="website">{L_WEBSITE}:</label></dt>
+		<dd><input type="text" name="website" id="website" maxlength="255" value="{WEBSITE}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="location">{L_LOCATION}:</label></dt>
+		<dd><input type="text" name="location" id="location" maxlength="255" value="{LOCATION}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="interests">{L_INTERESTS}:</label></dt>
+		<dd><textarea name="interests" id="interests" class="inputbox" rows="3" cols="30">{INTERESTS}</textarea></dd>
+	</dl>
+	<dl>
+		<dt><label for="phone">{L_PHONE}:</label><br /><span>{L_PHONE_EXPLAIN}</span></dt>
+		<dd>
+			<input type="text" name="phone" id="phone" maxlength="15" value="{PHONE}" class="inputbox"<!-- IF PHONE_ACTIVATION --> onkeyup="phone_changed()" onchange="phone_changed()"<!-- ENDIF --> />
+			<!-- IF PHONE_ACTIVATION -->
+			<div id="phone_activation_warning" class="error" style="display:none;margin:2px 0">{L_PHONE_ACTIVATION_WARNING}</div>
+			<div id="phone_activation" style="display:none;margin:2px 0">
+				<span class="_aacode"<!-- IF PHONE_ACTIVATED or not PHONE --> style="display:none"<!-- ENDIF -->>{L_PHONE_ACTIVATION_CODE}: </span><input class="inputbox _aacode" style="<!-- IF PHONE_ACTIVATED or not PHONE -->display:none;<!-- ENDIF -->width:100px" type="text" id="acode" maxlength="6" class="inputbox" />
+				<input type="button" value="{L_PHONE_ACTIVATE}" class="button1 _aacode" onclick="phone_activate();return false;"<!-- IF PHONE_ACTIVATED or not PHONE --> style="display:none"<!-- ENDIF --> />
+				<input type="button" value="{L_PHONE_SEND_AGAIN}" class="button2" onclick="phone_send();return false;" />
+			</div>
+			<div id="phone_activation_result" class="error" style="display:none"></div>
+			<script type="text/javascript">
+			// <![CDATA[
+				var dbphone = "{DBPHONE}";
+				var phone = "{PHONE}";
+				var activated = {PHONE_ACTIVATED};
+				
+				function phone_changed() {
+					_phone = $('#phone').val();
+					if ((phone != _phone || !activated) && _phone) {
+						$('#phone_activation_warning, #phone_activation').css('display', 'block');
+						$('#phone_activation_result').css('display', 'none');
+					} else if (activated && dbphone == phone) {
+						$('#phone_activation_result').html('<span style="color:#13B302">{L_PHONE_ACTIVATED}</span>').css('display', 'block');
+						$('#phone_activation_warning, #phone_activation').css('display', 'none');
+					} else {
+						$('#phone_activation_result, #phone_activation_warning, #phone_activation').css('display', 'none');
+					}
+				}
+				function phone_send() {
+					_phone = $('#phone').val();
+					$('#phone_activation_result, #phone_activation_warning').css('display', 'none');
+					$.ajax({
+						type: "GET",
+						url: "sms.php",
+						dataType: "xml",
+						data: { mode: 'send', phone: _phone },
+						success: function (data, textStatus, XMLHttpRequest) {
+							if (data) {			
+								switch (parseInt($(data).find("send").attr('result'))) {
+									case  1:
+										$('#phone_activation_result').html('<span style="color:#13B302">{L_PHONE_SENDED}</span>').css('display', 'block');
+										$('._aacode').css('display', 'inline');
+										break;
+									case  0: $('#phone_activation_result').html('{L_PHONE_SEND_ERROR}').css('display', 'block'); break;
+									case -1: $('#phone_activation_result').html('{L_PHONE_ALREADY_ACTIVATED}').css('display', 'block'); break;
+									case -2: $('#phone_activation_result').html('{L_PHONE_ACTIVATED_BY_OTHER_USER}').css('display', 'block'); break;
+									case -3: $('#phone_activation_result').html('{L_PHONE_SEND_LIMIT_ERROR}').css('display', 'block'); break;
+									case -4: $('#phone_activation_result').html('{L_PHONE_SEND_ERROR}').css('display', 'block'); break;
+									case -7: $('#phone_activation_result').html('{L_WRONG_DATA_PHONE}').css('display', 'block'); break;
+									case -8: $('#phone_activation_result').html('{L_PHONE_CANNOT_SEND}').css('display', 'block'); break;
+								}
+							}
+						},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {
+							alert(errorThrown);
+						}
+					});
+				}
+				function phone_activate() {
+					$('#phone_activation_result, #phone_activation_warning').css('display', 'none');
+					$.ajax({
+						type: "GET",
+						url: "sms.php",
+						dataType: "xml",
+						data: { mode: 'activate', acode: document.getElementById('acode').value },
+						success: function (data, textStatus, XMLHttpRequest) {
+							if (data) {			
+								switch (parseInt($(data).find("activate").attr('result'))) {
+									case  1:
+										$('#phone_activation_result').html('<span style="color:#13B302">{L_PHONE_ACTIVATED}</span>').css('display', 'block');
+										$('#phone_activation, #phone_activation_warning').css('display', 'none');
+										break;
+									case  0: $('#phone_activation_result').html('{L_PHONE_ACTIVATION_ERROR}').css('display', 'block'); break;
+									case -1: $('#phone_activation_result').html('{L_PHONE_ALREADY_ACTIVATED}').css('display', 'block'); break;
+									case -2: $('#phone_activation_result').html('{L_PHONE_ACTIVATED_BY_OTHER_USER}').css('display', 'block'); break;
+									case -5: $('#phone_activation_result').html('{L_PHONE_ACTIVATION_ATTEMPTS_ERROR}').css('display', 'block'); break;
+									case -6: $('#phone_activation_result').html('{L_PHONE_ACTIVATION_INVALID_KEY}').css('display', 'block'); break;
+								}
+							}
+						},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {
+							alert(errorThrown);
+						}
+					});
+				}
+				onload_functions.push('phone_changed()');
+			// ]]>
+			</script>
+			<!-- ENDIF -->
+		</dd>
+	</dl>
+
+	<!-- IF S_BIRTHDAYS_ENABLED -->
+		<dl>
+			<dt><label for="bday_day">{L_BIRTHDAY}:</label><br /><span>{L_BIRTHDAY_EXPLAIN}</span></dt>
+			<dd>
+				<label for="bday_day">{L_DAY}: <select name="bday_day" id="bday_day" style="width: 4em;">{S_BIRTHDAY_DAY_OPTIONS}</select></label> 
+				<label for="bday_month">{L_MONTH}: <select name="bday_month" id="bday_month" style="width: 4em;">{S_BIRTHDAY_MONTH_OPTIONS}</select></label> 
+				<label for="bday_year">{L_YEAR}: <select name="bday_year" id="bday_year" style="width: 6em;">{S_BIRTHDAY_YEAR_OPTIONS}</select></label>
+			</dd>
+		</dl>
+	<!-- ENDIF -->
+	<br />
+	<!--<dl>
+		<dt><label for="occupation">{L_OCCUPATION}:</label><br /><span>{L_OCCUPATION_SP}</span></dt>
+		<dd><textarea name="occupation" id="occupation" class="inputbox" rows="3" cols="30">{OCCUPATION}</textarea></dd>
+	</dl>-->
+	<!-- BEGIN profile_fields -->
+		<dl>
+			<dt><label<!-- IF profile_fields.FIELD_ID --> for="{profile_fields.FIELD_ID}"<!-- ENDIF -->>{profile_fields.LANG_NAME}:<!-- IF profile_fields.S_REQUIRED --> *<!-- ENDIF --></label>
+			<!-- IF profile_fields.LANG_EXPLAIN --><br /><span>{profile_fields.LANG_EXPLAIN}</span><!-- ENDIF --></dt>
+			<!-- IF profile_fields.ERROR --><dd class="error">{profile_fields.ERROR}</dd><!-- ENDIF -->
+			<dd>{profile_fields.FIELD}</dd>
+		</dl>
+	<!-- END profile_fields -->
+	<hr/>
+	<p><span>{L_UCP_PASPORTDATA}</span></p>
+	<dl>
+		<dt><label for="pasportdata_number">{L_UCP_PASPORTDATA_NUMBER}:</label></dt>
+		<dd><input type="text" name="pasportdata_number" id="pasportdata_number" maxlength="30" value="{PASPORTDATA_NUMBER}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="pasportdata_issuedby">{L_UCP_PASPORTDATA_ISSUEDBY}:</label></dt>
+		<dd><input type="text" name="pasportdata_issuedby" id="pasportdata_issuedby" maxlength="255" value="{PASPORTDATA_ISSUEDBY}" class="inputbox" /></dd>
+	</dl>	
+	<dl>
+			<dt><label for="pasportdata_issueddate">{L_UCP_PASPORTDATA_ISSUEDDATE}:</label></dt>
+			<dd>
+				<label for="pasportdata_issueddate_day">{L_DAY}: <select name="pasportdata_issueddate_day" id="pasportdata_issueddate_day" style="width: 4em;">{PASPORTDATA_ISSUEDDATE_DAY_OPTIONS}</select></label> 
+				<label for="pasportdata_issueddate_month">{L_MONTH}: <select name="pasportdata_issueddate_month" id="pasportdata_issueddate_month" style="width: 4em;">{PASPORTDATA_ISSUEDDATE_MONTH_OPTIONS}</select></label> 
+				<label for="pasportdata_issueddate_year">{L_YEAR}: <select name="pasportdata_issueddate_year" id="pasportdata_issueddate_year" style="width: 6em;">{PASPORTDATA_ISSUEDDATE_YEAR_OPTIONS}</select></label>
+			</dd>
+		</dl>
+	<dl>
+		<dt><label for="pasportdata_addres">{L_UCP_PASPORTDATA_ADDRES}:</label></dt>
+		<dd><input type="text" name="pasportdata_addres" id="pasportdata_addres" maxlength="30" value="{PASPORTDATA_ADDRES}" class="inputbox" /></dd>
+	</dl>	
+	<hr/>
+	<!-- IF S_USER_IS_ORGANIZER -->
+	<br>
+	<p>{L_ORGANIZER_PROFILE_INFO_NOTICE}</p>
+	<hr/>
+	<p><span>{L_UCP_COMPANY}</span></p>
+	<dl>
+		<dt><label for="company_name">{L_UCP_COMPANY_NAME}:</label></dt>
+		<dd><input type="text" name="company_name" id="company_name" maxlength="255" value="{COMPANY_NAME}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="company_addres">{L_UCP_COMPANY_ADDRES}:</label></dt>
+		<dd><input type="text" name="company_addres" id="company_addres" maxlength="255" value="{COMPANY_ADDRES}" class="inputbox" /></dd>
+	</dl>	
+	<dl>
+		<dt><label for="company_inn">{L_UCP_COMPANY_INN}:</label></dt>
+		<dd><input type="text" name="company_inn" id="company_inn" maxlength="30" value="{COMPANY_INN}" class="inputbox" /></dd>
+	</dl>
+	<dl>
+			<dt><label for="company_regdate">{L_UCP_COMPANY_REGDATE}:</label></dt>
+			<dd>
+				<label for="company_regdate_day">{L_DAY}: <select name="company_regdate_day" id="company_regdate_day" style="width: 4em;">{COMPANY_REGDATE_DAY_OPTIONS}</select></label> 
+				<label for="company_regdate_month">{L_MONTH}: <select name="company_regdate_month" id="company_regdate_month" style="width: 4em;">{COMPANY_REGDATE_MONTH_OPTIONS}</select></label> 
+				<label for="company_regdate_year">{L_YEAR}: <select name="company_regdate_year" id="company_regdate_year" style="width: 6em;">{COMPANY_REGDATE_YEAR_OPTIONS}</select></label>
+			</dd>
+		</dl>
+
+	<!-- ENDIF -->	
+	</fieldset>
+
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+
+<fieldset class="submit-buttons">
+	{S_HIDDEN_FIELDS}<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp; 
+	<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+	{S_FORM_TOKEN}
+</fieldset>
+</form>
+
+<!-- INCLUDE ucp_footer.html -->

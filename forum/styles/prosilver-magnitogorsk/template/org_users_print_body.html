@@ -1,0 +1,49 @@
+ <head>
+  <style>
+	table#main {
+    table-layout: auto; /* Фиксированная ширина ячеек */
+    width: 100%; /* Ширина таблицы */
+	page-break-inside: avoid;
+	border:1px solid black;
+	border-collapse: collapse;
+	
+	}
+
+	td#i0 {word-break:normal;border:1px solid black }
+	td#i1 {border:1px solid black}
+	td#i2 {border:1px solid black}
+	td#i3 {word-break:break-all;border:1px solid black}
+	td#i4 {border:1px solid black}
+	td#i5 {border:1px solid black}
+
+	@media print {
+	}
+  </style>
+ </head>
+<H3> Закупка :&nbsp; &nbsp; {PURCHASE_NAME}</H3>
+
+<form  method="post" sid = {sid}>
+<!-- IF .order-->
+	<!-- BEGIN order-->
+		<!-- IF  order.NEW_USER -->
+			<table id ="main" >
+		<!-- ENDIF -->
+		<tr>  
+		<!-- IF  order.NEW_USER -->
+			<td id="i0"  rowspan ="{order.LOT_COUNT}">
+			<p style="margin:3px 5px; font-size: 14pt"><b>{order.USERNAME}</b></p></td>
+		<!-- ENDIF -->
+		<td id="i1" style=" font-size: 10pt">{order.CATALOG_NAME}</td>
+		<td id="i2" style=" font-size: 10pt">{order.LOT_NAME}</td>
+		<td id="i3" style=" font-size: 10pt">{order.KOLVO} &nbsp; шт.</td>
+		<td id="i4" style=" font-size: 10pt">{order.ORDER_PROPERTIES}</td>
+		<td id="i5" style=" font-size: 10pt">{order.ORDER_COMMENT}</td>
+		</tr>
+		<!-- IF  order.LAST_RECORD -->
+		<tr>
+			<td colspan ="6"> Итого:&nbsp; {order.TOVAR_COUNT} &nbsp; шт.</td> 
+		</tr>		
+			</table>
+		<!-- ENDIF -->
+	<!-- END order.-->
+<!-- ENDIF --> </form>

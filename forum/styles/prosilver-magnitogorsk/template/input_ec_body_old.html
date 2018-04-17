@@ -1,0 +1,146 @@
+<!-- INCLUDE org_header.html -->
+<style>
+	select {
+		width: 300px; /* Ширина списка в пикселах */
+	}
+	td,th {padding:2px 3px 2px 3px}
+</style>
+<H3>Принятие закупки </H3>
+<form  method="post" sid = {sid}>
+<SELECT type="submit" name ="PurchaseSelect" id="PurchaseInput" onchange=form.submit()>
+  <OPTION value="0">Выбрать...</OPTION>
+  <!-- BEGIN purchases -->
+   <!-- IF  purchases.ID == PURCHASE -->
+     <OPTION selected value="{purchases.ID}">{purchases.NAME}</OPTION>
+   <!-- ELSE -->  
+     <OPTION value="{purchases.ID}">{purchases.NAME}</OPTION>
+   <!-- ENDIF -->
+  <!-- END purchases -->
+</SELECT>
+  <input type="button" value="Подробнее" onClick="location.href='adm.php?i=1&mode=otchet&p={PURCHASE}&sid={SID}'"/>
+</form>
+<!-- IF .dostavka -->
+	<div>
+	 </br>
+	 <h4>Доставка из Челябинска:</h4>
+	 </br>
+
+	  <table border="1"  cellspacing = "0">
+	  <THEAD>
+		<tr align="center">
+		  <td>Орг</td>
+		  <td>Закупка</td>
+		  <td>Наименование закупки</td>
+		  <td>Отправлено</td>
+		  <td>Заказы</td>
+		  <td>Позиции</td>
+		</tr>
+	  </THEAD>
+	  <!-- BEGIN dostavka -->
+		<tr>
+		  <td>{dostavka.ORG}</td>
+		  <td align="center">{dostavka.ZAKUPKA}</td>
+		  <td>{dostavka.NAIMENOVANIE}</td>
+		  <td align="center">{dostavka.OTPRAVLENO}</td>
+		  <td align="center">{dostavka.ZAKAZI}</td>
+		  <td align="center">{dostavka.POZICII}</td>
+		</tr>
+	   <!-- END dostavka -->
+	  </table>
+	</div>
+<!-- ENDIF -->
+
+ <form  method="post" sid = {sid}>
+  <!-- IF .order -->
+ </br>
+  <input type="button" value="Принять" onClick="add_orders();"/>
+ </br>
+ </br>
+  <table border="1" width="70%" cellspacing = "0">
+  <THEAD>
+    <tr align="center">
+  	  <td>Лот</td>
+	  <td>Участник</td>
+	  <td>Цена</td>
+	  <td>Доставка</td>
+	  <td>Выбор</td>
+    </tr>
+  </THEAD>
+  <!-- BEGIN order -->
+    <tr>
+ 	  <td>{order.LOT_NAME}</td>
+	  <td>{order.USERNAME}</td>
+	  <td>{order.LOT_COST}</td>
+	  <td>{order.ORDER_DELIVERY}</td>
+	  <TD  align="center" valign="center"> <INPUT id="order{order.ORDER_ID}" type="checkbox" checked> </td>
+    </tr>
+   <!-- END order -->
+  </table>
+ <!-- ENDIF -->
+</form>
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<SCRIPT language="javascript">
+
+var orders={ORDERS};
+var users={USERS};
+
+function change_orders_state( o, st)
+{
+//alert (o);
+	$.ajax({
+                type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "change_orders_state",
+			'orders': o,
+			'state': st,
+			'notification': 1,
+			'purchase_id': {PURCHASE_ID}
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			var po = result["processed"];
+			if (null!=po)
+			{
+				for (var j=0; j<po.length; j++)
+				{
+					var id = po[j];
+					set_order_state( id, st);
+				}
+			}
+
+			if ("ok" == result["state"])
+			{
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении статуса заказов!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+
+
+function add_orders()
+{
+	var st = 5;
+	var o = new Array;
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id);
+		if (el.checked)
+		{
+			o.push( id);
+		}
+	}
+	change_orders_state( o, st);
+        location.reload();
+}
+
+</SCRIPT>
+<!-- INCLUDE org_footer.html -->

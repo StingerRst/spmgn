@@ -1,0 +1,2194 @@
+<!-- INCLUDE adm_header.html -->
+<style type="text/css">
+  .alt {background-color:#F4FFED;}
+  .over {background-color:#F6F4D0 !important;} 
+</style>
+
+<font size=2>
+<DIV id="debug">
+</DIV>
+<span style="position:absolute; top:0; left:0; z-index:1; visibility:hidden" id="subst_layer"></span>
+<div id="date_picker" style="display:none;position:absolute;top:0px;left:0px;z-index:100;">
+</div>
+<H3>Отчет по закупке  № {PURCHASE_ID} &nbsp;  <a title="Перейти к обсуждению закупки {PURCHASE_NAME}" href="{PURCHASE_URL}">"{PURCHASE_NAME}"</a></H3>
+<!--<input id="sort_lot" type="checkbox" onclick="javascript:sort_lot=!sort_lot;" value=""/>Сортировать по названию&nbsp;&nbsp;&nbsp;&nbsp;
+<input id="hide_refusals" type="checkbox" onclick="javascript:hide_refusals=!hide_refusals;" value=""/>Скрывать отказы&nbsp;&nbsp;&nbsp;&nbsp;
+
+<Input type="button" value="&nbsp &nbsp ОБНОВИТЬ &nbsp &nbsp " onClick="javascript:scan_table_mode();" >
+<hr />
+-->
+<div id="report" style=" font-size: 10pt"></div>
+
+<div>
+	<hr />
+	<table id="site">
+		<tr>
+			<td><b>Отчисления на поддержку сайта:</b></td>
+		</tr>
+
+		<tr>
+			<td title="Здесь просуммированы заказы с состоянием 'включено в счет'">Заказов на сумму (включено в счет):</td><td id="total_orders_i"></td><td></td>
+		</tr>
+		<tr>
+			<td title="Количество участников, получающих заказы">Количество получающих:</td><td id="ec_users"></td><td></td>
+		</tr>
+		<tr>
+			<td title="Сумма для ЕЦ за получающих">Сумма за ЕЦ (руб):</td><td id="ec_users_summ"></td><td></td>
+		</tr>
+		<tr>
+			<td title="Размер отчислений для этой закупки (% от суммы заказов с состоянием 'включено в счет')">Размер отчислений (%):</td><td id="total_admin_rate"></td><td></td>
+		</tr>
+		<tr>
+
+			<td title="Размер отчислений для этой закупки (% от суммы заказов с состоянием 'включено в счет')">Размер отчислений (руб):</td><td id="total_admin_fee"></td><td></td>
+		</tr>
+		<tr>
+			<td title="Итого">Итого (руб):</td><td id="total_admin_fee_itogo"></td><td></td>
+		</tr>
+		<tr>
+			<td>Оплачено (руб):</td>
+			<td><input type="text" size="6" id="user' + user.id + '_money" value="{PURCHASE_ADMIN_MONEY}" onChange="javascript:set_money(this.value);"/></td><td></td>
+		</tr>
+		<tr>
+			<td>Информация об оплате:</td>
+
+			<td colspan="2">
+				<span id="status_payment_info"><img src="./images/icons/empty.png" width="22" height="22" /></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				{PURCHASE_ADMIN_PAYMENT}
+			</td>
+
+		</tr>
+	</table>
+</div>
+
+<div>
+	<hr />
+	<table width="100%">
+		<tr>
+			<td align="center">Выбор</td>
+			<td align="center">Выбор по артикулу</td>
+			<td align="center">Операции с выбранными</td>
+		</tr>
+		<tr>
+			<td align="center">
+				<select id="selector">
+					<option value="-1" selected>все</option>
+					<option value="0">Новые Закаы</option>
+					<option value="1">Зафиксированные</option>
+					<option value="2">Включенные в счет</option>
+					<option value="3">Отказы</option>
+					<option value="4">Отправленые в ЕЦ</option>
+					<option value="5">Принятые в ЕЦ</option>
+					<option value="6">Выданные</option>
+				</select>
+
+				<br />
+				<input type="button" value="отметить" onClick="javascript:select_orders();"/>
+				<input type="button" value="снять" onClick="javascript:unselect_orders();"/>
+			</td>
+			<td align="center">
+				<div id="select_controls"></div>
+				<input type="button" value="отметить" onClick="javascript:select_orders_lot(true);"/>
+				<input type="button" value="снять" onClick="javascript:select_orders_lot(false);"/>
+
+				<br />
+				<input type="button" value="Отметить *" onClick="javascript:select_orders_special(true);" title="Отметить все заказы пользователей, заказавших эту позицию (удобно для каталогов раздач)"/>
+				<input type="button" value="Снять *" onClick="javascript:select_orders_special(false);" title="Отметить все заказы пользователей, заказавших эту позицию (удобно для каталогов раздач)"/>
+
+				</td>
+			<td align="center">
+				<input type="button" value="Установить состояние в" onclick="change_selected_orders_state();" />
+				<SELECT id="selected_orders_status_selector">
+					<OPTION value="0">Новый Заказ</OPTION>
+					<OPTION value="1">Зафиксировано</OPTION>
+					<OPTION value="2">Включено в счет</OPTION>
+					<OPTION value="3">Отказано</OPTION>
+					<OPTION value="4">В пути</OPTION>
+					<option value="5">Принято в ЕЦ</option>
+					<option value="6">Выдано</option>
+				</SELECT>
+
+				<br />
+				<input type="button" value="Установить доставку в " onclick="javascript:selected_set_delivery();" /><input type="text" id="delivery" value="0.00"/>
+				<br />
+				<input type="button" value="Установить доставку пропорционально " onclick="javascript:selected_set_delivery_p();" /><input type="text" id="delivery_p" value="0.00"/>
+			</td>
+			<td>
+				<form method="post" action="/forum/events.php?mode=new<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" id="new_event_form">
+					<img title="Новое событие" src="./images/events/button_new_ev.gif" onclick="javascript:new_event_send();" />
+					<input type="hidden" name="new_event_user_list" value="" id="new_event_user_list">
+					<input type="hidden" name="new_event_user_lname" value="" id="new_event_user_lname">
+					<input type="hidden" name="subject" value="{PURCHASE_NAME}" id="subject">
+					<input type="hidden" name="message" value="[url=http://{URL}/{PURCHASE_URL}]{PURCHASE_NAME}[/url]" id="subject">
+				</form>
+				<form method="post" action="./ucp.php?i=pm&mode=compose<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" id="username_form">
+					<ul class="profile-icons"><li class="pm-icon">
+					<a title="Личное сообщение" href="#" onclick="javascript:new_event_send2();return false;"><span>Личное сообщение</span></a>
+					</li></ul>
+					<input type="hidden" name="username_list" value="" id="username_list">
+				</form>
+
+			</td>
+			
+		</tr>
+	</table>
+
+	<hr />
+	<table width="70%" align="center">
+
+		<tr>
+			<td align="center">
+				<form method="post" action="export_report.php" id="export_form">
+					<input type="hidden" name="selected_orders" value="" id="selected_orders"/>
+					<input type="hidden" name="purchase_id" value={PURCHASE_ID} />
+					<input type="submit" class="button2" value="Экспорт в Excel (поставщик)" onClick="javascript:export_selected();"/>
+				</form>
+				</br>
+				<form method="post" action="export_report2.php" id="export_form2">
+					<input type="hidden" name="selected_orders" value="" id="selected_orders2"/>
+					<input type="hidden" name="purchase_id" value={PURCHASE_ID} />
+					<input type="submit" class="button2" value="Экспорт в Excel (полный)" onClick="javascript:export_selected2();"/>
+				</form>
+			</td>
+			<td align="center">
+				<form method="post" action="org_otchet_ec.php" sid = {sid} id="export_form_ec">
+					<input type="hidden" name="selected_orders" value="" id="selected_orders_ec"/>
+					<input type="hidden" name="purchase_id" value={PURCHASE_ID} />
+					<input type="submit" class="button2" value="Сводник для ЕЦ" onClick="javascript:export_selected_ec();"/>
+				</form>
+				</br>
+				<form method="post" action="org_users_print.php" sid = {sid} id="export_form_users">
+					<input type="hidden" name="selected_orders" value="" id="selected_orders_print"/>
+					<input type="hidden" name="purchase_id" value={PURCHASE_ID} />
+					<input type="submit" class="button2" value="Заказы участников" onClick="javascript:export_users_print();"/>
+				</form>
+			</td>
+			<!--
+			<td align="center">
+				
+				<form method="post" action="org_users_print_nakl.php" sid = {sid} id="export_form_users_nakl">
+					<input type="date" name="nakl_date" value="‹?php echo date("Y.m.d") ?›" id="nakl_date"/>
+					</br>
+					</br>
+					<input type="radio" name="dostavka" id="dostavka" value="1"CHECKED> С доставкой
+					<input type="radio" name="dostavka" id="dostavka" value="0"> без доставки
+					</br>
+					</br>
+					<input type="hidden" name="selected_orders" value="" id="selected_orders_print_nakl"/>
+					<input type="hidden" name="purchase_id" value={PURCHASE_ID} />
+					<input type="submit" class="button2" value="Накладные участников" onClick="javascript:export_users_print_nakl();"/>
+				</form>
+			</td>	
+			-->
+			<td align="center">
+				<!--
+				<form method="post" action="org_users_labels.php" sid = {sid} id="export_form_labels">
+					<input type="hidden" name="selected_orders" value="" id="selected_orders_label"/>
+					<input type="hidden" name="purchase_id" value={PURCHASE_ID} />
+					<input type="submit" class="button2" value="Этикетки" onClick="javascript:export_users_labels();"/>
+				</form>
+				</br>
+				-->
+				<form method="post" action="org_users_labels_thermo.php" sid = {sid} id="export_form_labels_t">
+					<input type="hidden" name="selected_orders" value="" id="selected_orders_label_t"/>
+					<input type="hidden" name="purchase_id" value={PURCHASE_ID} />
+					<input type="submit" class="button2" value="Этикетки" onClick="javascript:export_users_labels_t();"/>
+				</form>
+				
+			</td>
+		</tr>
+	</table>
+
+	<hr />
+	<label for="purchase_payment_info">Информация по оплате для участников:</label>
+
+	<span id="status_purchase_payment_info"><img src="./images/icons/empty.png" width="22" height="22" /></span><br>
+	{PAYMENT_INFO}
+</div>
+</font>
+<script>
+//	document.getElementById('nakl_date').valueAsDate = new Date();
+</script>
+
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<SCRIPT language="javascript">
+
+var lastTime = 0;
+$(document).ready(
+  function(){
+
+  $(".bg").mouseover(function() {
+        $(this).addClass("over");
+    });
+    
+    $(".bg").mouseout(function() {
+        $(this).removeClass("over");
+    });
+      
+    $(".bg:even").addClass("alt");
+  }
+);
+function scan_table_mode()
+{
+	JsHttpRequest.query(
+		'service.php?nyg_=280&sid=4c66ae05afc3acec8dfa9da3771659a3', // backend
+		{
+				'cmd': "set_sort_hide_purchase_report",
+				'purchase_id': purchase_id,
+				'sort_lot': sort_lot,
+				'hide_refusals': hide_refusals
+		},
+		// Function is called when an answer arrives.
+		function(result, errors)
+		{
+			if ("ok" == result)
+			{
+				window.location.reload();
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении настроек отображения отчета!\n" +errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		},
+		true	// disable caching
+	);
+}
+
+function set_user_money(id)
+{
+	var el = document.getElementById("user" + id + "_money");
+	var money = parseFloat(el.value);
+	do_clock( "user" + id, 1);
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+				'cmd': "set_user_purchase_money",
+				'user_id': id,
+				'purchase_id': purchase_id,
+				'money': money,
+				'payment_cnt': users[id].payment_cnt,
+				'payment_date_cnt': users[id].payment_date_cnt,
+				'payment_time_cnt': users[id].payment_time_cnt,
+				'payment_card_cnt': users[id].payment_card_cnt,
+				'payment_money_cnt': users[id].payment_money_cnt,
+				'payment_money': users[id].payment_money
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			do_clock( "user" + id, -1);
+
+			if ("ok" == result)
+			{
+				users[id].money = money;
+				update_user_total(id);
+				update_total();
+				users[id].payment_cnt = 0;
+				var el = document.getElementById("payment" + id);
+				el.bgColor = el.parentNode.bgColor;
+				el = document.getElementById("payment_time" + id);  el.bgColor = el.parentNode.bgColor;
+				el = document.getElementById("payment_date" + id);  el.bgColor = el.parentNode.bgColor;
+				el = document.getElementById("payment_card" + id);  el.bgColor = el.parentNode.bgColor;
+				if(money==users[id].payment_money) {el = document.getElementById("payment_money" + id);  el.bgColor = el.parentNode.bgColor;}
+				else {el = document.getElementById("payment_money" + id);  el.bgColor = "#ff00ff";}
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении денег!\n" +errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+
+
+function set_user_discount(id)
+{
+	var el = document.getElementById("user" + id + "_discount");
+	var discount = el.value;
+	do_clock( "user" + id, 1);
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+				'cmd': "set_user_purchase_discount",
+				'user_id': id,
+				'purchase_id': purchase_id,
+				'discount': discount
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			do_clock( "user" + id, -1);
+
+			if ("ok" == result)
+			{
+				users[id].discount = parseFloat(discount);
+				update_user_total(id);
+				update_total();
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении скидки!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	}
+	);
+}
+
+
+function set_user_comment(id)
+{
+	var el = document.getElementById("user" + id + "_comment");
+	var comment = el.value;
+	do_clock( "user" + id, 1);
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+				'cmd': "set_user_purchase_comment",
+				'user_id': id,
+				'purchase_id': purchase_id,
+				'comment': comment
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			do_clock( "user" + id, -1);
+
+			if ("ok" == result)
+			{
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении комментария!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	}
+	);
+}
+
+function time()
+{
+	var d = new Date();
+	var v = d.getHours();
+	v = v * 60 + d.getMinutes();
+	v = v * 60 + d.getSeconds();
+	v = v * 1000 + d.getMilliseconds();
+	var dt = v - lastTime;
+	lastTime = v;
+	return dt;
+}
+
+function form_report()
+{
+	if (sort_lot)
+		document.getElementById( "report").innerHTML =
+			make_orders_report_sIt() + "<BR/>" + make_total_report();
+	else
+		document.getElementById( "report").innerHTML =
+			make_orders_report() + "<BR/>" + make_total_report();
+	update_total();
+}
+
+function first_key(a)
+{
+	var i;
+	for (i in a)
+	{
+		return i;
+	}
+}
+
+
+function first_lot(a)
+{
+	var i;
+	for (i in a)
+	{
+		return a[i];
+	}
+}
+
+
+function close_subst_layer()
+{
+	var el = document.getElementById("subst_layer");
+	el.innerHTML = "";
+	el.style.visibility = "hidden";
+}
+
+
+function get_selected_val(sel)
+{
+	for (var i=0; i<sel.childNodes.length; i++)
+	{
+		var el = sel.childNodes[i];
+		if ("tagName" in el && "option"==el.tagName.toLowerCase())
+		{
+			if (el.selected)
+			{
+				return el.value;
+			}
+		}
+	}
+	return -1;
+}
+
+
+function subst_on_catalog_changed()
+{	
+	var new_catalog = get_selected_val( document.getElementById("subst_catalog_id") );
+
+	subst_catalog_id = new_catalog;
+	subst_lot_id = -1;
+	subst_vars = new Object;
+	
+	
+	for (var id in lots)
+	{
+		if (lots[id].catalog_id == new_catalog)
+		{
+			subst_lot_id = id;
+			for (var key in lots[subst_lot_id].vars)
+			{
+				for (var v in lots[subst_lot_id].vars[key])
+				{
+					subst_vars[key] = lots[subst_lot_id].vars[key][v];
+					break;
+				}
+			}
+		}
+	}
+	
+	var el = document.getElementById("subst_controls");
+	el.innerHTML = subst_format_controls( subst_catalog_id, subst_lot_id, subst_vars);
+}
+
+function select_on_catalog_changed()
+{
+	var new_catalog = get_selected_val( document.getElementById("select_catalog_id") );
+	if (new_catalog==-1){
+		select_catalog_id=-1; select_lot_id=-1; select_vars=null;
+		document.getElementById("select_controls").innerHTML = select_format_controls( select_catalog_id, select_lot_id, select_vars);
+	}
+	else{
+		for (var id in lots)
+		{
+			if (lots[id].catalog_id == new_catalog)
+			{
+				select_catalog_id = new_catalog;
+				var el = document.getElementById("select_controls");
+				select_lot_id=-1; select_vars=null;
+				el.innerHTML = select_format_controls( select_catalog_id, select_lot_id, select_vars);
+				return;
+			}
+		}
+	}
+}
+
+function subst_on_lot_changed()
+{
+	subst_lot_id = get_selected_val( document.getElementById("subst_lot_id") );
+	subst_vars = new Object;
+	for (var key in lots[subst_lot_id].vars)
+	{
+		for (var v in lots[subst_lot_id].vars[key])
+		{
+			subst_vars[key] = lots[subst_lot_id].vars[key][v];
+			break;
+		}
+	}
+	var el = document.getElementById( "subst_controls");
+	el.innerHTML = subst_format_controls( subst_catalog_id, subst_lot_id, subst_vars);
+}
+
+function select_on_lot_changed()
+{
+	select_lot_id = get_selected_val( document.getElementById("select_lot_id") );
+	if (select_lot_id==-1)		select_vars=null;
+	else{
+		select_vars = new Object;
+		for (var key in lots[select_lot_id].vars)
+		{
+			select_vars[key]=-1;
+		}
+	}
+	var el = document.getElementById( "select_controls");
+	el.innerHTML = select_format_controls( select_catalog_id, select_lot_id, select_vars);
+}
+
+function subst_on_vars_changed()
+{
+	var idx = 0;
+	subst_vars = new Object;
+	for (var key in lots[subst_lot_id].vars)
+	{
+		subst_vars[key] = get_selected_val( document.getElementById("subst_var" + idx));
+		idx ++;
+	}
+	var el = document.getElementById("subst_controls");
+	el.innerHTML = subst_format_controls( subst_catalog_id, subst_lot_id, subst_vars);
+}
+
+function select_on_vars_changed()
+{
+	var idx = 0;
+	select_vars = new Object;
+	for (var key in lots[select_lot_id].vars)
+	{
+		select_vars[key] = get_selected_val( document.getElementById("select_var" + idx));
+		idx ++;
+	}
+	var el = document.getElementById("select_controls");
+	el.innerHTML = select_format_controls( select_catalog_id, select_lot_id, select_vars);
+}
+
+function select_format_controls(catalog_id,lot_id,vars)
+{
+	var html = new Array;
+	html.push( '<table>' );
+	html.push(	'<tr>' );
+	html.push(		'<td align="right"><b>Каталог:</b></td>' );
+	html.push(		'<td>' );
+	html.push(			'<select id="select_catalog_id" onChange="javascript:select_on_catalog_changed();">' );
+	html.push( '<option value="-1"' + (catalog_id == -1 ? ' selected' : '') + '>');
+	html.push( 'все' );
+	html.push( '</option>' );
+	for (var id in catalogs)
+	{
+		html.push( '<option value="' + id + '"' + (catalog_id == id ? ' selected' : '') + '>');
+		html.push( esc_tags(catalogs[id].name) );
+		html.push( '</option>' );
+	}
+	html.push(			'</select>' );
+	html.push(		'<td>' );
+	html.push(	'</tr>' );
+
+	if ( catalog_id != -1){
+			html.push(	'<tr>' );
+			html.push(		'<td align="right"><b>Название:</b></td>' );
+			html.push(		'<td>' );
+			html.push(			'<select id="select_lot_id" onChange="javascript:select_on_lot_changed();">' );
+			html.push( '<option value="-1"' + (lot_id==-1 ? ' selected' : '') + '>' );
+			html.push( 'все' );
+			html.push( '</option>' );
+			for (var id in lots)
+			{
+				var lot = lots[id];
+				if (lot.catalog_id == select_catalog_id)
+				{
+					html.push( '<option value="' + id + '"' + (lot_id==id ? ' selected' : '') + '>' );
+					html.push( esc_tags(lot.name) );
+					html.push( '</option>' );
+				}
+			}
+			html.push(			'</select>' );
+			html.push(		'<td>' );
+			html.push(	'</tr>' );
+
+			if (lot_id!=-1){
+				var lot_vars = lots[lot_id].vars;
+				var idx = 0;
+				for (var key in lot_vars)
+				{
+					html.push('<tr>' );
+					html.push( '<td align="right"><b>' + key + ':</b></td>' );
+					html.push(	'<td>' );
+					html.push(		'<select id="select_var' + idx +'" onChange="javascript:select_on_vars_changed();">' );
+					html.push( '<option value="-1"' + (vars ? ' selected' : '') + '>' );
+					html.push( 'все' );
+					html.push( '</option>' );
+					for (var v in lot_vars[key])
+					{
+						var val = lot_vars[key][v];
+						html.push( '<option value="' + esc_tags(val) + '"' + (val == vars[key] ? ' selected' : '') + '>' );
+						html.push( esc_tags(val) );
+						html.push( '</option>' );
+					}
+					html.push(		'</select>' );
+					html.push(	'</td>' );
+					html.push('</tr>' );
+					idx ++;
+				}
+			}
+	}
+	html.push( '</table>' );
+	return html.join("");
+}
+
+function subst_format_controls(catalog_id,lot_id,vars)
+{
+	var html = new Array;
+	html.push( '<table>' );
+	html.push(	'<tr>' );
+	html.push(		'<td align="right"><b>Каталог:</b></td>' );
+	html.push(		'<td>' );
+	html.push(			'<select id="subst_catalog_id" onChange="javascript:subst_on_catalog_changed();">' );
+	for (var id in catalogs)
+	{
+		html.push( '<option value="' + id + '"' + (catalog_id == id ? ' selected' : '') + '>');
+		html.push( esc_tags(catalogs[id].name) );
+		html.push( '</option>' );
+	}
+	html.push(			'</select>' );
+	html.push(		'<td>' );
+	html.push(	'</tr>' );
+	html.push(	'<tr>' );
+	html.push(		'<td align="right"><b>Название:</b></td>' );
+	html.push(		'<td>' );
+	html.push(			'<select id="subst_lot_id" onChange="javascript:subst_on_lot_changed();">' );
+	for (var id in lots)
+	{
+		var lot = lots[id];
+		if (lot.catalog_id == subst_catalog_id)
+		{
+			html.push( '<option value="' + id + '"' + (lot_id==id ? ' selected' : '') + '>' );
+			html.push( esc_tags(lot.name) );
+			html.push( '</option>' );
+		}
+	}
+	html.push(			'</select>' );
+	html.push(		'<td>' );
+	html.push(	'</tr>' );
+
+	var lot_vars = -1!=lot_id ? lots[lot_id].vars : new Array;
+	var idx = 0;
+	for (var key in lot_vars)
+	{
+		html.push('<tr>' );
+		html.push( '<td align="right"><b>' + key + ':</b></td>' );
+		html.push(	'<td>' );
+		html.push(		'<select id="subst_var' + idx +'" onChange="javascript:subst_on_vars_changed();">' );
+		for (var v in lot_vars[key])
+		{
+			var val = lot_vars[key][v];
+			html.push( '<option value="' + esc_tags(val) + '"' + (val == vars[key] ? ' selected' : '') + '>' );
+			html.push( esc_tags(val) );
+			html.push( '</option>' );
+		}
+		html.push(		'</select>' );
+		html.push(	'</td>' );
+		html.push('</tr>' );
+		idx ++;
+	}
+	html.push( '</table>' );
+	return html.join("");
+}
+
+
+function subst_order(order_id)
+{
+	var x = 0, y = 0, w = 0, h = 0;
+	{
+		var el = document.getElementById( "order" + order_id + "_row");
+		x = el.offsetLeft + el.offsetParent.offsetLeft;
+		y = el.offsetTop + el.offsetHeight + el.offsetParent.offsetTop/* - el.offsetParent.offsetHeight*/;
+		w = el.offsetWidth;
+		h = el.offsetHeight;
+	}
+
+	if (-1==subst_catalog_id)
+	{
+		subst_catalog_id = first_lot(catalogs).id;
+		subst_lot_id = -1;
+		subst_vars = null;
+	}
+
+	if (-1==subst_lot_id)
+	{
+		for (var id in lots)
+		{
+			if (lots[id].catalog_id == subst_catalog_id)
+			{
+				subst_lot_id = id;
+				var lot = lots[id];
+				subst_vars = new Object;
+				for (var v in lot.vars)
+				{
+					subst_vars[v] = first_lot(lot.vars[v]);
+				}
+				break;
+			}
+		}
+	}
+
+	var html = '';
+	html +=		'<TABLE bgcolor="#FFFF00" border="1">';
+	html +=			'<TR>';
+	html +=				'<TD>';
+	html +=					'Заменить на:';
+	html +=				'</TD>';
+	html +=				'<TD>';
+	html +=					'<span id="subst_controls">' + subst_format_controls( subst_catalog_id, subst_lot_id, subst_vars,"subst_controls") + '</span>'
+	html +=					'<input type="button" value="Заменить" onClick="javascript:make_order_substitution(' + order_id + ');">';
+	html +=					'<input type="button" value="Закрыть" onClick="javascript:close_subst_layer();">';
+	html +=				'</TD>';
+	html +=			'</TR>';
+	html +=		'</TABLE>';
+	{
+		var el = document.getElementById("subst_layer");
+		el.style.position = "absolute";
+		el.style.visibility = "visible";
+		el.style.top = "" + y + "px";
+		el.style.left = "" + x + "px";
+		el.innerHTML = html;
+	}
+}
+function selected_set_delivery_p()
+{
+	var ids = new Array;
+		for (var id in orders)
+		{
+			var el = document.getElementById( "order" + id + "_select");
+			if (el.checked)
+			{
+				ids.push(id);
+			}
+		}
+	setDelivery_p( ids, document.getElementById("delivery_p").value);
+}
+
+
+function setDelivery_p(ids,val)
+{
+	for (var i=0; i<ids.length; i++)
+	{
+		do_clock( ids[i], 1);
+	}
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "set_delivery_p",
+			'orders': ids,
+			'purchase_id': purchase_id,
+			'value': val
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			for (var i=0; i<ids.length; i++)
+			{
+				do_clock( ids[i], -1);
+			}
+
+			var po = result["processed"];
+			if (null!=po)
+			{
+				for (var j=0; j<po.length; j++)
+				{
+					var id = po[j].id;
+					var valp = po[j].val;
+					var el = document.getElementById( "order" + id + "_delivery");
+					el.value = format_money(valp);
+					orders[id].delivery = valp;
+					if(!sort_lot) update_user_total(orders[id].user_id);
+				}
+				update_total();
+			}
+
+			if ("ok" == result["state"])
+			{
+				update_total();
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении величины доставки!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+
+
+function make_order_substitution(order_id)
+{
+	if (-1==subst_lot_id)
+	{
+		alert("Не выбрана модель для замены!");
+		return;
+	}
+	
+	do_clock( order_id, 1);
+
+
+
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "make_order_substitution",
+			'order_id': order_id,
+			'purchase_id': purchase_id,
+			'catalog_id': subst_catalog_id,
+			'lot_id': subst_lot_id,
+			'vars': subst_vars
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			do_clock( order_id, -1);
+
+			if ("ok" == result["state"])
+			{
+
+				set_order_state(order_id,3);
+				var order = new Object;
+				order.id = result["id"];
+				order.vars = subst_vars;
+
+
+				order.comment = "";
+				order.state = 0;
+				order.lot_id = subst_lot_id;
+				order.user_id = orders[order_id].user_id;
+				order.delivery = format_money(0);
+				order.org_fee = result["org_fee"];
+				order.lot = lots[subst_lot_id];
+				orders[order.id] = order;
+				users[order.user_id].orders.push(order);
+
+				var orders_sIt = new Object;
+				orders_sIt.id = result["id"];
+				orders_sIt.vars = subst_vars;
+
+
+				orders_sIt.comment = "";
+				orders_sIt.state = 0;
+				orders_sIt.lot_id = subst_lot_id;
+				orders_sIt.user_id = orders[order_id].user_id;
+				orders_sIt.delivery = format_money(0);
+				orders_sIt.org_fee = result["org_fee"];
+				orders_sIt.user = users[orders_sIt.user_id];
+				lots[subst_lot_id].orders_sIt.push(orders_sIt);
+
+				if (!sort_lot) update_user_total(order.user_id);
+
+				update_total();
+
+				close_subst_layer();
+
+				form_report();
+			}
+			else
+			{
+				alert("Произошла ошибка при замене!\n");
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+
+
+
+		}
+	});
+}
+
+
+function selected_set_delivery()
+{
+	var ids = new Array;
+		for (var id in orders)
+		{
+			var el = document.getElementById( "order" + id + "_select");
+			if (el.checked)
+			{
+				ids.push(id);
+			}
+		}
+	setDelivery( ids, document.getElementById("delivery").value);
+}
+
+
+function setDelivery(ids,val)
+{
+	for (var i=0; i<ids.length; i++)
+	{
+		do_clock( ids[i], 1);
+	}
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "set_delivery",
+			'orders': ids,
+			'purchase_id': purchase_id,
+			'value': val
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			for (var i=0; i<ids.length; i++)
+			{
+				do_clock( ids[i], -1);
+			}
+
+			var po = result["processed"];
+			if (null!=po)
+			{
+				for (var j=0; j<po.length; j++)
+				{
+					var id = po[j];
+					var el = document.getElementById( "order" + id + "_delivery");
+					el.value = format_money(val);
+					orders[id].delivery = val;
+					if(!sort_lot) update_user_total(orders[id].user_id);
+				}
+				update_total();
+			}
+
+			if ("ok" == result["state"])
+			{
+				update_total();
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении величины доставки!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+
+function post_selected_orders()
+{
+	var ids = new Array;
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			ids.push(id);
+		}
+	}
+	
+	post_orders( ids, selector_state("office_id") );
+}
+
+
+function change_purchase_payment_info(text)
+{
+	do_clock( "purchase_payment_info", 1 );
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "change_purchase_payment_info",
+			'purchase_id': purchase_id,
+			'text': text
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			do_clock( "purchase_payment_info", -1 );
+			if ("ok" == result)
+			{
+				// do nothing
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении информации об оплате для участников!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	}
+	);
+}
+
+function changeDelivery(id)
+{
+	var el = document.getElementById( "order" + id + "_delivery");
+	setDelivery( [id], el.value);
+}
+
+function changeOrgFee(id)
+{
+	var el = document.getElementById( "order" + id + "_org_fee");
+	var org_fee = parseFloat(el.value);
+	var order = orders[id];
+	do_clock( id, 1);
+
+
+
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "set_order_org_fee",
+
+
+
+			'order_id': id,
+			'org_fee': org_fee
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			do_clock( id, -1);
+
+			if ("ok" == result)
+			{
+				order.org_fee = org_fee;
+				update_user_total(order.user_id);
+				update_total();
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении Орг %!\n" + errors);
+				// Write errors to the debug div.
+				//document.getElementById("debug").innerHTML = errors;
+			}
+
+
+		}
+	}
+	);
+}
+
+function new_event_send()
+{
+	var s = "";
+	var sn = "";
+	var ar = new Array;
+	var fl_ar = 0;
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{   fl_ar = 0;
+			for (var uid in ar){
+				if (ar[uid]==orders[id].user_id) {
+				fl_ar = 1;  break;     }
+			}
+			if (fl_ar==0) {
+				ar.push(orders[id].user_id);
+				s += "," + orders[id].user_id;
+				sn += "," + users[orders[id].user_id].name;
+			}
+		}
+	}
+	s = s.substr(1);
+	sn = sn.substr(1);
+	document.getElementById("new_event_user_list").value = s;
+	document.getElementById("new_event_user_lname").value = sn;
+	document.getElementById("new_event_form").submit();
+	return false;
+}
+
+function new_event_send2()
+{
+	var s = "";
+	var ar = new Array;
+	var fl_ar = 0;
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{   fl_ar = 0;
+			for (var uid in ar){
+				if (ar[uid]==orders[id].user_id) {
+				fl_ar = 1;  break;     }
+			}
+			if (fl_ar==0) {
+				ar.push(orders[id].user_id);
+				s += "\n" + users[orders[id].user_id].name;
+			}
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("username_list").value = s;
+	document.getElementById("username_form").submit();
+	return false;
+}
+
+
+function export_selected()
+{
+	var s = "";
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			s += "," + id;
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("selected_orders").value = s;
+//	document.getElementById("export_form").submit();
+}
+
+
+function export_selected2()
+{
+	var s = "";
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			s += "," + id;
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("selected_orders2").value = s;
+//	document.getElementById("export_form2").submit();
+}
+
+function export_contract_excel_selected()
+{
+	document.getElementById("contract_percent_excel").value="false";
+	if (document.getElementById("contract_percent_check").checked)
+		document.getElementById("contract_percent_excel").value="true";
+	document.getElementById("contract_num_excel").value="false";
+	if (document.getElementById("contract_num_check").checked)
+		document.getElementById("contract_num_excel").value="true";
+	document.getElementById("date_excel").value=document.getElementById("cal_date").value;
+	var s = "";
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			s += "," + id;
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("selected_contract_excel_orders").value = s;
+	document.getElementById("export_contract_excel_form").submit();
+}
+
+
+function export_contract_rtf_selected()
+{
+	document.getElementById("contract_percent_rtf").value="false";
+	if (document.getElementById("contract_percent_check").checked)
+		document.getElementById("contract_percent_rtf").value="true";
+		document.getElementById("contract_num_rtf").value="false";
+	if (document.getElementById("contract_num_check").checked)
+		document.getElementById("contract_num_rtf").value="true";
+	document.getElementById("date_rtf").value=document.getElementById("cal_date").value;
+	var s = "";
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			s += "," + id;
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("selected_contract_rtf_orders").value = s;
+	document.getElementById("export_contract_rtf_form").submit();
+}
+
+function export_payment_selected(){
+	document.getElementById("export_payment_form").submit();
+}
+
+function do_clock(id,inc)
+{
+	var s = document.getElementById("status_" + id);
+	if (isNaN(s.cnt))
+	{
+		s.cnt = 0;
+	}
+	if (inc>0)
+	{
+		if (0==s.cnt)
+		{
+			s.innerHTML = '<IMG src="./images/icons/clock.gif">';
+		}
+		s.cnt ++;
+	}
+	else
+	{
+		s.cnt --;
+		if (0==s.cnt)
+		{
+			s.innerHTML = '<IMG src="./images/icons/empty.png">';
+		}
+	}
+}
+function export_users_print()
+{
+	var s = "";
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			s += "," + id;
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("selected_orders_print").value = s;
+}
+function export_users_print_nakl()
+{
+	var s = "";
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			s += "," + id;
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("selected_orders_print_nakl").value = s;
+}
+function export_users_labels()
+{
+	var s = "";
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			s += "," + id;
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("selected_orders_label").value = s;
+
+}
+
+function export_users_labels_t()
+{
+	var s = "";
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			s += "," + id;
+		}
+	}
+	s = s.substr(1);
+	document.getElementById("selected_orders_label_t").value = s;
+
+}
+
+function calc_total()
+{
+	total_users = 0;
+	total_orders = 0;
+	total_price = 0;
+	total_price_a = 0;
+	total_price_au = 0;
+	total_price_u = 0;
+	total_org_fee = 0;
+	total_sum = 0;
+	total_money = 0;
+	total_delivery = 0;
+	total_discount = 0;
+	total_users_wo_orders = new Array;
+	total_admin_fee = 0;
+	total_orders_i = 0;
+	ec_users = 0;
+	for (var id in users)
+	{
+		var user = users[id];
+		if (user.total_orders)
+		{
+			total_users ++;
+			total_orders += user.total_orders;
+			total_price += user.total_price;
+			total_price_u += user.total_price_u;
+			total_org_fee += user.total_org_fee;
+			total_sum += user.total_sum;
+			total_delivery += user.total_delivery;
+			total_discount += parseFloat(user.discount);
+			total_orders_i += user.total_orders_i;
+			total_admin_fee += user.admin_fee;
+		}
+		total_price_a += user.total_price_a;
+		total_price_au += user.total_price_au;
+		f=0;
+		ec_temp=0;
+		for (var oid in user.orders){
+			f=1;
+			if (user.orders[oid].state > 3 || user.orders[oid].state ==2 ) ec_temp = 1;
+			}
+		if (f)
+		{
+			total_money += user.money;
+			if (ec_temp) ec_users ++; 
+		}
+		else if (user.money)
+		{
+			total_users_wo_orders.push( user );
+		}
+	}
+}
+
+
+function update_total()
+{
+	calc_total();
+	document.getElementById( "total_users").innerHTML = total_users;
+	document.getElementById( "total_orders").innerHTML = total_orders;
+	document.getElementById( "total_price").innerHTML = format_money(total_price);
+	document.getElementById( "total_price_u").innerHTML = format_money(total_price_u);
+	document.getElementById( "total_price_a").innerHTML = format_money(total_price_a);
+	document.getElementById( "total_price_au").innerHTML = format_money(total_price_au);
+	document.getElementById( "total_org_fee").innerHTML = format_money(total_org_fee);
+	document.getElementById( "total_delivery").innerHTML = format_money(total_delivery);
+	document.getElementById( "total_discount").innerHTML = format_money(total_discount);
+	document.getElementById( "total_sum").innerHTML = format_money(total_sum);
+	document.getElementById( "total_money").innerHTML = format_money(total_money);
+	document.getElementById( "ec_users").innerHTML =ec_users;
+	//if (ec_users<20) {
+		document.getElementById( "ec_users_summ").innerHTML =format_money(ec_users*5);
+	//}
+	//else {
+	//	document.getElementById( "ec_users_summ").innerHTML =format_money(100);
+	//}
+	document.getElementById( "total_orders_i").innerHTML = format_money(total_orders_i);
+	document.getElementById( "total_admin_rate").innerHTML = format_money({F_RATE});
+	document.getElementById( "total_admin_fee").innerHTML = format_money(total_admin_fee);
+	//if (ec_users<20) {
+	document.getElementById( "total_admin_fee_itogo").innerHTML = format_money(total_admin_fee+ec_users*5);
+	//}
+	//else {
+	//document.getElementById( "total_admin_fee_itogo").innerHTML = format_money(total_admin_fee+100);
+	//}
+	
+
+
+	if (total_users_wo_orders.length)
+	{
+		var html = '';
+		html += '<H5>Кроме этого, сдали деньги:</H5>';
+		html += '<TABLE border="1">';
+
+		for (var i=0; i<total_users_wo_orders.length; i++)
+		{
+			var user = total_users_wo_orders[i];
+			html += '<TR>';
+			html +=		'<TD>' + user.name + '</TD>';
+			html +=		'<TD>' + format_money(user.money) + '</TD>';
+			html += '</TR>';
+		}
+
+		html += '</TABLE>';
+		document.getElementById( "total_users_wo_orders").innerHTML = html;
+	}
+}
+
+
+function update_user_total(id)
+{
+	calc_user_total(id);
+	var user = users[id];
+	document.getElementById( 'user' + id + '_total_price_a').innerHTML = format_money(user.total_price_a);
+	document.getElementById( 'user' + id + '_total_price').innerHTML = format_money(user.total_price);
+	document.getElementById( 'user' + id + '_org_fee').innerHTML = format_money(user.total_org_fee);
+	document.getElementById( 'user' + id + '_total_sum').innerHTML = format_money(user.total_sum);
+	if (format_money(document.getElementById( 'user' + id + '_dolg').innerHTML) != format_money(user.total_sum-user.money)) {
+		document.getElementById( 'user' + id + '_dolg').innerHTML = format_money(user.total_sum-user.money);
+		change_purchase_dolg(id,user.total_sum-user.money);
+	}
+	document.getElementById( 'user' + id + '_money').value = format_money(user.money);	
+}
+
+function change_purchase_dolg(user_id,dolg)
+{	do_clock( "purchase_payment_info", 1 );
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "change_purchase_dolg",
+			'purchase_id': purchase_id,
+			'user_id': user_id,
+			'dolg': dolg
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			do_clock( "purchase_payment_info", -1 );
+			if ("ok" == result)
+			{
+				// do nothing
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении информации о долге!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	}
+	);
+}
+
+function set_selector(id,st)
+{
+	var sel = document.getElementById( "order" + id + "_state");
+	for (var i=0; i<sel.childNodes.length; i++)
+	{
+		var el = sel.childNodes[i];
+		if ("tagName" in el && "option"==el.tagName.toLowerCase())
+		{
+			el.selected = (st == el.value);
+		}
+	}
+}
+
+
+function set_order_state(id,st)
+{
+	set_selector( id, st);
+	var el = document.getElementById( "order" + id + "_state_color");
+	el.bgColor = order_state_clr[st];
+	orders[id].state = st;
+	if(!sort_lot) update_user_total(orders[id].user_id);
+}
+
+
+function change_orders_state( o, st)
+{
+	for (var i=0; i<o.length; i++)
+	{
+		do_clock( o[i], 1);
+	}
+	$.ajax({
+		type : 'POST',
+		url : 'function.php{SID}',
+		data : {
+			'cmd': "change_orders_state",
+			'orders': o,
+			'state': st,
+			'purchase_id': purchase_id
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			for (var i=0; i<o.length; i++)
+			{
+				do_clock( o[i], -1);
+			}
+
+			var po = result["processed"];
+			if (null!=po)
+			{
+				for (var j=0; j<po.length; j++)
+				{
+					var id = po[j];
+					set_order_state( id, st);
+				}
+				update_total();
+			}
+
+			if ("ok" == result["state"])
+			{
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении статуса заказов!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+
+
+function change_selected_orders_state()
+{
+	var st = selector_state("selected_orders_status_selector");
+	var o = new Array;
+	for (var id in orders)
+	{
+		var el = document.getElementById( "order" + id + "_select");
+		if (el.checked)
+		{
+			o.push( id);
+		}
+	}
+
+	change_orders_state( o, st);
+}
+
+
+function post_orders( ids, dest )
+{
+	var ords = new Object;
+	
+	for (var i=0; i<ids.length; i++)
+	{
+		var order = orders[ids[i]];
+		var user = order.user;
+		
+		var details = null;
+		if (user.id in ords)
+		{
+			details = ords[user.id].details;
+		}
+		else
+		{
+			var ooi = new Object;
+			ooi.user_id = user.id;
+			ooi.purchase_id = purchase_id;
+			ooi.details = new Array;
+
+			ooi.payment_details = new Object;
+			ooi.payment_details.money					= user.money;
+			ooi.payment_details.payment_text			= user.payment_text;
+			ooi.payment_details.payment_date			= user.payment_date;
+			ooi.payment_details.payment_time			= user.payment_time;
+			ooi.payment_details.payment_card			= user.payment_card;
+			ooi.payment_details.payment_money			= user.payment_money;
+			ooi.payment_details.pf_card_num				= user.pf_card_num;
+			
+			ords[user.id] = ooi;
+			details = ooi.details;
+		}                                                 
+		
+		var oi = new Object;
+		oi.id = order.id;
+		oi.org_fee = order.org_fee;
+		oi.delivery = order.delivery;
+		oi.vars = order.vars;
+		oi.lot_id = order.lot.id;
+		oi.lot_name = order.lot.name;
+		oi.lot_price = order.lot.price;
+		oi.catalog_id = order.lot.catalog.id;
+		details.push( oi );
+	}
+	
+	
+	// calc add payment
+	
+	for (var user_id in ords)
+	{
+		var ooi = ords[user_id];
+		var user = users[user_id];
+		var tp = 0;
+		var tof = 0;
+		var td = 0;
+		for (var i=0; i<ooi.details.length; i++)
+		{
+			var order = orders[ooi.details[i].id];
+			if (3 != order.state)
+			{
+				tp += parseFloat(order.lot.price);
+				tof += parseFloat(order.lot.price) * parseFloat(order.org_fee) / 100.0;
+				td += parseFloat(order.delivery);
+			}
+		}
+		var sum = tp + tof + td - parseFloat(user.discount);
+		ooi.add_payment = sum > user.money ? parseFloat((sum - user.money).toFixed(2)) : 0;
+	}
+	
+	
+	var data = new Object;
+	data.orders = ords;
+	
+	do_clock( "post_orders", 1);
+	
+	JsHttpRequest.query(
+		'service.php', // backend
+		{
+				'cmd': "post_orders",
+				'data': data,
+				'destination': dest
+		},
+		// Function is called when an answer arrives.
+		function(result, errors)
+		{
+			do_clock( "post_orders", -1);
+
+			if ("ok" == result)
+			{
+				var add_payment = 0;
+				for (var uid in data.orders)
+				{
+					add_payment += data.orders[uid].add_payment;
+				}
+				alert("Заказы (" + ids.length + "шт, доплата " + format_money(add_payment) + ") отправлены в \"" + offices[dest].name  + "\"");
+			}
+			else
+			{
+				alert("Произошла ошибка при отправке заказов!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		},
+		true	// disable caching
+	);
+}
+
+
+function set_selected( state, selected)
+{
+	for (var id in orders)
+	{
+		if (-1==state||state==orders[id].state)
+		{
+			var el = document.getElementById( "order" + id + "_select");
+			el.checked = selected;
+		}
+	}
+}
+
+
+function selector_state( id)
+{
+	var sel = document.getElementById( id);
+	for (var i=0; i<sel.childNodes.length; i++)
+	{
+		var el = sel.childNodes[i];
+		if ("tagName" in el && "option"==el.tagName.toLowerCase() && true==el.selected)
+		{
+			return parseInt(el.value);
+		}
+	}
+	return -1;
+}
+
+
+function select_orders()
+{
+	set_selected( selector_state("selector"), true);
+}
+
+function select_orders_lot(selected)
+{
+	var fl_v = true;
+	for (var id in orders)
+	{
+		if ((select_catalog_id==-1)||(orders[id].lot.catalog.id==select_catalog_id))
+		{
+			if ((select_lot_id==-1)||(orders[id].lot.id==select_lot_id))
+			{
+				for (var key in select_vars)
+				{
+					 if (!((esc_tags(select_vars[key])==-1)||(esc_tags(select_vars[key])==esc_tags(orders[id].vars[key]))))
+					 	fl_v = false;
+				}
+				var el = document.getElementById( "order" + id + "_select");
+				if (fl_v) el.checked = selected;
+				fl_v = true;
+			}
+		}
+	}
+}
+
+
+function select_orders_special(selected)
+{
+	for (var id in orders)
+	{
+		var o = orders[id];
+		if (o.state != 3)
+		{
+			if (-1 == select_lot_id || o.lot.id == select_lot_id)
+			{
+				var good = true;
+				for (var key in select_vars)
+				{
+					if (-1 == select_vars[key] || (key in o.vars && select_vars[key] == o.vars[key]))
+					{
+						// good
+					}
+					else
+					{
+						good = false;
+						break; // bad
+					}
+				}
+				if (good)
+				{
+					// mark all user orders (except this)
+					var oo = o.user.orders;
+					for (var i=0; i<oo.length; i++)
+					{
+						var oo_id = oo[i].id;
+						var oo_state = parseInt(oo[i].state);
+						if (oo_id != id && 3 != oo_state && oo_state>=2)
+						{
+							document.getElementById( "order" + oo_id + "_select").checked = selected;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+function unselect_orders()
+{
+	set_selected( selector_state("selector"), false);
+}
+
+function change_order_state(id)
+{
+	var st = selector_state("order" + id + "_state");
+	  set_selector( id, orders[id].state);
+	  change_orders_state( [ id ], st);
+   
+}
+
+
+function format_vars(vars)
+{
+	var s = "";
+	for (var key in vars)
+	{
+		if (s.length)
+			s += "<br>";
+		s += "<b>" + esc_tags(key) + ":</b> " + esc_tags(vars[key]);
+	}
+	return s;
+}
+
+
+function calc_user_total(id)
+{
+	var user = users[id];
+	var tp = 0;
+	var tpa = 0;
+	var tpau = 0;
+	var tpu = 0;
+	var to = 0;
+	var tf = 0;
+	var td = 0;
+	var admin_fee = 0;
+	var o_inscr = 0;
+	for (var oid in user.orders)
+	{
+		var order = user.orders[oid];
+		if (3!=order.state)
+		{
+			var price = parseFloat(order.lot.price);
+			var price_u = parseFloat(order.lot.price_u);
+			tpa += price;
+			tpau += price_u;
+			if (order.state>=2)
+			{
+				tp += price;
+				tpu += price_u;
+				tf += price * parseFloat(order.org_fee) / 100.0;
+				td += parseFloat(order.delivery);
+				to ++;
+				admin_fee += price * {F_RATE} / 100.0;
+				o_inscr += price;
+			}
+			
+
+		}
+	}
+	user.total_price = tp;
+	user.total_price_u = tpu;
+	user.total_price_a = tpa;
+	user.total_price_au = tpau;
+	user.total_org_fee = parseFloat(tf.toFixed(2));
+	user.total_delivery = td;
+	user.total_sum = parseFloat((user.total_org_fee + user.total_price + user.total_delivery - parseFloat(user.discount)).toFixed(0));
+	user.total_orders = to;
+	user.total_orders_i = o_inscr;
+	user.admin_fee = parseFloat(admin_fee.toFixed(2));
+}
+function make_orders_report()
+{
+	var html = new Array;
+
+	html.push('<TABLE cellspacing="1">');
+	var cnt = 1;
+	for (var uid in users)
+	{
+		var user = users[uid];
+		var bgcolor = cnt++&1 ? "bg1" : "bg4";
+				html.push('<TR id="U'+user.id+'" bgcolor="c7d6bc" align="left">');
+				html.push(		'<td colspan="12">');
+				html.push('<style> .li {display:inline-block;list-style-type: none;}</style>');
+				html.push('<ul class="profile-icons"><b>');
+				if (parseFloat(user.rating)<1.0)
+				{
+					html.push( '<li><img src="./images/icons/greenExclamation.gif" title="Участник новичок"></li>');
+				}
+				if (user.bl_info)
+				{
+					html.push('<li><a target="_blank" href="blacklist.php?user_id=' + user.id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->"><img src="./images/icons/exclamation.gif" title="Участник занесён в черный список. Кликните для открытия подробной информации в новом окне."></a></li>');
+				}
+
+				html.push(	'<li>Участник:&nbsp;</li><li><a href="./memberlist.php?mode=viewprofile&u='+user.id+'<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">'+esc_tags(user.name) + '</a>&nbsp;</li>');
+				if (user.pcount==0)	{
+						html.push(	'<li > <FONT color="red">(Закупок:&nbsp;' + esc_tags(user.pcount)+')</FONT> </li>');
+				}	
+				else {
+					html.push(	'<li>(Закупок:&nbsp;' + esc_tags(user.pcount)+')</li>');
+				}
+				html.push(	'<li class="pm-icon"><a href="./ucp.php?i=pm&mode=compose&u=' + esc_tags(user.id) + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Личное сообщение"><span>Личное сообщение</span></a></li>');
+				html.push(	'<li>('+esc_tags(user.fio) + '&nbsp;' + esc_tags(user.phone)+')</li>' );
+				html.push(	'<li>Номер Заказа: {PURCHASE_ID}-' + esc_tags(user.puor_id) + ' &nbsp; </li>');
+				html.push(	'<li><a href="adm.php?i=1&op={PURCHASE_ID}" class="button1">Управление закупкой</a></li>' );
+				html.push('</b></ul>');
+				html.push(		'</td>');
+				html.push('</TR>');		
+				
+				html.push('<TR bgcolor="E3E3BF" align="center">');
+			//	html.push(			'<Th width="7%"><B>Участник</B></TD>');
+				html.push(			'<Th colspan="2" width="10%"><B>Каталог</B></Th>');
+				html.push(			'<Th width="17%"><B>Название</B></Th>');
+				html.push(			'<Th width="12%"><B>Параметры</B></Th>');
+				html.push(			'<Th width="7%"><B>Цена</у.е.></B></Th>');
+				html.push(			'<Th width="7%"><B>Цена</B></Th>');
+				html.push(			'<Th width="7%"><B>Доставка</B></Th>');
+				html.push(			'<Th width="7%"><B>Орг %</B></Th>');
+				html.push(			'<Th width="10%"><B>Состояние</B></Th>');
+				html.push(			'<Th width="5%"><B>Выбор</B></Th>');
+				html.push(			'<Th width="5%"><B></B></Th>');
+				html.push(			'<Th width="10%"><B>Комментарий</B></Th>');
+				html.push('<TR class="' + bgcolor + '" align="center">');
+				html.push(		'<TD colspan="12" >&nbsp;</TD>');
+				html.push(		'</TR>');
+				html.push(		'</TR>');
+
+		for (var i in user.orders)
+		{
+			var order = user.orders[i];
+				html.push('<TR class="bg" id="order' + order.id +  '_row" align="center">');
+//				html.push(		'<td >');
+//				html.push(	'<a href="./memberlist.php?mode=viewprofile&u='+user.id+'<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">'+esc_tags(user.name) + '</a><br/>');
+//				if (parseFloat(user.rating)<1.0)
+//				{
+//					html.push( '<img src="./images/icons/greenExclamation.gif" title="Участник новичок">');
+//				}
+//				if (user.bl_info)
+//				{
+//					html.push(			'<a target="_blank" href="blacklist.php?user_id=' + user.id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->"><img src="./images/icons/exclamation.gif" title="Участник занесён в черный список. Кликните для открытия подробной информации в новом окне."></a>');
+//				}
+//				html.push(			'<ul class="profile-icons"><li class="pm-icon"><a href="./ucp.php?i=pm&mode=compose&u=' + esc_tags(user.id) + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Личное сообщение"><span>Личное сообщение</span></a></li></ul>');
+//				html.push(		'</td>');
+				html.push(		'<TD colspan="2"><A title="Перейти в каталог ' + esc_tags(order.lot.catalog.name) + '" href="catalog.php?catalog_id=' + esc_tags(order.lot.catalog.id) + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">' + esc_tags(order.lot.catalog.name) + '</A></TD>');
+				html.push(		'<TD><A title="Перейти в каталог к модели ' + esc_tags(order.lot.name) + '" href="catalog.php?catalog_id=' + esc_tags(order.lot.catalog.id) + '&lot_id=' + order.lot.id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">' + esc_tags(order.lot.name) + '</A></TD>');
+				html.push(		'<TD>' + format_vars(order.vars) + '</TD>');
+				html.push(		'<TD>' + format_money(esc_tags(order.lot.price_u))+'</br>'+order.lot.valuta+'</TD>');
+				html.push(		'<TD>');
+				html.push(			format_money(esc_tags(order.lot.price)));
+				html.push(			'<span id="status_' + order.id + '"><img src="./images/icons/empty.png" width="22" height="22" style="position:relative; left:0; top:0; z-index:-1"/></span>');
+				html.push(		'</TD>');
+//				html.push(		'<TD><INPUT id="order' + order.id + '_delivery" type="text" size="6" value="' + esc_tags(order.delivery) + '" onchange="javascript:changeDelivery(' + order.id + ');"/></TD>');
+				html.push(		'<TD>' + esc_tags(order.delivery) + '</TD>');
+//				html.push(		'<TD><INPUT id="order' + order.id + '_org_fee" type="text" size="6" value="' + esc_tags(order.org_fee) + '" onchange="javascript:changeOrgFee(' + order.id + ');"/></TD>');
+				html.push(		'<TD>' + esc_tags(order.org_fee) + '</TD>');
+				html.push(		'<TD>');
+				html.push(			'<SELECT id="order' + order.id + '_state" onChange="javascript:change_order_state(' + order.id + ');">');
+				for (var j=0; j<7; j++)
+				{
+						if (j==order.state) html.push(order_state_txt[j]);
+					html.push(			'<OPTION value="' + j + '"' + (j==order.state?'selected':'') + '>' + order_state_txt[j] + '</OPTION>');
+				}
+				html.push(			'</SELECT>');
+				html.push(		'</TD>');
+				html.push(		'<TD id="order' + order.id + '_state_color" bgcolor="' + order_state_clr[order.state] + '" align="center" valign="center">');
+				html.push(				'<INPUT id="order' + order.id + '_select" type="checkbox">');
+				html.push(		'</TD>');
+				html.push(		'<TD>&nbsp;</TD>');
+				html.push(		'<TD id="order' + order.id + '_comment">' + esc_tags(order.comment) + '</TD>');
+				html.push('</TR>');
+		}
+		calc_user_total(user.id);
+		html.push('<TR class="' + bgcolor + '" id="user' + user.id + '_total" align="center">');
+		html.push(		'<TD style="border: 1px solid black;"><FONT color="#121212">Выбрано на: <DIV id="user' + user.id + '_total_price_a">' + format_money(user.total_price_a) + '</DIV></FONT></TD>');
+		html.push(		'<TD colspan="2" style="border: 1px solid black;"><FONT color="#121212">Включено в счет на: <DIV id="user' + user.id + '_total_price">' + format_money(user.total_price) + '</DIV></FONT></TD>');
+		html.push(		'<TD style="border: 1px solid black;"><FONT color="#121212">Орг взнос: <DIV id="user' + user.id + '_org_fee">' + format_money(user.total_org_fee) + '</DIV></FONT></TD>');
+		html.push(		'<TD style="border: 1px solid black;"><FONT color="#121212">Скидка: <DIV id="user' + user.id + '_discount">' + format_money(user.discount) + '</DIV></FONT></TD>');
+		html.push(		'<TD style="border: 1px solid black;"><FONT color="#121212">Итого: <DIV id="user' + user.id + '_total_sum">' + format_money(user.total_sum) + '</DIV></FONT></TD>');
+		html.push(		'<TD style="border: 1px solid black;" colspan="2"><FONT color="#121212">Денег сдано: <div id="user' + user.id + '_money">' + format_money(user.money) + '</DIV></FONT></TD>');
+		html.push(		'<TD style="border: 1px solid black;"><FONT color="#121212">Долг: <DIV id="user' + user.id + '_dolg">' + format_money(user.total_sum-user.money)  + '</DIV></FONT></TD>');
+		html.push(		'<TD style="border: 1px solid black;"><DIV>' + esc_tags(user.cinfo+'.') + '</DIV></TD>');
+		html.push(		'<TD style="border: 1px solid black;" colspan="3"><DIV id="user' + user.id + '_comment">' + esc_tags(user.comment+'.') + '</DIV></TD>');
+		html.push('</TR>');
+		html.push('<tr class="' + bgcolor + '" align="center">');
+		html.push(	'<td style="border: 1px solid black;" colspan="2" rowspan="2"><font color="#121212">Информация об оплате:</font></td>');
+		html.push(	'<td style="border: 1px solid black;" id="payment_time' + user.id + '"' + (parseInt(user.payment_time)?' bgcolor="#ff00ff"':'') + '><font color="#121212">Время: ' + esc_tags(user.payment_time) + '</font></td>');
+		html.push(	'<td style="border: 1px solid black;" id="payment_date' + user.id + '"' + (parseInt(user.payment_date)?' bgcolor="#ff00ff"':'') + '><font color="#121212">Дата: ' + esc_tags(user.payment_date) + '</font></td>');
+		html.push(	'<td colspan="2" style="border: 1px solid black;" id="payment_money' + user.id + '"' + (parseInt(user.payment_money)?' bgcolor="#ff00ff"':'') + '><font color="#121212">Сумма: ' + esc_tags(user.payment_money) + '</font></td>');
+		html.push(	'<td style="border: 1px solid black;" colspan="3" id="payment_card' + user.id + '"' + (parseInt(user.payment_card)?' bgcolor="#ff00ff"':'') + '><font color="#121212">Карта: ' + (user.payment_card!=""?esc_tags(user.payment_card):esc_tags(user.pf_card_num)) + '</font></td>');
+		html.push(	'<td style="border: 1px solid black;" colspan="3">&nbsp;</td>');
+		html.push('</tr>');
+		html.push('<tr class="' + bgcolor + '">');
+		html.push(	'<td style="border: 1px solid black;" colspan="10" id="payment' + user.id + '"' + (parseInt(user.payment_cnt)?' bgcolor="#ff00ff"':'') + '><font color="#121212">' + esc_tags(user.payment_text) + '</font>');
+		html.push(			'<span cnt="0" ID="status_user' + user.id + '"><img src="./images/icons/empty.png" width="22" height="22"/></span>');
+		html.push(			'<span style="position:relative; left:-22px; top:0; vertical-align:middle">');
+		html.push(			'</span>');
+		html.push(		'</TD>');
+		html.push('</tr>');
+		html.push('<tr><td colspan="11">&nbsp;</td></tr>');
+	}
+	html.push('</TABLE>');
+
+	return html.join("");
+}
+
+function make_orders_report_sIt()
+{
+	var html = new Array;
+
+	html.push('<TABLE cellspacing="1">');
+	html.push(		'<TR bgcolor="E3E3BF" align="center">');
+	html.push(			'<TD><B>Участник</B></TD>');
+	html.push(			'<TD><B>Каталог</B></TD>');
+	html.push(			'<TD><B>Название</B></TD>');
+	html.push(			'<TD><B>Параметры</B></TD>');
+	html.push(			'<TD><B>Цена</B></TD>');
+	html.push(			'<TD><B>Доставка</B></TD>');
+	html.push(			'<TD><B>Орг %</B></TD>');
+	html.push(			'<TD><B>Состояние</B></TD>');
+	html.push(			'<TD><B>Выбор</B></TD>');
+	html.push(			'<TD><B></B></TD>');
+	html.push(			'<TD><B>Комментарий</B></TD>');
+	html.push(		'</TR>');
+	var cnt = 0;
+	for (var uid in lots)
+	{
+		var lot = lots[uid];
+		if (lot.orders_sIt.length != 0)
+		var bgcolor = cnt++&1 ? "ff99cc" : "66ccff";
+		for (var i in lot.orders_sIt)
+		{
+			var order = lot.orders_sIt[i];
+				html.push('<TR class="bg" id="order' + order.id +  '_row">');
+				html.push(		'<td align="center">');
+				html.push(	'<a href="./memberlist.php?mode=viewprofile&u='+order.user.id+'<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">'+esc_tags(order.user.name) + '</a><br/>');
+				if (parseFloat(order.user.rating)<1.0)
+				{
+					html.push( '<img src="/images/icons/greenExclamation.gif" title="Участник новичок">');
+				}
+				if (order.user.bl_info)
+				{
+					html.push(			'<a target="_blank" href="blacklist.php?user_id=' + order.user.id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->"><img src="/images/icons/exclamation.gif" title="Участник занесён в черный список. Кликните для открытия подробной информации в  м окне."></a>');
+				}
+				html.push(			'<ul class="profile-icons"><li class="pm-icon"><a href="./ucp.php?i=pm&mode=compose&u=' + esc_tags(order.user.id) + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Личное сообщение"><span>Личное сообщение</span></a></li></ul>');
+				html.push(		'</td>');
+				html.push(		'<TD><A title="Перейти в каталог ' + esc_tags(lot.catalog.name) + '" href="catalog.php?catalog_id=' + esc_tags(lot.catalog.id) + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">' + esc_tags(lot.catalog.name) + '</A></TD>');
+				html.push(		'<TD><A title="Перейти в каталог к модели ' + esc_tags(lot.name) + '" href="catalog.php?catalog_id=' + esc_tags(lot.catalog.id) + '&lot_id=' + lot.id + '<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">' + esc_tags(lot.name) + '</A></TD>');
+				html.push(		'<TD>' + format_vars(order.vars) + '</TD>');
+				html.push(		'<TD>');
+				html.push(			format_money(esc_tags(lot.price)));
+				html.push(			'<span id="status_' + order.id + '"><img src="./images/icons/empty.png" width="22" height="22" style="position:relative; left:0; top:0; z-index:-1"/></span>');
+				html.push(		'</TD>');
+				html.push(		'<TD><INPUT id="order' + order.id + '_delivery" type="text" size="6" value="' + esc_tags(order.delivery) + '" onchange="javascript:changeDelivery(' + order.id + ');"/></TD>');
+				html.push(		'<TD><INPUT id="order' + order.id + '_org_fee" type="text" size="6" value="' + esc_tags(order.org_fee) + '" onchange="javascript:changeOrgFee(' + order.id + ');"/></TD>');
+				html.push(		'<TD>');
+				html.push(			'<SELECT id="order' + order.id + '_state" onChange="javascript:change_order_state(' + order.id + ');">');
+				for (var j=0; j<6; j++)
+				{
+					html.push(			'<OPTION value="' + j + '"' + (j==order.state?'selected':'') + '>' + order_state_txt[j] + '</OPTION>');
+				}
+				html.push(			'</SELECT>');
+				html.push(		'</TD>');
+				html.push(		'<TD id="order' + order.id + '_state_color" bgcolor="' + order_state_clr[order.state] + '" align="center" valign="center">');
+				html.push(				'<INPUT id="order' + order.id + '_select" type="checkbox">');
+				html.push(		'</TD>');
+				html.push(		'<TD><INPUT type="button" value="Зам" onClick="javascript:subst_order(' + order.id + ');"/></TD>');
+				html.push(		'<TD id="order' + order.id + '_comment">' + esc_tags(order.comment) + '</TD>');
+				html.push('</TR>');
+			}
+	}
+	html.push('</TABLE>');
+	for (var uid in users)
+	{
+		calc_user_total(users[uid].id);
+	}
+	return html.join("");
+}
+
+function make_total_report()
+{
+	var html = '';
+	html += '<TABLE>';
+	html += '<TR><TD><B>Итого:</B></TD><TD></TD><TD>&nbsp</TD><TD><B>Итого у.е.:</B></TD></TR>';
+	html +=		'<TR><TD>Выбрано на:</TD><TD id="total_price_a" >' + total_price_a + '</TD><TD style ="border-right: 1px solid black">&nbsp</TD><TD id="total_price_au">'+ total_price_au + '</TD></TR>';
+	html +=		'<TR><TD>Участников:</TD><TD id="total_users">' + total_users + '</TD></TR>';
+	html +=		'<TR><TD>Заказов:</TD><TD id="total_orders">' + total_orders + '</TD></TR>';
+	html +=		'<TR><TD>На сумму:</TD><TD id="total_price">' + total_price +'</TD><TD style ="border-right: 1px solid black">&nbsp</TD><TD id="total_price_u">'+ total_price_u + '</TD></TR>';
+	html +=		'<TR><TD>Суммарный орг взнос:</TD><TD id="total_org_fee">' + total_org_fee + '</TD></TR>';
+	html +=		'<TR><TD>Всего за доставку:</TD><TD id="total_delivery">' + total_delivery + '</TD></TR>';
+	html +=		'<TR><TD>Всего скидка:</TD><TD id="total_discount">' + total_discount + '</TD></TR>';
+	html +=		'<TR><TD>Общая сумма:</TD><TD id="total_sum">' + total_sum + '</TD></TR>';
+	html +=		'<TR><TD>Денег сдано:</TD><TD id="total_money">' + total_money + '</TD></TR>';
+	html += '</TABLE>';
+	html += '<BR/><DIV id="total_users_wo_orders"></DIV>';
+	return html;
+}
+
+function set_money(text)
+{
+	do_clock( "payment_info", 1 );
+	$.ajax({
+		type : 'POST',
+		url : 'includes/function_adm.php{SID}',
+		data : {
+			'cmd': "change_purchase_admin_maney",
+			'purchase_id': {PURCHASE_ID},
+			'text': text
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			do_clock( "payment_info", -1 );
+			if ("ok" == result)
+			{
+				// do nothing
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении информации об оплате!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	}
+	);
+}
+
+function strequ(s1,s2)
+{
+	return s1.replace(/\s+/g,'')==s2.replace(/\s+/g,'');
+}
+
+_t0 = time();
+
+var orders = {ORDERS};
+var o_n = {ORDERS_CNT};
+var users = {USERS};
+var u_n = {USERS_CNT};
+var catalogs = {CATALOGS};
+var c_n = {CATALOGS_CNT};
+var lots = {LOTS};
+var i_n = {LOTS_CNT};
+var offices = [];
+var paymentMsg = " \n			Здесь вводите данные по оплате.\nПосле редактирования кликните мышью за пределами поля для записи изменений.";
+var max_payment_info_length = 400;
+
+
+var purchase_id = {PURCHASE_ID};
+var sort_lot = 0;
+var hide_refusals = 0;
+if (sort_lot==1) {sort_lot=true; document.getElementById("sort_lot").checked = true;}
+if (hide_refusals==1) {hide_refusals=true; document.getElementById("hide_refusals").checked = true;}
+
+// sort users
+{
+	var ar = new Array;
+	for (var id in users)
+		ar.push( users[id]);
+ 
+	var cmp_func = function(a,b)
+		{
+			return a.name.localeCompare(b.name);
+		}
+	ar.sort( cmp_func);
+ 
+	users = new Object;
+	for (var i=0; i<ar.length; i++)
+		users[ar[i].id] = ar[i];
+}
+
+for (var id in orders)
+	orders[id].lot = lots[orders[id].lot_id];
+
+for (var id in users)
+	users[id].orders = new Array;
+ 
+for (var id in orders)
+{
+	var order = orders[id];
+	users[order.user_id].orders.push(order);
+}
+              //*/
+// associate items with catalog
+for (var id in lots)
+	lots[id].catalog = catalogs[lots[id].catalog_id];
+// calc money by user
+for (var id in users)
+{
+	users[id].money = parseFloat(users[id].money);
+}
+
+// sort lots
+{
+	var ar = new Array;
+	for (var id in lots)
+		ar.push( lots[id]);
+ 
+	var cmp_func = function(a,b)
+		{
+			return a.name.localeCompare(b.name);
+		}
+	ar.sort( cmp_func);
+ 
+	lots = new Object;
+	for (var i=0; i<ar.length; i++)
+		lots[ar[i].id] = ar[i];
+}
+ 
+// associate orders with lots
+for (var id in orders)
+	orders[id].user = users[orders[id].user_id];
+ 
+// associate orders with lots for sort
+for (var id in lots)
+	lots[id].orders_sIt = new Array;
+ 
+for (var id in orders)
+{
+	var order = orders[id];
+	lots[order.lot_id].orders_sIt.push(order);
+}
+
+var total_users = 0;
+var total_orders = 0;
+var total_price = 0;
+var total_price_u = 0; 
+var total_price_a = 0;
+var total_price_au = 0;
+var total_org_fee = 0;
+var total_sum = 0;
+var total_money = 0;
+var total_delivery = 0;
+var total_discount = 0;
+var total_users_wo_orders = new Array;
+var total_admin_fee = 0;
+var total_orders_i = 0;
+
+var subst_catalog_id = -1;
+var subst_lot_id = -1;
+var subst_vars = null;
+var select_catalog_id = -1;
+var select_lot_id = -1;
+var select_vars = null;
+
+form_report();
+document.getElementById("select_controls").innerHTML = select_format_controls( select_catalog_id, select_lot_id, select_vars);
+
+_t1 = time();
+
+</SCRIPT>
+<!-- INCLUDE adm_footer.html -->

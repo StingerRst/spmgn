@@ -1,0 +1,153 @@
+/* Tablesorter Zebra Widget - row alternating colors */
+.tablesorter-green tr.odd td {
+	background-color: #e4fed4;
+}
+td.editable_updated {
+	background-color: green!important;
+	color: white!important;
+}	
+th.tablesorter-header.resizable-false {
+  background-color: #e6bf99;
+}
+/* ensure box-sizing is set to content-box, if using jQuery versions older than 1.8;
+ this page is using jQuery 1.4 */
+*, *:before, *:after {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+/* overflow table */
+.wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 450px;
+}
+.wrapper table {
+  width: auto;
+  table-layout: fixed;
+}
+.wrapper .tablesorter td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 10px;
+}
+.wrapper .tablesorter th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 10px;
+}
+/* Спойлер*/
+.quotetitle input{
+	font-size:12px;
+	margin:5px;
+	padding:0px;
+	background: #7CCC46;
+	height: 15px;
+	width: 15px;
+}
+.quotecontent div{
+	padding-left: 30px;
+}
+.PostHeader1{
+/*	color: rgb(0, 128, 0);*/
+	color: darkgreen;
+	font-style: italic;
+	font-size: 150%;
+	line-height: 116%;
+}	
+.PostHeader2{
+	color: black;
+	font-size: 120%;
+	line-height: 116%;
+}	
+#brand {
+    border-style: solid;
+    border-color: aqua;
+	min-height: 125px;
+}	
+#catalogs{
+	border-style: groove;
+    border-color: blueviolet;
+}
+#catalogs div {  
+    -moz-column-width: 250px;  
+    -webkit-column-width: 250px;   
+    column-width: 250px;  
+}	
+#conditions {
+    border-style: dashed;
+    border-color: coral;
+}
+#regulations {
+    border-style: double;
+    border-color: hotpink;
+}
+.orderstable{
+	max-width: 700px;
+}
+.flex-container{
+	display: flex;
+	flex-wrap:wrap;
+}
+.lot {
+	width:395px;
+	margin-right: 10px;
+}	
+.brandbogo {
+    height: 125px;
+    width: 125px;
+    float: right;	
+}	
+.brandbogo img {
+	float: right;
+    max-width: 100%;
+    max-height: 100%;
+}
+.lotsslider{
+    border-color: red;
+    border-style: dotted;
+}
+#lotsearch{
+    border-color: violet;
+    border-style: dotted;
+    width: 99%;
+    height: 20px;
+}
+#offer{
+    width: 99%;
+	text-indent: 25px; /* Отступ первой строки в пикселах */
+    font-size: larger;
+    color: #276002;
+	
+}
+#offer a{
+    color: #175E94;
+	
+}
+#offer a:visited{
+    color: #A6C9E4;
+}
+
+/* slick*/
+    .slider {
+        width: 100%;
+        margin: 1px auto;
+    }
+    .slick-slide {
+      margin: 10px 20px;
+    }
+    .slick-slide img {
+      width: 100%;
+    }
+    .slick-prev:before,
+    .slick-next:before {
+        color: darkgreen;
+    }
+	.slick-dots li button::before {
+		color:green;
+	}
+	.slick-dots li.slick-active button:before {
+		color:darkgreen;
+	}
+

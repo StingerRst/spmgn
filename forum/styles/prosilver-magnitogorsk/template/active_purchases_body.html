@@ -1,0 +1,144 @@
+<!-- INCLUDE overall_header.html -->
+  <style>
+	table{
+    width: 100%; /* Ширина таблицы */
+	border-collapse: collapse;
+	}
+	@media print {
+	}
+  </style>
+
+<H2>Активные закупки </H2>
+
+
+<form  method="post" sid = {sid}>
+  <!-- IF .otchet -->
+  <table border="1" width="90%" cellspacing = "0" id="myTable" class="tablesorter">
+  <colgroup>
+	<col width="10%" >
+	<col width="20%" >
+	<col width="48%" >
+  <!--	<col width="35%" > -->
+	<col width="10%" >
+	<col width="10%" >
+  </colgroup>
+  <thead>
+    <tr align="center">
+	  <th class="filter-select filter-parsed">Орг</td>
+	  <th class="filter-select filter-parsed">Категория</td>
+	  <th >Закупка</td>
+  <!--	  <th >Каталоги</td> -->
+	  <th >Заказов</td>
+	  <th >Открыта</td>
+    </tr>
+  </thead>
+  <tbody> 
+  <!-- BEGIN otchet -->
+    <tr>  
+	  <td align="left" class="org"> <a title="Личное сообщение организатору" href="ucp.php?i=pm&mode=compose&u={otchet.USER_ID}" target="_blank">{otchet.ORGNAME}</a></td>
+	  <td align="left"><a href="viewforum.php?f={otchet.PRODUCTCAT_FORUM}" target="_blank">{otchet.PRODUCTCAT_LABEL}</a></td>
+	  <td align="left"><a  title="Условия и обсуждение закупки." href="{otchet.PURCHASE_URL}#page-body" target="_blank">{otchet.PURCHASE_NAME}</a></td>
+<!--	  <td align="left">{otchet.CATALOGS}&nbsp;</td> -->
+	  <td align="center">{otchet.ORDERS}&nbsp;</td>
+	  <td align="center">{otchet.OPENDAYS}</td>
+	</tr>
+   <!-- END otchet -->
+   </tbody> 
+  </table>
+  <!-- ENDIF -->
+  <!--	
+	<div class="pager">
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/first.png" class="first" alt="First" />
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/prev.png" class="prev" alt="Prev" />
+		<span class="pagedisplay"></span>  
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/next.png" class="next" alt="Next" />
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/last.png" class="last" alt="Last" />
+		<select class="pagesize" title="Select page size">
+			<option value="50">50</option>
+			<option value="100">100</option>
+			<option value="150">150</option>
+			<option value="300">300</option>
+		</select>
+		<select class="gotoPage" title="Select page number"></select>
+	</div>
+ -->
+</form>
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<SCRIPT language="javascript">
+
+if (typeof jQuery == 'undefined') {
+  document.write('<script type="text/javascript" src="http://code.jquery.com/jquery-git2.min.js"><\/script>');        
+  }
+
+$(function(){
+	$(".tablesorter")
+		.tablesorter({
+			theme : 'green',
+			//widthFixed: true,
+			widthFixed: false,
+			dateFormat: "ddmmyyyy",
+			// this is the default setting
+			cssChildRow: "tablesorter-childRow",
+
+			// initialize zebra and filter widgets
+			widgets: ["zebra", "filter", "stickyHeaders","editable"],
+			sortList: [[4,1]],
+			widgetOptions: {
+			      // filter_anyMatch replaced! Instead use the filter_external option
+				  // Set to use a jQuery selector (or jQuery object) pointing to the
+				  // external filter (column specific or any match)
+				  //filter_external : '.search',
+				  filter_external : '.search',
+				  // add a default type search to the first name column
+				  filter_defaultFilter: { 1 : '~{query}' },
+				  // include column filters
+				  filter_columnFilters: true,
+				  // hide filter row when table is empty
+				  //filter_hideEmpty : true,
+
+				  // if true, filters are collapsed initially, but can be revealed by hovering over the grey bar immediately
+				  // below the header row. Additionally, tabbing through the document will open the filter row when an input gets focus
+				  //filter_hideFilters : true,				  
+				  
+				  filter_placeholder: { search : 'Поиск...' }, // Полпись дляпоисковых полей
+				  filter_saveFilters : true,
+				  filter_reset: '.reset',
+				// output default: '{page}/{totalPages}'
+				// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+				pager_output: '{startRow} - {endRow} / {filteredRows} ({totalRows})', // '{page}/{totalPages}'
+				pager_removeRows: false,
+				// include child row content while filtering, if true
+				filter_childRows  : true,
+				// class name applied to filter row and each input
+				filter_cssFilter  : 'tablesorter-filter',
+				// search from beginning
+				filter_startsWith : false,
+				// Set this option to false to make the searches case sensitive 
+				filter_ignoreCase : true
+			}
+		})
+    // config event variable new in v2.17.6
+ 
+});
+
+</SCRIPT>
+
+<!-- choose a theme file -->
+<link rel="stylesheet" href="./js/tablesorter/css/theme.green.css">
+
+<!-- load jQuery and tablesorter scripts -->
+<script type="text/javascript" src="./js/tablesorter/jquery.tablesorter.js"></script>
+
+<!-- tablesorter widgets (optional) -->
+<script type="text/javascript" src="./js/tablesorter/jquery.tablesorter.widgets.js"></script>
+<script type="text/javascript" src="./js/tablesorter/widgets/widget-editable.js"></script>
+<script type="text/javascript" src="./js/tablesorter/widgets/widget-pager.js"></script>
+
+<link type="text/css" rel="stylesheet" href="{T_THEME_PATH}/rox_menu_test.css"/>
+<link type="text/css" rel="stylesheet" href="{T_THEME_PATH}/custom.css"/>
+
+
+
+
+<!-- INCLUDE overall_footer.html -->

@@ -1,0 +1,872 @@
+<!-- INCLUDE org_header.html -->
+<!-- IF S_USER_IS_ORGANIZER -->
+	            <style type="text/css">
+<!--
+	#mycalendar-panel img, #mycalendar-panel select {
+		vertical-align: middle;
+	}
+	ol {
+		list-style: none;
+	}
+	.calendar_panel{
+		background-color: #ECF1F3;
+		border: solid 1px #536482;
+	}
+	.calendar, .monthyear, .dayheaders {
+		width: 18em;
+		overflow: hidden;
+		margin: 0px;
+		padding: 0px;
+		padding-left: 0.25em;
+		text-align: center;
+	}
+	.calendar li a {
+		display: block;
+		background-image: url({T_THEME_PATH}/images/corners.gif);
+	}
+	.calendar li {
+		width: 2.3em;
+		height: 2.3em;
+		margin: 0.1em;
+		background-position: top left;
+		display: inline; /* For IE */
+	}
+	.calendar li a {
+		display: block;
+		width: 2.3em;
+		height: 1.8em;
+		padding-top: 0.5em;
+		background-position: bottom right;
+	}
+	.monthyear li {
+		display: block;
+		height: 2em;
+		width: 12em;
+	}
+	.content ol {
+		margin: 0;
+	}
+	.monthyear li.previous, .monthyear li.next {
+			width: 2.5em;
+	}
+	.dayheaders li.left {
+		width: 2.5em;
+	}
+	.dayheaders li {
+		display: block;
+		width: 2.5em;
+		height: 1.5em;
+	}
+	.calendar li, .monthyear li, .dayheaders li {
+		float: left;
+	}
+	.calendar a {
+		text-decoration: none;
+	}
+	.calendar li:hover {
+		background-color: #ccb;
+	}
+	.sundaystart .firstday { margin-left: 0.1px; }
+	.mondaystart .firstday { margin-left: 2.6em; }
+	.tuesdaystart .firstday { margin-left: 5.1em; }
+	.wednesdaystart .firstday { margin-left: 7.6em; }
+	.thursdaystart .firstday { margin-left: 10.1em; }
+	.fridaystart .firstday { margin-left: 12.6em; }
+	.saturdaystart .firstday { margin-left: 15.1em; }
+
+	#cp-main .panel ol {
+		font-size:1em;
+		margin-left:0em;
+	}
+
+-->
+</style>
+<script language="Javascript" src="js/mycalendar.js"></script>
+<SCRIPT language="Javascript">
+// <![CDATA[
+
+var calendarFormat = 'd-m-y';
+var calendarMonths = new Array('Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь');
+var calendarWeekdaysShort = new Array("Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб");
+var calendarWeekdays = new Array("Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота");
+var previous_month = 'Предыдущий месяц';
+var next_month = 'Следующий месяц';
+var image_previous = '{T_THEME_PATH}/images/arrow_left.gif';
+var image_next = '{T_THEME_PATH}/images/arrow_right.gif';
+var weekday_start = 1;
+
+var insert_id = 'date_picker';
+
+var today = new Date();
+var day = today.getDate();
+var month = today.getMonth();
+var year  = y2k(today.getYear());
+
+var currentDay = day;
+var currentMonth = month;
+var currentYear = year;
+
+var targetDateField;
+
+function change_payment(source)
+{
+	var text = document.getElementById(source).value;
+	var new_text = text.replace(/^\s+|\s+$/g,"");
+	var reg;
+		reg=/^(?:([0-2]{0,1})\d):(?:[0-5]\d)$/i;
+		var regres;
+		if (!reg.test(new_text)) {
+			alert('Поле "Время" не соответствует заданному формату.\n Пример правильного заполнения 12:30');
+			//document.getElementById( "payment"+source + purchase_id ).value = payment_timeMsg;
+			return;
+		}else {
+			regres = reg.exec(new_text);
+			if (regres[1]=="") new_text="0"+new_text;
+			document.getElementById(source).value = new_text;
+		}
+}
+
+function select_date(formField)
+{
+	// get the reference to the target element and setup the date
+	targetDateField = formField;
+	var dateString = targetDateField.value;
+
+	if ((dateString != '')&&(dateString != '00-00-0000'))
+	{
+		// convert the user format of the date into something we can parse to make a javascript Date object
+		// we need to pad with placeholders to get the rigth offset
+		tmp_format = calendarFormat.replace(/m/i, 'mm').replace(/d/i, 'dd').replace(/y/i, 'yyyy');
+		tmp_yOffset = tmp_format.indexOf('y');
+		tmp_mOffset = tmp_format.indexOf('m');
+		tmp_dOffset = tmp_format.indexOf('d');
+		var today = new Date(dateString.substring(tmp_yOffset, tmp_yOffset + 4), dateString.substring(tmp_mOffset, tmp_mOffset + 2) - 1, dateString.substring(tmp_dOffset, tmp_dOffset + 2));
+		if ((today == "Invalid Date") || (isNaN(today)))
+		{
+   			var today = new Date();
+		}
+	} else
+	{
+		var today = new Date();
+	}
+	day = today.getDate();
+	month = today.getMonth();
+	year  = y2k(today.getYear());
+	fill_div(insert_id, build_calendar(month, day, year));
+	fill_calendar(month, year);
+	document.getElementById(insert_id).style.top = getBounds(formField).top+"px";
+	document.getElementById(insert_id).style.left = 100 +"px";
+	document.getElementById(insert_id).style.display = 'block';
+}
+
+function fill_calendar(month, year)
+{
+	for (i = 1; i <= calendarDays[month]; i++)
+	{
+		fill_day(i, '<a href="javascript: void(0);" onclick="sendDate(' + (month + 1) + ', ' + i + ', ' + year + ');" title="' + formatDate(month + 1, i, year) + '">' + i + '</a>');
+	}
+}
+
+function sendDate(month, day, year)
+{
+	var id=targetDateField.id;
+	id=id.split(targetDateField.name).join('');
+	
+	targetDateField.value = formatDate(month, day, year);
+
+	purchases_upd(id);
+	
+	var dest = document.getElementById(insert_id);
+	dest.style.display = 'none';
+}
+// ]]>
+</SCRIPT>
+<!-- IF ARH -->
+<h2>Мои закупки - архив</h2>
+<!-- ELSE -->
+<h2>Мои закупки</h2>
+ <a class="button2" href="org.php?i=1&a=1<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">Архив</a>
+<!-- ENDIF -->
+
+<br/>
+<SCRIPT language="Javascript">
+
+	function esc_tags(s)
+	{
+		s = s.toString();
+		s = s.replace(/</g,'&lt;');
+		s = s.replace(/>/g,'&gt;');
+		s = s.replace(/"/g,'&quot;');
+		return s;
+	}
+	function esc_tags2(s)
+	{
+		s = s.toString();
+		s = s.replace(/</g,'&lt;');
+		s = s.replace(/>/g,'&gt;');
+		s = s.replace(/"/g,'&quot;');
+		s = s.replace(/\n/g,'<br>');
+		return s;
+	}
+	function purchase_showhide (purchase_id) {
+		var purchase_blocks=$('.purchase'+purchase_id);
+		var button=document.getElementById("b" + purchase_id);
+		$(purchase_blocks).each (
+			function () {
+				this.style.display=(this.style.display == 'none') ? 'block' : 'none';
+				button.value=(this.style.display == 'none') ? "Показать":"Скрыть";
+			});
+	}
+	
+	function addproperties(propfield,catalog_id) {
+		if ($("input[name='properties[]']", propfield).length<4) 
+			$(propfield).append('<div><input type="text" name="properties[]" id="properties[]" onChange="addPropOptions(this);upd_cat('+catalog_id+')" value="Новая переменная"><label for="values[]"> значения </label><input type="text" name="values[]" id="values[]" value="Значение1;Значение2" onChange="upd_cat('+catalog_id+')"><a href="#" onclick="javascript:delproperties(this.parentNode,'+catalog_id+');return false;"> (убрать)</a></div>');
+		addPropOptions(propfield);
+	}
+	function delproperties(propfield,catalog_id) {
+		$(propfield).empty();
+		addPropOptions(propfield);
+		upd_cat(catalog_id);
+	}
+	function addPropOptions(propfield) {
+		purchase = $(propfield).parents("div.catalog");
+		var seriesfield = $("select", purchase);
+		var properties = $("input[name='properties[]']", purchase);
+		$(seriesfield).html('<option value="-1">не собирать</option>');
+		for (var i=0; i<properties.length; i++) {
+			if ($(properties).eq(i).val())
+				$(seriesfield).append('<option value="'+i+'">'+$(properties).eq(i).val()+'</option>');
+		}
+	}
+	function openpurchase(reserv_id){
+		$.ajax({
+			type : 'POST',
+			url : 'function.php{SID}',
+			data : {
+				'cmd': "openpurchase",
+				'reserv_id': reserv_id
+			},
+			// Function is called when an answer arrives. 
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				var ar = result.split(";");
+				var ok=ar[1];
+				if ("ok" == ok)
+				{
+					window.location='org.php?i=1<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->';
+					purchases[reserv_id].status = 4;
+					purchases[reserv_id].status_start =ar[2];
+
+					make_purchas(purchases[reserv_id],reserv_id);
+					var status=false;
+					for (var catalog in purchases[reserv_id].catalog){
+						make_catalog(purchases[reserv_id].catalog[catalog],purchases[reserv_id].id,purchases[reserv_id].status);
+					}
+				}
+				else
+				{
+					alert("Произошла ошибка открыте закупки!\n" + errors);
+					// Write errors to the debug div.
+					document.getElementById("status").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	
+	function allorg(catalog_id){
+		$.ajax({
+			type : 'POST',
+			url : 'function.php{SID}',
+			data : {
+				'cmd': "allorg",
+				'catalog_id': catalog_id
+			},
+			// Function is called when an answer arrives. 
+			success : function(result, errors) 
+			{
+				var ar = result.split(";");
+				var ok=ar[1];
+				if ("ok" == ok)
+				{
+				}
+				else
+				{
+					alert("Произошла ошибка!\n");
+					// Write errors to the debug div.
+					document.getElementById("status").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	
+	function copypurchase(reserv_id,nw){
+		if (!confirm("Вы уверены в копировании закупки ?"))
+			return;
+
+		$.ajax({
+			type : 'POST',
+			url : 'function.php{SID}',
+			data : {
+				'cmd': "copypurchase",
+				'reserv_id': reserv_id,
+				'nw': nw
+			},
+			success : function(result, errors) 
+			{
+				var ar = result.split(";");
+				var ok=ar[1];
+				if ("ok" == ok)
+				{
+					window.location='org.php?i=1<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->';
+				}
+				else
+				{
+					alert("Произошла ошибка копировании закупки!\n" + errors);
+					// Write errors to the debug div.
+					//document.getElementById("status").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	function purchase_arhiv(reserv_id){
+		$.ajax({
+			type : 'POST',
+			url : 'function.php{SID}',
+			data : {
+				'cmd': "purchase_arhiv",
+				'reserv_id': reserv_id,
+			},
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				var ar = result.split(";");
+				var ok=ar[1];
+				if ("ok" == ok)
+				{
+					window.location='org.php?i=1<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->';
+				}
+				else
+				{
+					alert("Произошла ошибка перемешения в архив!\n" + errors);
+				}
+			}
+		}
+		);		
+	}
+
+	function upd_cat(id) {
+	//alert("upd_catalog");
+		var form = $("#catalog_"+id);
+		var options = {
+			url : "function.php{SID}",
+			target : "#status"
+		};
+		$(form).ajaxSubmit(options);
+	}
+
+	function add_catalog( id, purchase, status)
+	{
+		$.ajax({
+			type : 'POST',
+			url : 'function.php{SID}',
+			data : {
+				'cmd': "add_catalog",
+				'catalog_id': id,
+				'purchase_id': purchase
+			},
+			dataType: 'json',
+			// Function is called when an answer arrives. 
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				if ("ok" == result.status)
+				{
+					make_catalog(result.catalog,purchase, status);
+				}
+				else
+				{
+					alert("Произошла ошибка добавление каталога!\n" + errors);
+					// Write errors to the debug div.
+					document.getElementById("debug").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	
+	function del_catalog(id){
+		if (!confirm("Удаление каталога приведет также и к удалению товара и ссылающихся на них заказов.\nПродолжить?"))
+			return;
+		$.ajax({
+			type : 'POST',
+			url : 'function.php{SID}',
+			data : {
+				'cmd': "del_catalog",
+				'catalog_id': id
+			},
+			dataType: 'json',
+			// Function is called when an answer arrives. 
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				if ("ok" == result.status)
+				{
+					$($('div.catalog_'+id)).empty();
+				}
+				else
+				{
+					alert("Произошла ошибка удаления каталога!\n" + errors);
+					// Write errors to the debug div.
+					document.getElementById("debug").innerHTML = errors;
+				}
+			}
+		}
+		);		
+
+	}
+	
+	function make_catalog(catalog,purchase, status){
+		var html = "";
+
+		html+='<a name="catalog'+catalog.catalog_id+'"></a>';
+		html+='<div class="catalog_'+catalog.catalog_id+'">';
+		html+='	<div class="panel bg1">';
+		html+='		<div class="inner">';
+		html+='			<span class="corners-top"><span></span></span>';
+		html+='				<div class="catalog">';
+		html+='					<form id="catalog_'+catalog.catalog_id+'" method="post">';
+		html+='						<fieldset>';
+		html+='								<div align=right><input name="catalog_hide" id="catalog_hide" ';
+		if (catalog.hide==1) html+=' checked="checked"';
+		html+='								 onchange="upd_cat('+catalog.catalog_id+')" type="checkbox"> Скрыть ';
+		html+='								 | <input name="catalog_foruser" id="catalog_foruser" ';
+		if (catalog.foruser==1) html+=' checked="checked"';
+		html+='								 onchange="upd_cat('+catalog.catalog_id+')" type="checkbox"> возможно УЗам добавлять товар </div>';
+		html+=' 							<label for="catalog_name"><b>Каталог:</b> </label>'+catalog.catalog_id+'';
+		html+='							';
+		html+='							';
+		html+=' 							<br/><label for="catalog_name"><b>Название каталога:</b></label>';
+		html+='								<input type="text" name="catalog_name" id="catalog_name" value="'+esc_tags(catalog.name)+'" onchange="upd_cat('+catalog.catalog_id+')">';
+		html+='							';
+		html+='							';
+		html+=' 							<br/><label for="catalog_valuta"><b>Валюта:</b></label>';
+		html+='								<input type="text" name="catalog_valuta" id="catalog_valuta" value="'+catalog.valuta+'"  onchange="upd_cat('+catalog.catalog_id+')">';
+		html+=' 							<br/><label for="catalog_course"><b>Курс:</b></label>';
+		html+='								<input type="text" name="catalog_course" id="catalog_course" value="'+catalog.course+'" onchange="upd_cat('+catalog.catalog_id+')">';
+		html+='								<br/><label for="catalog_orgrate"><b>Орг %:</b></label></dt>';
+		html+='								<input type="text" name="catalog_orgrate" id="catalog_orgrate" value="'+catalog.orgrate+'" onchange="upd_cat('+catalog.catalog_id+')">';
+		html+='								<br/><a href="#" onclick="allorg('+catalog.catalog_id+');return!1;" class="button2">проставить орг по всем позициям</a>';
+		html+='							';
+		html+='							<dl>';
+		html+='								<dt style="width:100%"><label for="properties[]">Переменные (значения перечисляются через точку с запятой): </label></dt>';
+		html+='								<dd style="margin-left:30px">';
+		html+='									<div  id="propertiesfield">';
+		html+='										<div>';
+		html+='											<a href="#" onclick="javascript:addproperties(this.parentNode.parentNode,'+catalog.catalog_id+');return false;">(добавить)</a><br>';
+		html+='										</div>';
+
+		var vars = catalog.vars;
+		for (var v in vars)
+		{
+			html+='										<div>';
+			html+='											<input type="text" name="properties[]" id="properties[]" onChange="addPropOptions(this);upd_cat('+catalog.catalog_id+')" value="'+esc_tags(v)+'" >';
+			html+='											<label for="values[]"> значения </label>';
+			html+='											<input type="text" name="values[]" id="values[]" value="'+esc_tags(vars[v])+'" onChange="upd_cat('+catalog.catalog_id+')">';
+			html+='											<a href="#" onclick="javascript:delproperties(this.parentNode,'+catalog.catalog_id+');return false;"> (убрать)</a>';
+			html+='										</div>';
+		}
+		
+		html+='									</div>';
+		html+='								</dd>';
+		html+='							</dl>';
+		html+='							<dl>';
+		html+='								<dt style="width:100%"><label for="series[]">Собирать по ряду: </label></dt>';
+		html+='								<dd style="margin-left:30px">';
+		html+='									<div  id="seriesfield">';
+		html+='											<select name="series[]" id="series[]" onChange="upd_cat('+catalog.catalog_id+')">';
+		html+='												<option value="-1">не собирать</option>';
+		var i=0;
+		for (var v in vars){
+			html+='												<option value="'+i+'"';
+			if (v==catalog.catalog_bundle) 
+				html+=' selected';
+			html+='>'+v+'</option>';
+			i++;
+		}
+		html+='											</select>';
+		html+='									</div>';
+		html+='								</dd>';
+		html+='							</dl>';
+		html+='						</fieldset>';
+		html+='						<input type="hidden" value="upd_cat" name="cmd" id="cmd">';
+		html+='						<input type="hidden" value="'+catalog.catalog_id+'" name="catalog_id" id="catalog_id">';
+			html+='						<a href="./org.php?i=1&mode=edit&cat='+catalog.catalog_id+'<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" class="button2">Редактировать</a>';
+			html+='						<a href="javascript:del_catalog('+catalog.catalog_id+');" class="button2">Удалить</a>';
+		html+='					</form>';
+		html+='				</div>';
+		
+		html+='				<form action="uploadprice.php{SID}" method="post" enctype="multipart/form-data" accept="csv/plain" target="_blank">';
+		html+='					Импортировать данные в каталог из прайса (*.csv): ';
+		html+='					<input name="purchase_id" value="'+purchase+'" type="hidden">';
+		html+='					<input name="catalog_id" value="'+catalog.catalog_id+'" type="hidden">';
+		html+='					<input name="max_file_size" value="1048576" type="hidden">';
+		html+='					<input name="price" title="Укажите файл в формате *.csv (Используйте меню Файл -&gt; Сохранить как... в Excel)" type="file"><br>';
+		html+='					<label for="merge_col">Совмещать по:</label>';
+		html+='					<input name="merge_col" value="" title="объединять строчки прайса с одинаковым значением этого поля, например, название или артикул." id="merge_col" type="text">';
+		html+='					<input name="test" id="test" checked="checked" type="checkbox">';
+		html+='					<label for="test" title="Перед созданием каталога рекомендуется сделать тест. Если программа правильно интерпретировала ваш прайс - тогда уберите эту галочку и программа создаст каталог">тест</label>';
+		html+='					<input value="Импортировать" type="submit">';
+		html+='					<a href="http://spmgn.ru/index.php?option=com_content&view=article&id=40">Инструкция</a>';
+		html+='				</form>';
+
+		html+='			<span class="corners-bottom"><span></span></span>';
+		html+='		</div>';
+		html+='	</div>';
+		html+='</div>';
+		var catalogs = $("div.catalogs_"+purchase);
+		$(catalogs).append(html);
+	}
+	
+	function make_purchas(purchas,reserv_id){
+		var html = "";
+
+
+		html+='	<DIV class="forabg" >';
+		html+='	<DIV class="inner" >';
+		html+='	<ul class="topiclist"><li class="header"><dl class="icon"><dd></dd></dl></li></ul>';
+		
+		html+='	<ul class="topiclist cplist pmlist"><li class="row bg1">';
+		html+='		<dl class="icon">';
+		html+='			<dd class="posts" style="width: 20%; text-align: center;">';
+		if (purchas.status==2){
+			html+='			<a href="javascript:purchases_add('+reserv_id+');" class="button2">Создать закупку</a>';
+		}else{
+			html+='			Текущая закупка';
+		}
+		html+='			</dd>';
+		html+='			<dd class="posts" style="width: 59%; text-align: center;"><h4 id="hname'+purchas.id+'"> № '+purchas.id+ '&nbsp;'+purchas.name+'</h4> '+purchas.brandname+'</dd>';
+		html+='			<dd class="posts" style="width: 20%; text-align: center;">';
+		if (purchas.status==2){
+			html+='			Бронь до '+purchas.request_end;
+		}else{
+			html+='			<input class="button2" type="button" id="b'+purchas.id+'" onclick="purchase_showhide('+purchas.id+');" value="Показать">';
+			if (purchas.status==6){
+				html+='			<input class="button2" type="button" id="a'+purchas.id+'" onclick="purchase_arhiv('+reserv_id+');" value="В архив">';
+			} else{
+				html+='			<input class="button2" type="button" hidden="hidden" id="a'+purchas.id+'" onclick="purchase_arhiv('+reserv_id+');" value="В архив">';
+			}
+		}
+		html+='			</dd>';
+		html+='		</dl>';
+		html+='	</li>';
+		if (purchas.status>2){
+			html+='	<li class="row bg1" >';
+			html+='	<div class="purchase'+purchas.id+' bg2" style="display:none;">';
+			html+='		<table style="width:1100px;border:1px" >';
+			html+='			<tr>';
+			html+='				<td style="width:450px; text-align: center;vertical-align: top;">';
+			if (purchas.status!=3){
+				html+='				<a href="org.php?i=1&mode=otchet&p='+purchas.id+'<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" class="button2">Отчет по закупке</a>';
+				html+='					</br>';
+			}
+			html+='					<hr/>';
+			html+='					<form id="flogo_'+reserv_id+'" action="function.php{SID}" method="POST" class="purchase_'+purchas.id+'" enctype="multipart/form-data"><fieldset>';
+			html+='<dl>';	
+			html+='<dt><label  for="name'+purchas.id+'">Название:</label></dt>';
+			html+='<dd><input style="width:190px" type="text" name="name" id="name'+purchas.id+'" maxlength="255" value="'+esc_tags(purchas.name)+'" class="inputbox"  onChange="purchases_upd('+purchas.id+')"></dd>';
+			html+='<dt><label for="site'+purchas.id+'">Сайт:</label></dt>';
+			html+='<dd><input style="width:190px" type="text" name="site" id="site_url'+purchas.id+'" maxlength="255" value="'+esc_tags(purchas.site_url)+'" class="inputbox"  onChange="purchases_upd('+purchas.id+')"><dd>';
+			if (purchas.joomla_material_id) {
+				html+='<dt><a href = "http://spmgn.ru/administrator/index.php?option=com_k2&view=item&cid='+purchas.joomla_material_id+'" target="_blank">Статья</a></dt>';
+			}
+			html+='<dt><a href = "'+purchas.purchase_url+'">Перейти в тему закупки</a></dt>';
+			html+='</dl>';
+			
+			html+='						<hr/>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="description"><b>Описание товара:</b><br/></label>';
+				html+='						<div class="brandbogo">	<img src="'+purchas.logo+'" id="img_'+reserv_id+'"/></div><br />';
+			html+='							<label for="brandlogo"><b>логотип бренда</b></label><br />';
+				html+='							<input size="1" id="button_'+reserv_id+'" name="userfile" onchange="add_logo('+purchas.brand_id+','+reserv_id+');" type="file">';
+			html+='							</dt>';
+			html+='							<dd>';
+				html+='						<textarea name="description" id="description" rows="6" cols="24" onChange="purchases_upd('+purchas.id+')">'+esc_tags(purchas.purchase_description)+'</textarea>';
+			html+='							</dd>';
+			html+='						</dl>';
+			if (purchas.status!=3){
+				html+='					<hr/>';
+				html+='<dl>';
+				html+='<dt>Копирование закупки</dt> ';
+<!--				if ( purchas.purchase_admin_money != ""){ // Если Оргсбор не оплачен то копировать закупку нельзя -->
+<!--					html+='<a href="#" onclick="copypurchase('+reserv_id+',0);" class="button2">Копировать закупку</a><br/></a>';-->
+					html+='<dd><a href="#" onclick="copypurchase('+reserv_id+',1);" class="button2">Копировать закупку<br> c переносом новых заказов</a></dd>';
+<!--				}-->
+<!--				else {-->
+<!--					html+='невозможно </br> пока нет отчислений на поддержку сайта</br>';-->
+<!--				}-->
+				html+='</dl>';
+			}
+			
+			html+='						<hr /><p>Условия закупки</p>';
+			for (var name in purchas.rules){
+				html+='						<dl class="purch_org">';
+				html+='							<dt><label>'+name+'</label></dt>';
+				html+='							<dd>';
+				html+='								<input type="hidden" name="rules[]"	id="rules[]" value="'+name+'">';
+				if (purchases[reserv_id].status==3){
+					html+='								<input type="text" name="values[]" id="values[]" maxlength="500" class="inputbox" style="width:100px" value="'+purchas.rules[name]+'" onChange="purchases_upd('+purchas.id+')">';
+				}else{
+					html+='								<input type="hidden" name="values[]" id="values[]" maxlength="500" style="width:100px" value="'+purchas.rules[name]+'">'+purchas.rules[name];
+				}
+				html+='							</dd>';
+				html+='						</dl>';
+			}
+			html+='						<hr /><p>Статус закупки</p>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_open">открыт до:</label></dt>';
+			html+='							<dd>';
+			html+='								<input type="hidden" name="status_open" id="status_open"  maxlength="255" value="'+purchas.request_end+'" class="inputbox" />';
+			html+='								<span style="width:100px">'+purchas.request_end+'</span>';
+			html+='							</dd>';
+			html+='						</dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_start">Старт:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_start'+purchas.id+'" name="status_start" value="'+purchas.status_start+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_start'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_fix">Фиксация:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_fix'+purchas.id+'" name="status_fix" value="'+purchas.status_fixed+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_fix'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_stop">Стоп:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_stop'+purchas.id+'" name="status_stop" value="'+purchas.status_stop+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_stop'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_reorder">Дозаказ:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_reorder'+purchas.id+'" name="status_reorder" value="'+purchas.status_reorder+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_reorder'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_billreciv">Счет получен:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_billreciv'+purchas.id+'" name="status_billreciv" value="'+purchas.status_billreciv+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_billreciv'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_payto">Оплата до:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_payto'+purchas.id+'" name="status_payto" value="'+purchas.status_payto+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_payto'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org"">';
+			html+='							<dt><label for="status_shipping">Отгрузка:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_shipping'+purchas.id+'" name="status_shipping" value="'+purchas.status_shipping+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_shipping'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='							<dl class="purch_org">';
+			html+='							<dt><label for="status_goodsreciv">Груз получен:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_goodsreciv'+purchas.id+'" name="status_goodsreciv" value="'+purchas.status_goodsreciv+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_goodsreciv'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_distribfrom">Раздача с:</label></dt><dd>';
+				html+='							<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Пример правильного заполнения 07-11-2009" id="status_distribfrom'+purchas.id+'" name="status_distribfrom" value="'+purchas.status_distribfrom+'" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='							<a href="javascript: void(0);" onClick="select_date(document.getElementById(\'status_distribfrom'+purchas.id+'\'));"><img src="./images/mycalendar.gif" border="0" align="middle" /></a>';
+			html+='						</dd></dl>';
+			
+			if (purchas.status>3){
+				html+='						<dl class="purch_org">';
+				html+='							<dt><label for="status_distribfrom">Закупка закрыта:</label></dt><dd>';
+				html+='							<input type="checkbox" id="status_end'+purchas.id+'" ';
+				if(purchas.status==6){
+				html+='							checked="checked" ';
+				}
+				html+='							 name="status_end" onChange="purchases_upd('+purchas.id+')"/>';
+				html+='						</dd></dl>';
+			}
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_distribfrom">Оплата доставки в ЕЦ:</label></dt><dd>';
+			html+='							<input type="checkbox" id="delivery_to_ec'+purchas.id+'" ';
+				if(purchas.delivery_to_ec==1){
+			html+='							checked="checked" ';
+				}
+			html+='							 name="delivery_to_ec" onChange="purchases_upd('+purchas.id+')"/>';
+			html+='						</dd></dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="status_distribfrom">Накладные в ЕЦ:</label></dt><dd>';
+			html+='							<input type="checkbox" id="nakl_to_ec'+purchas.id+'" ';
+				if(purchas.nakl_to_ec==1){
+			html+='							checked="checked" ';
+				}
+			html+='							 name="nakl_to_ec" onChange="purchases_upd('+purchas.id+')"/>';
+			html+='						</dd></dl>';
+			
+
+			html+='						<hr />';
+			if (purchas.status==3){
+				html+='				<a href="javascript:openpurchase('+reserv_id+')" class="button2">Открыть</a>';
+			html+='						<hr />';
+			}
+			html+='						';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="news"><b>Новости:</b></label></dt>';
+			html+='							<dd><textarea name="news" id="news"  rows="7" cols="24" onChange="purchases_upd('+purchas.id+')">'+purchas.news+'</textarea></dd>';
+			html+='						</dl>';
+			html+='						<dl class="purch_org">';
+			html+='							<dt><label for="komad">Комментарии администрации:</label></dt>';
+			html+='							<dd>'+purchas.coment+'</dd>';
+			html+='						</dl>';
+			html+='						</fieldset>';
+			html+='						<input type="hidden" value="'+purchas.id+'" name="purchase_id" id="purchase_id">';
+			html+='						<input type="hidden" value="purchases_upd" name="cmd" id="cmd">';
+			html+='					{S_FORM_TOKEN}';
+			html+='					</form>';
+			html+='				</td>';
+			html+='				<td style="vertical-align: top;">';
+			html+='					<div>';
+			html+='						<div id="status"></div>';
+			html+='						<a href="javascript:add_catalog(0,'+purchas.id+',true);" class="button2">Добавить каталог</a>';
+			html+='						<div class="catalogs_'+purchas.id+'">';
+			html+='						</div>';
+			html+='					</div>';
+			html+='				</td>';
+			html+='			</tr>';
+			html+='		</table>';
+			html+='	</div>';
+			html+='	</li>';
+		}
+		html+='	</ul><br></DIV>';
+		html+='	</DIV>';
+
+//		$($('#reserv_'+reserv_id)).append(html);
+		var d=document.getElementById('reserv_'+reserv_id).innerHTML = html;
+	}
+	function add_logo(brand_id,reserv_id){
+		var form = $("#flogo_"+reserv_id);
+		var options = {
+			url : 'uploadlogo.php{SID}',
+			data : {
+				brand_id :brand_id
+			},
+			success : function(result, errors) 
+			{
+						
+				var ar = result.split(";");
+				var ok=ar[1];
+
+				if ('ok' == ok)
+				{
+					$("#img_"+reserv_id).attr("src", ar[2]);
+				}
+				else
+				{
+					alert("Произошла ошибка при обновлении изображения!\n" + errors);
+					// Write errors to the debug div.
+				}
+			}
+		};
+		$(form).ajaxSubmit(options);
+
+	}
+	
+	function purchases_add(reserv_id){ //создаем новую закупку
+//	alert (reserv_id);
+		$.ajax({
+			type : 'POST',
+			url : 'function.php{SID}',
+			data : {
+				'cmd': "purchases_add",
+				'reserv_id': reserv_id
+			},
+			dataType: 'json',
+			// Function is called when an answer arrives. 
+			beforeSend : function () {
+			
+			},
+			success : function(result, errors) 
+			{
+				if ("ok" == result['status'])
+				{
+					window.location='org.php?i=1<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->';
+					purchases[reserv_id].id = result['purchase_id'];
+					purchases[reserv_id].rules = result.rules;
+					purchases[reserv_id].status = 3;
+
+					make_purchas(purchases[reserv_id],reserv_id);
+				}
+				else
+				{
+					//alert("Произошла ошибка открытия закупки!\n" + errors);
+					alert("Произошла ошибка открытия закупки!\n" + result['status']);
+					// Write errors to the debug div.
+					document.getElementById("status").innerHTML = result['status'];
+					//document.getElementById("status").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	function purchases_upd(purchase_id){
+	//alert (document.getElementById("delivery_to_ec"+purchase_id).checked);
+		var form = $(".purchase_"+purchase_id);
+		var options = {
+			url : "function.php{SID}",
+			target : "#status"
+		};
+		$(form).ajaxSubmit(options);
+
+		document.getElementById("a"+purchase_id).hidden=!document.getElementById("a"+purchase_id).hidden;
+		document.getElementById("hname"+purchase_id).innerHTML = document.getElementById("name"+purchase_id).value;
+	}
+</SCRIPT>
+
+<div id="date_picker" style="display:none;position:absolute;top:0px;left:0px;z-index:1000;">
+		</div>
+<div id="status" class="status">
+</div>
+							
+<div class="reservs">
+</div>
+		
+			<SCRIPT language="Javascript">
+				var purchases = {{MYPURCHASES}};
+				for (var reserv_id in purchases){
+					$($('div.reservs')).append('<div  id="reserv_'+reserv_id+'">');
+					$($('div.reservs')).append('</div>');
+					make_purchas(purchases[reserv_id],reserv_id);
+					if (purchases[reserv_id].status==3){
+						var status=true;
+					}else{
+						var status=false;
+					}
+					for (var catalog in purchases[reserv_id].catalog){
+						make_catalog(purchases[reserv_id].catalog[catalog],purchases[reserv_id].id,purchases[reserv_id]['status']);
+					}
+				}
+				var pur = {PUR};
+				
+				var cat = {CAT};
+				if (pur>0){
+					purchase_showhide(pur);
+				}
+				if (cat>0){
+					window.location.hash = 'catalog'+cat+'<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->';
+				}
+//						
+			</SCRIPT>
+
+<!-- ENDIF -->
+<!-- INCLUDE org_footer.html -->

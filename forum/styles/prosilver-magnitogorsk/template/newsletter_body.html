@@ -1,0 +1,79 @@
+<!-- INCLUDE overall_header.html -->
+
+
+<!-- IF S_MAIL_VIEW -->
+	<div id="page-body">
+			 
+		<p class="right rightside">&nbsp;</p>
+		<p>&nbsp;</p>		
+		<div class="pagination">&nbsp;</div>
+			<div id="p" class="post bg1">
+				<div class="inner"><span class="corners-top"><span></span></span>
+
+					<div class="postbody">
+						
+						<h3 class="first"><a href="#p">{MAIL_SUBJECT}</a></h3>
+						<p class="author">{L_MAIL_BY_AUTHOR} <strong>{MAIL_AUTHOR_FULL}</strong> {L_MAILED_ON_DATE} {MAIL_DATE} </p>
+
+						<div class="content">{MAIL_MESSAGE}</div>
+
+					</div>
+
+					<dl class="postprofile" id="profile">
+					<dt>
+						<!-- IF MAILER_AVATAR -->
+							{MAILER_AVATAR}<br />
+						<!-- ENDIF -->
+						{MAIL_AUTHOR_FULL}
+					</dt>
+
+					<!-- IF RANK_TITLE or RANK_IMG --><dd>{RANK_TITLE}<!-- IF RANK_TITLE and RANK_IMG --><br /><!-- ENDIF -->{RANK_IMG}</dd><!-- ENDIF -->
+
+					<dd>&nbsp;</dd>
+
+					</dl>
+
+					<div class="back2top"><a href="#wrap" class="top" title="{L_BACK_TO_TOP}">{L_BACK_TO_TOP}</a></div>
+
+					<span class="corners-bottom"><span></span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- ELSE -->
+	<div id="page-body">
+			 
+		<p class="right rightside">&nbsp;</p>
+		<p>&nbsp;</p>		
+		<div class="pagination">&nbsp;</div>
+		<div class="forabg">
+			<div class="inner"><span class="corners-top"><span></span></span>
+
+				<ul class="topiclist">
+					<li class="header">
+						<dl class="icon">
+							<dt>{L_TITLE}</dt>
+						</dl>
+					</li>
+				</ul>
+
+				<ul class="topiclist forums">
+	<!-- BEGIN mailrow -->		
+					<li class="row<!-- IF mailrow.S_ROW_COUNT is even --> bg1<!-- ELSE --> bg2<!-- ENDIF -->">
+						<dl class="icon">
+							<dt><a href="{mailrow.U_VIEW}" class="forumtitle">{mailrow.SUBJECT}</a> by {mailrow.USERNAME_FULL}
+							<br>{mailrow.TIME}</dt>
+						</dl>
+					</li>
+	<!-- END mailrow -->
+				</ul>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+		</div>
+	</div>
+<!-- ENDIF -->
+
+<!-- INCLUDE jumpbox.html -->
+
+
+<!-- INCLUDE overall_footer.html -->

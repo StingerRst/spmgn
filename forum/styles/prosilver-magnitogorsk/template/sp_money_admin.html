@@ -1,0 +1,37 @@
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_headerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_header.html -->
+<!-- ENDIF -->
+
+
+<div id="page-body">
+	<h2 id="viewfolder"></h2>
+	<div id="debuge"></div>
+	<div class="panel bg3">
+		<span class="corners-top"><span></span></span>
+		<div class="inner">
+			<h3>Запрос информации по отчислениям в пользу администрации форума</h3>
+			<div id="admin_pays_one">{SP_ONE_MONEY}</div>
+		</div>
+		<span class="corners-bottom"><span></span></span>
+	</div>
+	<h2 id="viewfolder"></h2>
+	<div class="panel bg3">
+		<span class="corners-top"><span></span></span>
+		<div class="inner">
+			<h3>Сводный отчет по отчислениям в пользу администрации форума</h3>
+			<div id="admin_pays">{SP_TABLE_MONEY}</div>
+		</div>
+		<span class="corners-bottom"><span></span></span>
+	</div>
+	<script src="/sp/ajax/JsHttpRequest.js" language="Javascript"></script>
+	<script src="/sp/ajax/money_admin_18643541.js" language="Javascript"></script>
+</div>
+
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_footerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_footer.html -->
+<!-- ENDIF -->
+ 

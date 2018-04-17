@@ -1,0 +1,51 @@
+<div class="panel bg3">
+	<div class="inner">
+		<span class="corners-top"><span></span></span>
+			<div class="catalog">
+				<form id="catalog_{CATALOG_ID}" method="post">
+				<fieldset>
+					<dl>
+						<dt><label for="catalog_name">Название каталога:</label></dt>
+						<dd><input type="text" name="catalog_name" id="catalog_name" value="{NAME}" onchange="upd_cat({CATALOG_ID})"></dd>
+					</dl>
+					<dl>
+						<dt><label for="catalog_orgrate">Орг %:</label></dt>
+						<dd><input type="text" name="catalog_orgrate" id="catalog_orgrate" value="{ORGRATE}" onchange="upd_cat({CATALOG_ID})"></dd>
+					</dl>
+					<dl>
+						<dt><label for="properties[]">Переменные(значения перечисляются через точку с запятой): </label></dt>
+						<dd>
+							<div  id="propertiesfield">
+								<div>
+									<a href="#" onclick="javascript:addproperties(this.parentNode.parentNode);return false;">(добавить)</a><br>
+								</div>
+									<!-- BEGIN prop -->
+								<div>
+									<input type="text" name="properties[]" id="properties[]" onChange="addPropOptions(this)" value="{prop.NAME}" onchange="upd_cat({CATALOG_ID})">
+									<label for="values[]"> значения </label>
+									<input type="text" name="values[]" id="values[]" value="{prop.VALUES}" onchange="upd_cat({CATALOG_ID})">
+									<a href="#" onclick="javascript:delproperties(this.parentNode);return false;"> (убрать)</a>
+								</div>
+									<!-- END prop -->
+							</div>
+						</dd>
+					</dl>
+					<dl>
+						<dt><label for="series[]">Собирать по ряду: </label></dt>
+						<dd>
+							<div  id="seriesfield">
+									<select name="series[]" id="series[]">
+										<option value="-1">не собирать</option>
+									</select>
+							</div>
+						</dd>
+					</dl>
+				</fieldset>
+				<input type="hidden" value="upd_cat" name="cmd" id="cmd">
+				<input type="hidden" value="{CATALOG_ID}" name="catalog_id" id="catalog_id">
+				<a href='./org.php?i=1&mode=edit&cat={CATALOG_ID}' class='button2'>Редактировать</a>
+				</form>
+			</div>
+		<span class="corners-bottom"><span></span></span>
+	</div>
+</div>

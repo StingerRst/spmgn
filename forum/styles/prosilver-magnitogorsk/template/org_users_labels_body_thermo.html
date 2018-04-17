@@ -1,0 +1,86 @@
+ <head>
+  <style>
+	@media aLL { 
+	body {
+		display: block;
+		margin: 0px;
+		padding:0;
+	}
+	table#main {
+		table-layout: auto; /* Фиксированная ширина ячеек */
+		width: 58mm; /* Ширина таблицы */
+		page-break-inside: avoid;
+		border:1px solid black;
+		border-collapse: collapse;
+		text-align: center;
+		hyphens: auto;
+		padding:0;
+	}
+	
+	td {
+		word-break:normal;
+		border:1px solid black;
+		padding:0;
+	}
+	
+	tr#t0 { height:1mm;border:1px solid white;border: inherit}
+	tr#t1 { height: 6mm;font-size: 10pt; border: inherit}
+	tr#t2 { height: 14mm;font-size: 17pt;border: inherit;}
+	tr#t3 { height: 5mm;font-size: 10pt; border: inherit}	
+	.purshase_id {
+		position:absolute;
+		top:0;
+		left:1mm;
+		font-size: 10pt;
+	}
+	.date {
+		position:absolute;
+		top:0;
+		right:1mm;
+		font-size: 10pt;
+	}
+	.main {
+		display: inline-block;
+		page-break-inside: avoid;
+		
+	}
+	}
+  </style>
+ </head>
+
+<form  method="post" sid = {sid}>
+
+</form>
+<SCRIPT language="javascript">
+	var users = {USERS};
+	var date = new Date();
+	var month = parseInt(date.getMonth(), 10) + 1;
+	
+	for (var id in users)
+	{ 
+	document.write('<div class ="main">');
+	document.write('<table id ="main">');
+	document.write('<tr id = "t1">');
+	if (users[id].brand_label.length>40) {
+		document.write('<td>'+ users[id].brand_label.substr(0, 40) +'...</td>');
+	}
+	else {
+		document.write('<td>'+ users[id].brand_label +'</td>');
+	}
+	document.write('</tr>');
+	
+	document.write('<tr id = "t2">');
+	document.write('<td style="position: relative;"><b>'+ users[id].username +'</b>');
+	document.write('<div class="purshase_id"><b>'+ users[id].purshase_id +'</b></div> ');
+	document.write('<div class="date">'+date.getDate()+'.'+month+'.'+date.getFullYear()+'</div> </td>');
+	document.write('</tr>');
+
+	document.write('<tr id = "t3">');
+	document.write('<td>{ORG}</td>');
+	document.write('</tr>');
+
+	document.write('</table>');
+	document.write('</div>');
+	}
+	
+</SCRIPT>

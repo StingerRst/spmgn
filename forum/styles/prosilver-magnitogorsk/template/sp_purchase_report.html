@@ -1,0 +1,141 @@
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_headerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_header.html -->
+<!-- ENDIF -->
+
+
+<div id="page-body">
+	<font size=2>
+		<div class="panel">
+			<div class="inner">
+				<span class="corners-top"><span></span></span>
+				<div class="content">
+					<div id="debug"></div>
+					<span style="position:relative; top:0; left:0; z-index:1; visibility:hidden" id="subst_layer"></span>
+					<h3>Отчет по закупке <a id="purname"></a></h3>&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="sort_item" type="checkbox" onclick="javascript:sort_item=!sort_item;" value=""/>
+					Сортировать по названию&nbsp;&nbsp;&nbsp;&nbsp;
+					<Input type="button" value="&nbsp; &nbsp; ОБНОВИТЬ &nbsp; &nbsp; " onClick="javascript:scan_table_mode();" >
+					<hr />
+					<div id="report" style=" font-size: 10pt"></div>
+					<hr />
+					<div>
+						<table>
+							<tr>
+								<td><b>Отчисления на поддержку сайта:</b></td>
+							</tr>
+							<tr>
+								<td title="Здесь просуммированы заказы в статусе 'включено в счет'">Заказов на сумму (включено в счет):</td>
+								<td id="total_orders_i"></td>
+							</tr>
+							<tr>
+								<td title="Размер отчислений для этой закупки (% от суммы заказов в статусе 'включено в счет')">Размер отчислений (%):</td>
+								<td id="total_m"></td>
+							</tr>
+							<tr>
+								<td title="Размер отчислений для этой закупки (% от суммы заказов в статусе 'включено в счет')">Размер отчислений (руб):</td>
+								<td id="total_admin_fee"></td>
+							</tr>
+							<tr>
+								<td>Оплачено (руб):</td>
+								<td id="total_r"></td>
+							</tr>
+							<tr>
+								<td>Информация об оплате:</td>
+								<td colspan="2">
+									<span id="status_payment_info">
+										<img src="/sp/images/empty.png" width="22" height="22" />
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3">
+									<textarea id="change_payment_info" rows="4" style="width:99%" title="После редактирования кликните мышью за пределами поля для записи изменений." onChange="javascript:change_payment_info(this.value);" onkeyup="javascript:limit_length(this,250);"></textarea>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<hr />
+					<div>
+						<table width="100%">
+							<tr>
+								<td align="center">Выбор</td>
+								<td align="center">Выбор по артикулу</td>
+								<td align="center">Операции с выбранными</td>
+							</tr>
+							<tr>
+								<td align="center">
+									<select id="selector">
+										<option value="-1" selected>все</option>
+										<option value="0">новые заказы</option>
+										<option value="1">зафиксированые</option>
+										<option value="2">включенные в счет</option>
+										<option value="3">отказы</option>
+										<option value="4">прихали</option>
+										<option value="5">выданы</option>
+									</select>
+									<br /><br />
+									<input type="button" value="отметить" onClick="javascript:select_orders();"/> 
+									<input type="button" value="снять" onClick="javascript:unselect_orders();"/>
+								</td>
+								<td align="center">
+									<div id="select_controls"></div>
+									<br />
+									<input type="button" value="отметить" onClick="javascript:select_orders_item(true);"/>
+									<input type="button" value="снять" onClick="javascript:select_orders_item(false);"/>
+								</td>
+								<td align="center">
+									<input type="button" value="Установить состояние в" onclick="change_selected_orders_state();" />
+									<SELECT id="selected_orders_status_selector">
+										<OPTION value="0">Новый Заказ</OPTION>
+										<OPTION value="1">Зафиксировано</OPTION>
+										<OPTION value="2">Включено в счет</OPTION>
+										<OPTION value="3">Отказано</OPTION>
+										<OPTION value="4">В пути</OPTION>
+										<OPTION value="5">Принято в ЕЦ</OPTION>
+										<OPTION value="6">Выдано</OPTION>
+									</SELECT>
+									<br /><br />
+									<input type="button" value="Установить доставку в" onclick="javascript:selected_set_delivery();" />
+									<input type="text" id="delivery" value="0.00"/>
+								</td>
+							</tr>
+						</table>
+						<hr />
+						<table width="100%">
+							<tr>
+								<td align="center" width="50%">
+									<form method="post" action="export_report.php" id="export_form">
+										<input type="hidden" name="purchase_id" id="purchase_id" value="{PURCHASE_ID}" />
+										<input type="submit" value="Формирование и печать этикеток" />
+									</form>
+								</td>
+								<td align="center" width="50%">
+									<form method="post" action="export_info.php" id="export_info">
+										<input type="hidden" name="purchase_id" id="purchase_id" value="{PURCHASE_ID}" />
+										<input type="submit" value="Формирование и печать заказа поставщику" />
+									</form>
+								</td>
+							</tr>
+						</table>
+						<hr />
+						<label for="purchase_payment_info">Информация по оплате для участников:</label>
+						<span id="status_purchase_payment_info"><img src="/sp/images/empty.png" width="22" height="22" /></span>
+						<textarea id="purchase_payment_info" rows="7" style="width:99%" title="После редактирования кликните мышью за пределами поля для записи изменений." onChange="javascript:change_purchase_payment_info(this.value);" onkeyup="javascript:limit_length(this,max_payment_info_length);"  onclick="javascript:if(strequ(this.value,paymentMsg))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value=paymentMsg;"></textarea>
+					</div>
+				</div>
+				<span class="corners-bottom"><span></span></span>
+			</div>
+		</div>
+	</font>
+	<script language="javascript" src="/sp/ajax/JsHttpRequest.js"></script>
+	<script language="Javascript" src="/sp/ajax/purchase_report.js"></script>
+</div>
+
+<!-- IF IFRAME -->
+	<!-- INCLUDE overall_footerc.html -->
+<!-- ELSE -->
+	<!-- INCLUDE overall_footer.html -->
+<!-- ENDIF -->
+ 

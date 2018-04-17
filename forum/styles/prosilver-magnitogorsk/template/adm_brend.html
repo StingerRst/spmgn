@@ -1,0 +1,102 @@
+<!-- INCLUDE adm_header.html -->
+<SCRIPT language="Javascript">
+	function brend_upd(id)
+	{
+		var label = document.getElementById("label"+id).value;
+		var url = document.getElementById("url"+id).value;
+		var description = document.getElementById("description"+id).value;
+		$.ajax({
+			type : 'POST',
+			url : 'includes/function_adm.php{SID}',
+			data : {
+				'cmd': "brend_upd",
+				'brend_id': id,
+				'label': label,
+				'url': url,
+				'description': description
+			},
+			dataType: 'json',
+			success : function(result, errors) 
+			{
+				if ("ok" == result.status)
+				{
+				}
+				else
+				{
+					alert("Произошла ошибка!\n");
+					// Write errors to the debug div.
+					document.getElementById("debug").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+	function brend_del(id)
+	{
+		$.ajax({
+			type : 'POST',
+			url : 'includes/function_adm.php{SID}',
+			data : {
+				'cmd': "brend_del",
+				'brend_id': id,
+			},
+			dataType: 'json',
+			success : function(result, errors) 
+			{
+				if ("ok" == result.status)
+				{
+					window.location='adm.php?i=4<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->';
+				}
+				else
+				{
+					alert("Произошла ошибка!\n");
+					// Write errors to the debug div.
+					document.getElementById("debug").innerHTML = errors;
+				}
+			}
+		}
+		);		
+	}
+</SCRIPT>
+<h2>Бренды</h2>
+
+<div class="panel bg3" id="message">
+  <DIV class="forabg" >
+    <DIV class="inner" >
+		<ul class="topiclist">
+			<li class="header"><div><dl class="icon">
+			<dd style="width: 19%; text-align: center;">Логотип</dd>
+			<dd style="width: 25%; text-align: center;">Наименование</dd>
+			<dd style="width: 25%; text-align: center;">Адрес url</dd>
+			<dd style="width: 30%; text-align: center;">Описание</dd>
+			</dl></div></li>
+		</ul>
+		<ul class="topiclist cplist pmlist">
+		<!-- BEGIN brend -->
+			<li class="row bg1"><div><dl class="icon">
+			<dd style="width: 19%; text-align: center;"> 
+				<img src="<!-- IF brend.LOGO -->{brend.LOGO}<!-- ELSE -->images/icons/empty.png<!-- ENDIF -->" id="img_{brend.ID}"/><br/>
+			</dd>
+			<dd style="width: 25%; text-align: center;">
+				<input type="text" name="label" id="label{brend.ID}" maxlength="255" class="inputbox" value="{brend.LABEL}" onChange="brend_upd({brend.ID})">
+			</dd>
+			<dd style="width: 25%; text-align: center;">
+				<input type="text" name="url" id="url{brend.ID}" maxlength="255" class="inputbox" value="{brend.URL}" onChange="brend_upd({brend.ID})">
+			</dd>
+			<dd style="width: 30%; text-align: center;"> 
+				<textarea name="description" id="description{brend.ID}" rows="4" cols="20" onChange="brend_upd({brend.ID})">{brend.DESCRIPTION}</textarea>
+			</dd>
+			<!-- IF brend.DEL -->
+			<dd style="width: 30%; text-align: center;"> 
+				<a href="#" name="{brend.ID}" id="del{brend.ID}" rows="4" cols="20" onClick="brend_del({brend.ID});return!1">Удалить</a>
+			</dd>
+			<!-- ENDIF -->
+			</dl></div></li>
+		<!-- END brend -->
+		</ul>
+		<br>
+    </DIV>
+  </DIV>		
+</div>
+
+<!-- INCLUDE adm_footer.html -->

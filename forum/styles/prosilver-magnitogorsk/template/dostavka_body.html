@@ -1,0 +1,53 @@
+<!-- IF  S_USER_IS_EC_OPERATOR -->
+<H3>Сводник по доставкам </H3>
+<form  method="post" sid = {sid}>
+<SELECT type="submit" name ="dostavkaselect" id="DostavkaSelect" onchange=form.submit()>
+   <OPTION value="0">Выбрать...</OPTION>
+  <!-- BEGIN dostavka -->
+   <!-- IF  dostavka.ID == DOSTAVKASELECT -->
+     <OPTION selected value="{dostavka.ID}">{dostavka.NAME}&nbsp;</OPTION>
+   <!-- ELSE -->  
+     <OPTION value="{dostavka.ID}">{dostavka.NAME}&nbsp;</OPTION>
+   <!-- ENDIF -->
+  <!-- END dostavka -->
+</SELECT>
+</form>
+<!-- ENDIF -->
+
+<form  method="post" sid = {sid}>
+	<!-- IF .dostavka -->
+		<table border="1" width="70%" cellspacing = "0">
+			<THEAD>
+				<tr align="center">
+					<td>Участник</td>
+					<td>Коментарий</td>
+					<td>Закупка</td>
+					<td>Роспись</td>
+				</tr>
+			</THEAD>
+			<!-- BEGIN dostavki -->
+				<!-- IF dostavki.CNT -->
+					<tr>
+						<td rowspan="{dostavki.CNT}">{dostavki.USERNAME}<p/>({dostavki.USER_PHONE}) </td>
+						<td rowspan="{dostavki.CNT}">{dostavki.ORDER_COMMENT} </td>
+						<td>{dostavki.PURCHASE_NAME}</td>
+						<td rowspan="{dostavki.CNT}">&nbsp;</td>
+					</tr>
+
+				<!-- ELSE -->	
+					<tr>
+						<td>{dostavki.PURCHASE_NAME}</td>
+					</tr>
+				 <!-- ENDIF -->
+			<!-- END dostavki -->
+		</table>
+	<!-- ELSE -->
+   <H3>Доставок нет !</H3>
+ <!-- ENDIF -->
+</form>
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<SCRIPT language="javascript">
+
+
+</SCRIPT>

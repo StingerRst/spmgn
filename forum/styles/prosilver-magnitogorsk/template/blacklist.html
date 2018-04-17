@@ -1,0 +1,35 @@
+<!-- INCLUDE adm_header.html -->
+<DIV id="debug">
+</DIV>
+<span style="position:absolute; top:0; left:0; z-index:1; visibility:hidden" id="subst_layer"></span>
+<div id="date_picker" style="display:none;position:absolute;top:0px;left:0px;z-index:100;">
+</div>
+
+	<table class="tablebg" width="100%" cellspacing="1">
+		<tr>
+			<td style="width: 20%;" class="cat" align="center"><h4>Пользователь</h4></td>
+			<td style="width: 10%;" class="cat" align="center"><h4>Когда добавлен</h4></td>
+			<td class="cat" align="center"><h4>Причина</h4></td>
+		</tr>
+		<!-- BEGIN blacklist -->
+		<tr>
+			<td class="row1"<div class="postbody" style="padding: 10px;">
+				{blacklist.NAME}<!-- IF ADMUSE --><br/>
+				<form method="post" action="blacklist.php{SID}">
+					<input type="hidden" name="userid" value="{blacklist.ID}" />
+					<input type="hidden" name="act" value="del" />
+					<input type="submit" name="submit" id="submit" value="Удалить из списка" class="button1" />
+				</form>
+				<!-- ENDIF -->
+			</td>
+			<td class="row1"<div class="postbody" style="padding: 10px;">
+				{blacklist.DATA}
+			</td>
+			<td class="row1"<div class="postbody" style="padding: 10px;">
+				{blacklist.TEXT}
+			</td>
+		</tr>
+		<!-- END blacklist -->
+	</table>
+
+<!-- INCLUDE adm_footer.html -->

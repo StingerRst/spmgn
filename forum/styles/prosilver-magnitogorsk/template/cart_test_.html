@@ -1,0 +1,648 @@
+	<!-- INCLUDE <!-- INCLUDE overall_header.html -->.html -->
+
+<style type="text/css">
+
+
+</style>
+
+<div >
+<h2>Ваши заказы</h2>
+
+<div class="panel shadow">
+	<table >
+<tbody>
+<tr>
+<td>
+<h2>Мои заказы</h2>
+</td>
+<td align="right">
+<a target="_blank" title="Сбербанк-Онлайн" href="https://online.sberbank.ru/CSAFront/index.do">
+<img src="./images/bank/sber.png">
+</a>
+<a target="_blank" title="Куб - директ" href="https://direct.creditural.ru/">
+<img src="./images/bank/cub.png">
+</a>
+<a target="_blank" title="Отслеживание почтовых отправлений" href="http://xn----7sbza0acdlkaf3d.xn--p1ai/rp/servise/ru/home/postuslug/trackingpo">
+<img src="./images/bank/mailofrussia.png">
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+	
+		<div class="content">
+			<FONT size=2>
+				<span>
+					<table width="100%" style="display: none;" >
+					<tr><td  width="40%">
+						<table width="100%">
+							<tr><td align="right" width="60%"><b>Имя пользователя:</b></td><td>{USERNAME}</td></tr>
+							<tr><td align="right" width="60%"><b>Номер пользователя:</b></td><td><b><font color="red">{USER_ID}</font></b></td></tr>
+							<tr><td align="right" width="60%"><b>Ваша контактная информация:</b></td><td id="contact_info">{USER_INFO}</td></tr>
+						</table>
+					</td><td>
+						<table width="100%">
+							<tr><td align="right" width="50%"><b>Статус: </b></td><td><!-- IF S_USER_IS_ORGANIZER -->Организатор / <!-- ENDIF -->Покупатель</td></tr>
+							<tr><td align="right" width="50%"><b>Количество участий в закупках: </b></td><td><b><font color="red">{USER_COL_PURCH}</font></b></td></tr>
+<!-- IF S_USER_IS_ORGANIZER -->
+							<tr><td align="right" width="50%"><b>Количество организованных закупок: </b></td><td id="contact_info">{USER_COL_ORG}</td></tr>
+<!-- ENDIF -->
+							</table>
+					</td></tr>
+					</table>
+				</span>
+			<span id="contact_info_warning"></span>
+			<br><br>
+			<span id="orders"></span>
+
+			<div id="date_picker" style="display:none;position:absolute;top:0px;left:0px;z-index:100;">
+			</div>
+
+<SCRIPT language="Javascript">
+var contact_info = document.getElementById("contact_info").innerHTML;
+
+if (typeof jQuery == 'undefined') {
+  document.write('<script type="text/javascript" src="http://code.jquery.com/jquery-git2.min.js"><\/script>');        
+  alert ("set jquery");
+  }
+
+
+if (!contact_info)
+{
+	var html = new Array();
+	html.push( '<br />');
+	html.push( '<center>');
+	html.push( '	<H4 class="error">ВНИМАНИЕ: Вы не указали свою контактную информацию!</H4>');
+	html.push( '	<br />');
+	html.push( '	<div class="error">Зайдите в "личный раздел", на закладку "профиль" и укажите свой контактный телефон. Вы можете также воспользоваться этой <a href="ucp.php?i=profile&mode=profile_info<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">ссылкой</a>.</div>');
+	html.push( '</center>');
+	html.push( '<br />');
+	document.getElementById("contact_info_warning").innerHTML = html.join('');
+}
+var max_comment_length = 125;
+var max_payment_length = 256;
+
+function strequ(s1,s2)
+{
+	return s1.replace(/\s+/g,'')==s2.replace(/\s+/g,'');
+}
+
+function show_purchase(purchase_id,show)
+{
+		$.ajax({
+			type : 'POST',
+			url : 'function_po.php{SID}', 
+			data : {
+				'cmd': "show_purchase",
+				'purchase_id': purchase_id,
+				'show': show
+			},
+			beforeSend : function () {
+			},
+			success : function (result, errors) {
+				if ("ok" == result)
+				{
+				}
+				else
+				{
+					alert("Произошла ошибка!\n" + errors);
+					// Write errors to the debug div.
+					//document.getElementById("debug").innerHTML = errors;
+				}
+			}
+		})
+	if (!show) {
+		$('.purchase_shot'+purchase_id).hide();
+		$('.purchase_full'+purchase_id).show();
+	}
+	else {
+		$('.purchase_shot'+purchase_id).show();
+		$('.purchase_full'+purchase_id).hide();
+	}
+}
+function delete_order( order_id)
+{
+	if (!confirm( "Вы действительно хотите удалить эту позицию из заказа?"))
+		return;
+	//do_clock( order_id, 1 );
+	$.ajax({
+		type : 'POST',
+		url : 'function_po.php{SID}', 
+		data : {
+			'cmd': "delete_from_order",
+			'order_id': order_id
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			if ("ok" == result)
+			{
+				//do_clock( order_id, -1 );
+				// table row element
+				var r = document.getElementById("order_" + order_id);
+				for (var i=0; i<r.childNodes.length; i++)
+				{
+					var el = r.childNodes[i];
+					if ("tagName" in el && "td"==el.tagName.toLowerCase())
+					{
+						el.innerHTML="удалено";
+					}
+				}
+			}
+			else
+			{
+				alert("Произошла ошибка при удалении из заказа!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}	
+
+function change_order( order_id)
+{
+	// table row element
+	var idx = 0;
+	var vars = new Object;
+	while (document.getElementById("order" + order_id + "_var" + idx))
+	{
+		var sel = document.getElementById("order" + order_id + "_var" + idx);
+		for (var i=0; i<sel.childNodes.length; i++)
+		{
+			var el = sel.childNodes[i];
+			if ("tagName" in el && "option"==el.tagName.toLowerCase() && true==el.selected)
+			{
+				vars[sel.name] = el.value;
+				break;
+			}
+		}
+		idx ++;
+	}
+//	do_clock( order_id, 1 );
+	$.ajax({
+		type : 'POST',
+		url : 'function_po.php{SID}',
+		data : {
+			'cmd': "change_order",
+			'order_id': order_id,
+			'lot_vars': vars
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+//			do_clock( order_id, -1 );
+			if ("ok" == result)
+			{
+				// do nothing
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении заказа!\n" + errors);
+				// Write errors to the debug div.
+				//document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+function update_comment(id)
+{
+	var txt = document.getElementById("order_comment_" + id);
+	if (txt.value.length>max_comment_length)
+	{
+		alert( "Ваш комментарий слишком длинный, вы можете ввести до " + max_comment_length  + " знаков");
+		return;
+	}
+	//do_clock( id, 1 );
+	$.ajax({
+		type : 'POST',
+		url : 'function_po.php{SID}',
+		data : {
+				'cmd': "update_order_comment",
+				'order_id': id,
+				'comment': txt.value
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			//do_clock( id, -1 );
+			if ("ok" == result)
+			{
+			}
+			else
+			{
+				alert("Произошла ошибка при обновлении комментария!\n" + errors);
+				// Write errors to the debug div.
+				//document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+
+function purchase_move_to_archive(purchase_id,name)
+{
+	if (!confirm("Убрать заказы из закупки \"" + name + "\" в архив?\n\nВНИМАНИЕ!\n\n То, что Вы убираете заказ в архив, не означает что Вы отказываетесь от заказа! Для того, чтобы отказаться от заказа, воспользуйтесь красным крестиком напротив заказа или договаривайтесь с организаторм закупки!"))
+	{
+		return;
+	}
+
+	$.ajax({
+		type : 'POST',
+		url : 'function_po.php{SID}', 
+		data : {
+			'cmd': "purchase_move_to_archive",
+			'purchase_id': purchase_id
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			if ("ok" == result)
+			{
+				document.getElementById("purchase"+purchase_id).innerHTML = "";
+			}
+			else
+			{
+				alert("Произошла ошибка!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+
+Date.prototype.lastday = function() {
+  var d = new Date(this.getFullYear(), this.getMonth() + 1, 0);
+  return d.getDate();
+};
+
+function change_payment( purchase_id, source)
+{
+	var text = document.getElementById( "payment"+source + purchase_id ).value;
+	var new_text = text.replace(/^\s+|\s+$/g,"");
+	var reg;
+	if (source=="_time"){
+		reg=/^(?:([0-2]{0,1})\d):(?:[0-5]\d)(\:(?:[0-5]\d))?$/i;
+		var regres;
+		if (!reg.test(new_text)) {
+			alert('Поле "Время" не соответствует заданному формату.\n Пример правильного заполнения 12:30:00');
+			//document.getElementById( "payment"+source + purchase_id ).value = payment_timeMsg;
+			return;
+		}else {
+			regres = reg.exec(new_text);
+			if (regres[1]=="") new_text="0"+new_text;
+			if (!regres[2]) new_text+=":00";
+			document.getElementById( "payment"+source + purchase_id ).value = new_text;
+			text = new_text;
+		}
+	}
+	if (source=="_date"){
+		if (!document.getElementById( "hidden_payment_date" + purchase_id ).value ){
+			reg=/^\d{1,2}([-])\d{1,2}\1\d{4,4}$/i;
+			var regres;
+			if (!reg.test(new_text)) {
+				alert('Поле "Дата" не соответствует заданному формату.\n Пример правильного заполнения 07-11-2009');
+				return;
+			}else {
+				regres = reg.exec(new_text);
+				var tmp = new_text.split(regres[1]);
+				var errdate = new Date(tmp[2], tmp[1]-1, tmp[0]);
+				if ((tmp[0]>errdate.lastday())||(tmp[1]>12)) {
+					alert('Некорректное значение даты');
+					return;
+					}
+				text = new_text;
+			}
+		}
+		else {
+			alert('Дата уже введена. Если она не корректна - напишите об этом в комментарии об оплате');
+			return;
+		}
+	}
+	if (source=="_card"){
+		reg=/^(?:[0-9\s]*)$/i;
+		if (!reg.test(new_text)) {
+			alert('Номер карты может содержать только цифры');
+			//document.getElementById( "payment"+source + purchase_id ).value = payment_cardMsg;
+			return;
+		}
+	}
+	if (source=="_money"){
+		if (!document.getElementById( "hidden_payment_date" + purchase_id ).value ){
+			$.ajax({
+				type : 'POST',
+				url : 'function_po.php{SID}',
+				data : {
+					'cmd': "change_payment",
+					'purchase_id': purchase_id,
+					'text': document.getElementById( "payment_date" + purchase_id ).value,
+					'source': '_date'
+				},
+				dataType: 'json',
+				// Function is called when an answer arrives.
+				success : function(result, errors)
+				{
+					//do_clock( "payment" + purchase_id, -1 );
+					if ("ok" == result)
+					{
+						// do nothing
+					}
+					else
+					{
+						alert("Произошла ошибка при изменении информации об оплате!\n" + errors);
+						// Write errors to the debug div.
+						//document.getElementById("debug").innerHTML = errors;
+					}
+				}
+			});
+		}
+		reg=/^(\d+)([\.|\,]?)(\d*)$/i;
+		if (!reg.test(new_text)) {
+			alert('Сумма оплаты может содержать только цифры');
+			//document.getElementById( "payment"+source + purchase_id ).value = "0.00";
+			return;
+		}else {
+			regres = reg.exec(new_text);
+			if (regres[2]==",") new_text=regres[1]+"."+regres[3];
+			if (regres[2]=="") new_text+=".";
+			if (regres[3].length==1) new_text+="0";
+			if (regres[3].length=="") new_text+="00";
+			document.getElementById( "payment"+source + purchase_id ).value = new_text;
+		}
+		text = parseFloat(new_text);
+	}
+//	do_clock( "payment" + purchase_id, 1 );
+	$.ajax({
+		type : 'POST',
+		url : 'function_po.php{SID}',
+		data : {
+			'cmd': "change_payment",
+			'purchase_id': purchase_id,
+			'text': text,
+			'source': source
+		},
+		dataType: 'json',
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			//do_clock( "payment" + purchase_id, -1 );
+			if ("ok" == result)
+			{
+				// do nothing
+			}
+			else
+			{
+				alert("Произошла ошибка при изменении информации об оплате!\n" + errors);
+				// Write errors to the debug div.
+				//document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+</SCRIPT>
+	<div class="img_archiv CircleBtn">
+		<a href="archive.php{SID}" class="Archiv" tabindex="0" title="Архив" onClick="javascript:purchase_move_to_archive({purchases.ID},'{purchases.NAME}');"></a>
+	</div>
+	<div style="clear: both;"></div>
+	<!-- BEGIN purchases -->
+	<div id="purchase{purchases.ID}" class="purchase layer shadow">
+		<div class="purchase_shot{purchases.ID} purchase_header" style="display:<!-- IF purchases.HIDDEN eq 1 -->block<!-- ELSE -->none<!-- ENDIF -->">
+			<!-- IF purchases.O_STATE -->
+				<div class="img_to_archive CircleBtn">
+					<a href="##" class="toArchive" tabindex="0" title="Убрать эти заказы в архив" onClick="javascript:purchase_move_to_archive({purchases.ID},'{purchases.NAME}');"></a>
+				</div>
+			<!-- ENDIF -->
+			<div class ="purchase_title" >
+				<A title="Перейти к обсуждению закупки {purchases.NAME}'" href="{purchases.FORUM_URL}">{purchases.NAME}</A><A NAME="ev_{purchases.ID}"> </A> <br>
+				<font size="4" color="#FF00FF">{purchases.STATE}</font> {purchases.NEXT_DATE}
+			</div>
+			<div class="img_more CircleBtn"><a href="##" title="Показать закупку" tabindex="0" onClick="show_purchase({purchases.ID},false);"></a></div>
+			<div style="clear: both;"></div>
+		</div>
+							
+<div class="purchase_full{purchases.ID} purchase_full" style="display:<!-- IF purchases.HIDDEN eq 0 -->block<!-- ELSE -->none<!-- ENDIF -->">
+	<div class = "purchase_header">
+		<!-- IF purchases.O_STATE -->
+			<div class="img_to_archive CircleBtn">
+				<a href="##" class="toArchive" tabindex="0" title="Убрать эти заказы в архив" onClick="javascript:purchase_move_to_archive({purchases.ID},'{purchases.NAME}');"></a>
+			</div>
+		<!-- ENDIF -->
+		<div class ="purchase_title" >
+			<B>Закупка:</B> <A title="Перейти к обсуждению закупки {purchases.NAME}'" href="{purchases.FORUM_URL}">{purchases.NAME}</A><A NAME="ev_{purchases.ID}"> </A>
+			</br>
+			<B>Организатор:</B><A title="Просмотреть информацио о пользователе {purchases.ORG_USERNAME}" href="memberlist.php?do_=188&amp;mode=viewprofile&amp;u={purchases.ORG_USER_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">{purchases.ORG_USERNAME}</A>
+			</br>
+			<font size="4" color="#FF00FF">{purchases.STATE}</font>{purchases.NEXT_DATE}
+			</br>
+			<b>Номер Заказа :{purchases.ID}-{purchases.POUR_ID}</b>
+		</div>
+		<div class="img_less CircleBtn">
+			<a href="##" title="Скрыть закупку" tabindex="0" onClick="show_purchase({purchases.ID},true);"></a>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+
+<!-- BEGIN order -->
+
+<div class= "lot_full_data">	
+		<div class  = "lot_img_main">
+			<div class  = "lot_img" style ="background:url(./{purchases.order.IMAGE_URL}) no-repeat ;   background-size: 100% auto; background-position: center, center;">
+				<a href="catalog.php?catalog_id={purchases.order.CATALOG_ID}&lot_id={purchases.order.LOT_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Перейти в каталог к этой модели"></a>
+			</div>
+			<div id="status_{purchases.order.ID}" class="lot_status">
+				<font color="{purchases.order.STATE_CLR}"><b>{purchases.order.STATE_TXT}</b></font>
+			</div>
+			<div style="clear: both;"></div>
+	
+		</div>
+		<div class  = "lot_description">
+			<p>
+				<A href="catalog.php?catalog_id={purchases.order.CATALOG_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Перейти в каталог">{purchases.order.CATALOG_NAME}</A>
+				</br>
+				<a href="catalog.php?catalog_id={purchases.order.CATALOG_ID}&lot_id={purchases.order.LOT_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Перейти в каталог к этой модели">{purchases.order.LOT_NAME}</a>
+				</br>
+				<!-- IF purchases.order.STATE eq 0 -->
+					<!-- BEGIN vars -->
+					<b>{purchases.order.vars.NAME}:</b>
+					<select id="order{purchases.order.ID}_var{purchases.order.vars.ID}" name="{purchases.order.vars.NAME}" onchange="javascript:change_order({purchases.order.ID});">');
+						<!-- BEGIN values -->
+						<option {purchases.order.vars.values.SELECT} value="{purchases.order.vars.values.VALUES}">{purchases.order.vars.values.VALUES}</option>');
+						<!-- END values -->
+					</select>
+					<!-- END vars -->
+				<!-- ELSE -->
+					<!-- BEGIN lvars -->
+					<b>{purchases.order.lvars.NAME}:</b> {purchases.order.lvars.VALUES}<br>
+					<!-- END lvars -->
+				<!-- ENDIF -->	
+			</p>
+		</div>
+		<div class ="lot_cost">
+			<!-- IF purchases.order.LOT_COST != purchases.order.LOT_COST_U -->
+			 Цена:&nbsp; </br> {purchases.order.LOT_COST_U} {purchases.order.CATALOG_VALUTA} </br>
+			<!-- ENDIF -->	
+			Цена:&nbsp;</br>{purchases.order.LOT_COST}Р. </br>
+			Орг:&nbsp;{purchases.order.ORG_FEE}% </br>
+			(&nbsp;{purchases.order.ORG_FEE_VAL}&nbsp;Р.)</br>
+			Дост.:{purchases.order.DELIVERY}Р. </br>									
+			Итого:</br>
+			<font size="2" color="darkorchid" ><b>{purchases.order.ITOGO}Р.</b></font> </br>
+		</div>
+		<div class ="lot_comment">
+			<TEXTAREA  rows="4" class = "lot_textarea_comment"  placeholder="Комментарий. После редактирования кликните за пределами поля." <!-- IF purchases.order.STATE > 0 --> disabled <!-- ENDIF --> title="После редактирования кликните мышью за пределами поля для записи изменений." id="order_comment_{purchases.order.ID}" onchange="javascript:update_comment({purchases.order.ID});">{purchases.order.COMMENT}</TEXTAREA>
+		</div>
+		<!-- IF purchases.order.STATE eq 0 -->
+		
+			<div class ="lot_del">
+				<div class ="img_delete CircleBtn" >
+					<a href="##"  tabindex="0"  title="Удалить позицию из заказа" onClick="javascript:delete_order({purchases.order.ID});"></a>
+				</div>
+			</div>
+		<!-- ENDIF -->
+
+	<div style="clear: both;"></div>
+</div>	
+<!-- END order -->
+<div class="payment_data_main">
+	<div class="payment_data1 shadow">
+		<table >
+			<tr>
+				<th class ="th1 wi">321</th>
+				<th class ="th1 center">Выбрано</th>
+				<th class ="th1 center">Учтено</th>
+			</tr>
+			<!-- IF purchases.TO_PRICE_U != purchases.TO_PRICE -->
+				<tr>
+					<td class= "td1 right">
+						Валюта:
+					</td>
+					<td class= "td1 center">
+						{purchases.TO_PRICE_U} &nbsp; {purchases.order.CATALOG_VALUTA}
+					</td>
+					<td class= "td1 center">
+						{purchases.TOTAL_PRICE_U} &nbsp; {purchases.order.CATALOG_VALUTA}
+					</td>
+				</tr>
+			<!-- ENDIF -->
+			<tr>
+				<td class= "td1 right">
+					Заказы:
+				</td>
+				<td class= "td1 center">
+					{purchases.TO_PRICE} Р.
+				</td>
+				<td class= "td1 center">
+					{purchases.TOTAL_PRICE} Р.
+				</td>
+			</tr>
+			<tr>
+				<td class= "td1 right">
+					Орг. сбор:
+				</td>
+				<td class= "td1 center">
+					{purchases.TO_ORG_FEE} Р.
+				</td>
+				<td class= "td1 center">
+					{purchases.TOTAL_ORG_FEE} Р.
+				</td>
+			</tr>
+			<tr>
+				<td class= "td1 right">
+					Доставка:
+				</td>
+				<td class= "td1 center">
+					{purchases.TO_DELIVERY} Р.
+				</td>
+				<td class= "td1 center">
+					{purchases.TOTAL_DELIVERY} Р.
+				</td>
+			</tr>
+			<tr>
+				<td class= "td1 right">
+					Скидка:
+				</td>
+				<td class= "td1">
+				
+				</td>
+				<td class= "td1 center">
+					{purchases.DISCOUNT} Р.
+				</td>
+			</tr>
+			<tr>
+				<td class= "td1 right">
+					Итого:
+				</td>
+				<td class= "td1 center">
+					{purchases.TO_SUM} Р.
+				</td>
+				<td class= "td1 center">
+					{purchases.TOTAL_SUM} Р.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class= "td1 right">
+					Итого к оплате:
+				</td>
+				<td class= "td1 center">
+					{purchases.TOTAL_SUM} Р.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class= "td1 right">
+					Оплачено:
+				</td>
+				<td class= "td1 center">
+					{purchases.MONEY} Р.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class= "td1 right">
+					Долг:
+				</td>
+				<td class= "td1 center">
+					{purchases.DOLG} Р.
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="payment_data2 shadow">
+		<table>
+			<tr>
+				<th class ="th1 center">Дата</th>
+				<th class ="th1 center">Время</th>
+				<th class ="th1 center">Сумма</th>
+			</tr>
+			<tr>
+				<td class ="td1"><input type="text" class="inputboxr autowidth datebox" size="9" maxlength="10" title="Дата оплаты. Пример правильного заполнения 07-11-2009" id="payment_date{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_date');" onClick="javascript:if(strequ(this.value,'00/00/0000'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='00-00-0000';" value="<!-- IF purchases.PAYMENT_DATE -->{purchases.PAYMENT_DATE}<!-- ELSE -->{CURDATE}<!-- ENDIF -->"/>
+						<input type="hidden" id="hidden_payment_date{purchases.ID}"   value="{purchases.PAYMENT_DATE}"/></td>
+				<td class ="td1"><input type="text" class="inputboxr autowidth" size="7" maxlength="10" title="Время оплаты. Пример правильного заполнения 12:30:00" id="payment_time{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_time');" onclick="javascript:if(strequ(this.value,'{purchases.PAYMENT_TIMEMSG}'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='{purchases.PAYMENT_TIMEMSG}';" value="<!-- IF purchases.PAYMENT_TIME -->{purchases.PAYMENT_TIME}<!-- ELSE -->{purchases.PAYMENT_TIMEMSG}<!-- ENDIF -->"/></td>
+				<td class ="td1"><input type="text" class="inputboxr autowidth" size="7" maxlength="9" name="d_money" title="Оплаченная сумма. Поле может содержать только цифры" id="payment_money{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_money');" onclick="javascript:if(strequ(this.value,'0.00'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='0.00';" value="<!-- IF purchases.PAYMENT_MONEY -->{purchases.PAYMENT_MONEY}<!-- ELSE -->0.00<!-- ENDIF -->"/></td>
+			</tr>
+			<tr>
+				<td class ="td1 right">Карта (*XXXX):</td>
+				<td colspan="2" class ="td1"><input type="text" pattern="[0­9]*"class="inputboxr autowidth" size="20" maxlength="24" title="Номер карты, с которой производился платеж. Поле может содержать только цифры" id="payment_card{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_card');" onclick="javascript:if(strequ(this.value,'{purchases.PAYMENT_CARDMSG}'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='{purchases.PAYMENT_CARDMSG}';" value="<!-- IF purchases.PAYMENT_CARD -->{purchases.PAYMENT_CARD}<!-- ELSE -->{purchases.PAYMENT_CARDMSG}<!-- ENDIF -->"/></td>
+			</tr>
+			<tr>
+				<td colspan="3" class ="td1"><textarea rows="4" style="width:99%" title="После редактирования кликните мышью за пределами поля для записи изменений." id="payment_text{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_text');"  onclick="javascript:if(strequ(this.value,'{purchases.PAYMENTMSG}'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='{purchases.PAYMENTMSG}';"><!-- IF purchases.PAYMENT_TEXT -->{purchases.PAYMENT_TEXT}<!-- ELSE -->{purchases.PAYMENTMSG}<!-- ENDIF --></textarea></td>
+			</tr>
+		</table>
+	</div>
+	<div class="img_less CircleBtn">
+		<a href="##" title="Скрыть закупку" tabindex="0" onClick="show_purchase({purchases.ID},true);"></a>
+	</div>
+	<div style="clear: both;"></div>
+	
+</div>	
+</div>
+			</div>
+			<!-- END purchases -->
+
+		</FONT>
+		</div>
+   </div>
+</div>
+
+</div>
+<SCRIPT language="Javascript">
+	$('.wi').html(window.screen.width);
+</script>
+<!-- INCLUDE overall_footer.html -->

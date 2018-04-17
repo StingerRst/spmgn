@@ -1,0 +1,206 @@
+<!-- INCLUDE overall_header.html -->
+<h2>Архив закупок</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+
+		<div class="content">
+			<FONT size=2>
+				<span>
+					<table width="100%">
+						<tr><td align="right" width="50%"><b>Имя пользователя:</b></td><td>{USERNAME}</td></tr>
+						<tr><td align="right" width="50%"><b>Номер пользователя:</b></td><td><b><font color="red">{USER_ID}</font></b></td></tr>
+						<tr><td align="right" width="50%"><b>Ваша контактная информация:</b></td><td id="contact_info">{USER_INFO}</td></tr>
+					</table>
+				</span>
+			<span id="contact_info_warning"></span>
+			<br><br>
+			<span id="orders"></span>
+
+			<div id="date_picker" style="display:none;position:absolute;top:0px;left:0px;z-index:100;">
+			</div>
+
+<SCRIPT language="Javascript">
+var contact_info = document.getElementById("contact_info").innerHTML;
+if (!contact_info)
+{
+	var html = new Array();
+	html.push( '<br />');
+	html.push( '<center>');
+	html.push( '	<H4 class="error">ВНИМАНИЕ: Вы не указали свою контактную информацию!</H4>');
+	html.push( '	<br />');
+	html.push( '	<div class="error">Зайдите в "личный раздел", на закладку "профиль" и укажите свой контактный телефон. Вы можете также воспользоваться этой <a href="ucp.php?i=172<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->">ссылкой</a>.</div>');
+	html.push( '</center>');
+	html.push( '<br />');
+	document.getElementById("contact_info_warning").innerHTML = html.join('');
+}
+var max_comment_length = 125;
+var max_payment_length = 256;
+function purchase_unarchive(purchase_id)
+{
+	$.ajax({
+		type : 'POST',
+		url : 'function_po.php{SID}', 
+		data : {
+			'cmd': "purchase_unarchive",
+			'purchase_id': purchase_id
+		},
+		// Function is called when an answer arrives.
+		success : function(result, errors)
+		{
+			if ("ok" == result)
+			{
+				document.getElementById("purchase"+purchase_id).innerHTML = "";
+			}
+			else
+			{
+				alert("Произошла ошибка!\n" + errors);
+				// Write errors to the debug div.
+				document.getElementById("debug").innerHTML = errors;
+			}
+		}
+	});
+}
+
+function strequ(s1,s2)
+{
+	return s1.replace(/\s+/g,'')==s2.replace(/\s+/g,'');
+}
+
+function show_purchase(purchase_id,show)
+{
+	var shot = $('.purchase_shot'+purchase_id);
+	var full = $('.purchase_full'+purchase_id);
+		$(shot).each (
+			function () {
+				this.style.display=(this.style.display == 'none') ? 'block' : 'none';
+			});
+		$(full).each (
+			function () {
+				this.style.display=(this.style.display == 'none') ? 'block' : 'none';
+			});
+	//$(shot).style.display=($(shot).style.display == 'none') ? 'block' : 'none';
+	//$(full).style.display=($(full).style.display == 'none') ? 'block' : 'none';
+}
+</SCRIPT>
+	<!-- BEGIN purchases -->
+			<div id="purchase{purchases.ID}">
+				<div class="panel bg3">
+					<div class="inner">
+						<span class="corners-top"><span></span></span>
+							<div class="purchase_shot{purchases.ID}" style="display:block">
+
+								<input type="button" value="Показать" onClick="show_purchase({purchases.ID},false);"/>
+								<A title="Перейти к обсуждению закупки {purchases.NAME}'" href="{purchases.FORUM_URL}">{purchases.ID}/{purchases.NAME}</A><A NAME="ev_{purchases.ID}"> </A>
+		
+								<font size="4" color="#FF00FF">{purchases.STATE}</font> {purchases.NEXT_DATE}
+								<br>
+							</div>
+							<div class="purchase_full{purchases.ID}" style="display:none">
+
+								<input type="button" value="Скрыть" onClick="show_purchase({purchases.ID},true);"/>
+								<input type="image" src="images/icons/unarchive.gif" title="Вытащть из архива" onClick="javascript:purchase_unarchive({purchases.ID});">								
+								<TABLE>
+									<TR><TD align="right"><B>Закупка:</B></TD><TD><A title="Перейти к обсуждению закупки {purchases.NAME}'" href="{purchases.FORUM_URL}">{purchases.ID}/{purchases.NAME}</A><A NAME="ev_{purchases.ID}"> </A></TD></TR>
+									<TR><TD align="right"><B>Организатор:</B></TD><TD><A title="Просмотреть информацио о пользователе {purchases.ORG_USERNAME}" href="memberlist.php?do_=188&amp;mode=viewprofile&amp;u={purchases.ORG_USER_ID}">{purchases.ORG_USERNAME}</A></TD></TR>
+									<TR><TD align="right"><B>Состояние:</B></TD><TD><font size="4" color="#FF00FF">{purchases.STATE}</font> {purchases.NEXT_DATE}</TD></TR>
+								</TABLE>
+								<TABLE border="1" width="100%">
+									<TR align="center">
+										<TD></TD>
+										<TD><B>Каталог</B></TD>
+										<TD><B>Изображение</B></TD>
+										<TD><B>Название</B></TD>
+										<TD><B>Параметры</B></TD>
+										<TD><B>Цена</B></TD>
+										<TD><B>Орг %</B></TD>
+										<TD><B>Доставка</B></TD>
+										<TD><B>Состояние</B></TD>
+										<TD><B>Комментарий</B></TD>
+									</TR>
+									<!-- BEGIN order -->
+									<TR id="order_{purchases.order.ID}" align="center">
+										<TD align="center">
+											<img cnt="0" src="/images/icons/empty.png"">
+											<span style="position:relative; left:-22px; top:-22px"></span>
+											<!-- IF purchases.order.STATE eq 0 -->
+											<!-- ELSEIF 3 != purchases.order.STATE and 5 != purchases.order.STATE-->
+											<img src="images/icons/sale.gif" />
+											<!-- ENDIF -->
+
+
+										</TD>
+										<TD><A href="catalog.php?catalog_id={purchases.order.CATALOG_ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Перейти в каталог">{purchases.order.CATALOG_NAME}</A></TD>
+										<TD><a href="catalog.php?catalog_id={purchases.order.CATALOG_ID}&lot_id={purchases.order.ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Перейти в каталог к этой модели"><IMG src="{purchases.order.IMAGE_URL}" height="100"></IMG></a></TD>
+										<TD><a href="catalog.php?catalog_id={purchases.order.CATALOG_ID}&lot_id={purchases.order.ID}<!-- IF _SID -->&sid={_SID}<!-- ENDIF -->" title="Перейти в каталог к этой модели">{purchases.order.LOT_NAME}</a></TD>
+										<TD>
+											<!-- BEGIN lvars -->
+											<b>{purchases.order.lvars.NAME}:</b> {purchases.order.lvars.VALUES}<br>
+											<!-- END lvars -->
+										</TD>
+										<TD align="center">{purchases.order.LOT_COST}</TD>
+										<TD align="center">{purchases.order.ORG_FEE}%</TD>
+										<TD align="center">{purchases.order.DELIVERY}</TD>
+										<TD  id="status_{purchases.order.ID}"><font color="{purchases.order.STATE_CLR}">{purchases.order.STATE_TXT}<font></TD>
+										<TD>
+											<TEXTAREA style="width:95%" title="После редактирования кликните мышью за пределами поля для записи изменений." id="order_comment_{purchases.order.ID}" rows="5" onchange="javascript:update_comment({purchases.order.ID});">{purchases.order.COMMENT}</TEXTAREA>
+										</TD>
+									</TR>
+									<!-- END order -->
+									<TR align="center">
+										<TD colspan="5" align="right"><B>Итого заказ:</B></TD>
+										<TD>{purchases.TO_PRICE}</TD>
+										<TD>{purchases.TO_ORG_FEE}</TD>
+										<TD>{purchases.TO_DELIVERY}</TD>
+										<TD> ------ </TD>
+										<TD><b>На общую сумму:</b> {purchases.TO_SUM}</TD>
+									</TR>
+
+									<TR align="center">
+										<TD colspan="5" align="right"><B>Итого к оплате(только позиции, включенные в счет):</B></TD>
+										<TD>{purchases.TOTAL_PRICE}</TD>
+										<TD>{purchases.TOTAL_ORG_FEE}</TD>
+										<TD>{purchases.TOTAL_DELIVERY}</TD>
+										<TD><b>Скидка:</b> {purchases.DISCOUNT}</TD>
+										<TD><b>Всего к оплате:</b> {purchases.TOTAL_SUM}<br/><b>Оплачено:</b> {purchases.MONEY}</TD>
+									</TR>
+									<tr>
+										<td rowspan="2">
+											<img cnt="0" src="/images/icons/empty.png" id="status_payment{purchases.ID}">
+										</td>
+										<td colspan="2" rowspan="2" align="center">
+											<b>Сюда пишите информацию об оплате:<br/>Сумма, Фамилия, Имя, Дата, Время и другую информацию<br/>(см. правила закупки в теме)</b>&nbsp;&nbsp;&nbsp;
+										</td>
+										<td align="center">
+											Время:<input type="text" class="inputbox autowidth" size="7" maxlength="10" title="Время оплаты. Пример правильного заполнения 12:30:00" id="payment_time{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_time');" onclick="javascript:if(strequ(this.value,'{purchases.PAYMENT_TIMEMSG}'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='{purchases.PAYMENT_TIMEMSG}';" value="<!-- IF purchases.PAYMENT_TIME -->{purchases.PAYMENT_TIME}<!-- ELSE -->{purchases.PAYMENT_TIMEMSG}<!-- ENDIF -->"/>
+										</td>
+										<td align="center" vertical-align="middle">
+											Дата:<input type="text" class="inputbox autowidth" size="9" maxlength="10" title="Дата оплаты. Пример правильного заполнения 07/11/2009" id="payment_date{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_date');" onClick="javascript:if(strequ(this.value,'00/00/0000'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='00/00/0000';" value="<!-- IF purchases.PAYMENT_DATE -->{purchases.PAYMENT_DATE}<!-- ELSE -->00/00/0000<!-- ENDIF -->"/>
+											<a href="javascript: void(0);" onClick="select_date(document.getElementById('payment_date{purchases.ID}'));"><img src="images/mycalendar.gif" border="0" align="middle" /></a>
+										</td>
+										<td colspan="4" align="center">
+											Карта:<input type="text" class="inputbox autowidth" size="24" maxlength="24" title="Номер карты, с которой производился платеж. Поле может содержать только цифры" id="payment_card{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_card');" onclick="javascript:if(strequ(this.value,'{purchases.PAYMENT_CARDMSG}'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='{purchases.PAYMENT_CARDMSG}';" value="<!-- IF purchases.PAYMENT_CARD -->{purchases.PAYMENT_CARD}<!-- ELSE -->{purchases.PAYMENT_CARDMSG}<!-- ENDIF -->"/>
+										</td>
+										<td colspan="1" align="center">
+											Сумма:<input type="text" class="inputbox autowidth" size="7" maxlength="9" name="d_money" title="Оплаченная сумма. Поле может содержать только цифры" id="payment_money{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_money');" onclick="javascript:if(strequ(this.value,'0.00'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='0.00';" value="<!-- IF purchases.PAYMENT_MONEY -->{purchases.PAYMENT_MONEY}<!-- ELSE -->0.00<!-- ENDIF -->"/>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="7">
+											<textarea rows="4" style="width:99%" title="После редактирования кликните мышью за пределами поля для записи изменений." id="payment_text{purchases.ID}" onChange="javascript:change_payment({purchases.ID},'_text');"  onclick="javascript:if(strequ(this.value,'{purchases.PAYMENTMSG}'))this.value='';" onblur="javascript:if(strequ(this.value,''))this.value='{purchases.PAYMENTMSG}';"><!-- IF purchases.PAYMENT_TEXT -->{purchases.PAYMENT_TEXT}<!-- ELSE -->{purchases.PAYMENTMSG}<!-- ENDIF --></textarea>
+										</td>
+									</tr>
+								</TABLE>
+							</div>
+						<span class="corners-bottom"><span></span></span>
+					</div>
+				</div>
+			</div>
+			<!-- END purchases -->
+
+		</FONT>
+		</div>
+		<span class="corners-bottom"><span></span></span>
+   </div>
+</div>
+<!-- INCLUDE overall_footer.html -->

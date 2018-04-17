@@ -1,0 +1,321 @@
+<!-- INCLUDE org_header.html -->
+  <style>
+table{
+    width: 100%; /* Ширина таблицы */
+	border-collapse: collapse;
+}
+
+td.editable_updated {
+	background-color: green!important;
+	color: white!important;
+}	
+
+
+	@media print {
+	}
+  </style>
+
+<H3>Оплаты участников</H3>
+</br>
+<form method="post" action="" id="update">
+<input id="show_pay" name="show_pay" type="checkbox" onclick="javascript:show_pay=!show_pay;document.getElementById('update').submit();" value="1"/> &nbsp; Показать учтенные
+</form>
+</br>
+
+<form  method="post" sid = {sid}>
+  <!-- IF .otchet -->
+  <table border="1" width="90%" cellspacing = "0" id="myTable" class="tablesorter">
+  <colgroup>
+	<col width="1" >
+	<col width="200" >
+	<col width="1" >
+	<col width="1" >
+	<col width="1" >
+	<col width="1" >
+	<col width="1" >
+	<col width="1" >
+	<col width="1" >	
+	<col width="200" >
+	<col width="100" >
+
+  </colgroup>
+  <thead>
+    <tr align="center">
+  	  <th >ID</td>
+	<!--  <th class="filter-select filter-parsed">Закупка</td>
+	  <th class="filter-select filter-parsed">Участник</td>-->
+	  <th>Закупка</td>
+	  <th>Участник</td>
+	  <th >К оплате</td>
+	  <th >Учтено</td>
+	  <th >Оплачено</td>
+	  <th >!!!</td>
+	  <th >Карта</td>
+	  <th >Дата</td>
+	  <th >Текст</td>
+	  <th >Коммент</td>
+    </tr>
+  </thead>
+  <tbody> 
+  <!-- BEGIN otchet -->
+    <tr>  
+	  <td class="PID" align="left">{otchet.PURCHASE_ID}&nbsp;</td>
+	  <td align="left">{otchet.PURCHASE_NAME}&nbsp;</td>
+	  <td class="USER" data-uid="{otchet.USER_ID}" align="left"><a href="org.php?i=1&mode=otchet&p={otchet.PURCHASE_ID}#U{otchet.USER_ID}" title="Открыть отчет по закупке дял участника" target="_blank">{otchet.USERNAME}</a></td>
+	  <td align="left">{otchet.OPLATA}&nbsp;</td>
+	  <td class="PUOR_MONYE" align="left">{otchet.PUOR_MONYE}&nbsp;</td>
+	  <td align="left">{otchet.PAYMENT_MONEY}&nbsp;</td>
+	  <td align="left"><input name="set_pay" class="set_pay" type="checkbox" <!-- IF otchet.PUOR_MONYE --> checked <!-- ENDIF -->/>&nbsp;</td>
+	  <td align="left">{otchet.PAYMENT_CARD}&nbsp;</td>
+	  <td align="left">{otchet.PAYMENT_DATE}&nbsp;{otchet.PAYMENT_TIME}</td>
+	  <td align="left">{otchet.PAYMENT_TEXT}&nbsp;</td>
+	  <td class="PUOR_COMMENT"align="left">{otchet.PUOR_COMMENT}&nbsp;</td>
+	</tr>
+   <!-- END otchet -->
+   </tbody> 
+  </table>
+  <!-- ENDIF -->
+ 		<div class="pager">
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/first.png" class="first" alt="First" />
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/prev.png" class="prev" alt="Prev" />
+		<span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/next.png" class="next" alt="Next" />
+		<img src="{T_THEME_PATH}/tablesorter/css/icons/last.png" class="last" alt="Last" />
+		<select class="pagesize" title="Select page size">
+			<option value="50">50</option>
+			<option value="100">100</option>
+			<option value="150">150</option>
+			<option value="300">300</option>
+		</select>
+		<select class="gotoPage" title="Select page number"></select>
+	</div>
+ 
+</form>
+
+<SCRIPT language="Javascript" src="./js/common1.js"></SCRIPT>
+<SCRIPT language="javascript">
+var show_pay = {SHOW};
+if (show_pay==1) {show_pay=true; document.getElementById("show_pay").checked = true;}
+
+if (typeof jQuery == 'undefined') {
+  document.write('<script type="text/javascript" src="http://code.jquery.com/jquery-git2.min.js"><\/script>');        
+  alert ("set jquery");
+  }
+$(".tablesorter").on('click', '.set_pay', function(event, config){
+	$this=event.currentTarget;
+	if ($this.checked) {
+		var newContent = $this.parentElement.parentElement.children[5].textContent.trim(),
+		pid=$this.parentElement.parentElement.children[0].textContent.trim(),
+		uid=$this.parentElement.parentElement.children[2].dataset.uid.trim();
+		$this.parentElement.parentElement.children[4].textContent=newContent;
+		var obj=$($this.parentElement);
+		set_payment (uid,pid,newContent,obj);
+	}
+});
+function set_payment (uid,pid,newContent,$this){	
+		$this.addClass( 'editable_updated' );
+			$.ajax({
+				type : 'POST',
+				url : 'function.php{SID}',
+				data : {
+						'cmd': "set_user_purchase_money",
+						'user_id': uid,
+						'purchase_id': pid,
+						'money': parseFloat(newContent)
+				},
+				dataFilter: function (data, type) {
+						return data;
+				},
+				// Function is called when an answer arrives.
+				success : function(result, errors)
+				{
+					if ("ok" == result){
+						$.ajax({
+							type : 'POST',
+							url : 'function.php{SID}',
+							data : {
+								'cmd': "change_purchase_dolg",
+								'purchase_id': pid,
+								'user_id': uid,
+								'dolg': parseFloat($this[0].parentElement.childNodes[7].textContent.trim())- parseFloat(newContent)
+							},
+							dataFilter: function (data, type) {
+									return data;
+							},
+							// Function is called when an answer arrives.
+							success : function(result, errors)
+							{
+								if ("ok" == result)
+								{
+									$this.removeClass( 'editable_updated' );
+								}
+								else
+								{
+									alert("Произошла ошибка при изменении информации о долге!\n" + errors);
+									// Write errors to the debug div.
+								}
+							}
+						}
+						);						
+					}
+					else
+					{
+						alert("Произошла ошибка при изменении денег!\n" +errors);
+						// Write errors to the debug div.
+					}
+				}
+			});
+};
+
+$(function(){
+	$("#myTable")
+		.tablesorter({
+			theme : 'green',
+			widthFixed: true,
+			// this is the default setting
+			cssChildRow: "tablesorter-childRow",
+
+			// initialize zebra and filter widgets
+			widgets: ["zebra", "filter", "pager", "stickyHeaders","editable"],
+			sortList: [[0,0]],
+			widgetOptions: {
+			      // filter_anyMatch replaced! Instead use the filter_external option
+				  // Set to use a jQuery selector (or jQuery object) pointing to the
+				  // external filter (column specific or any match)
+				  //filter_external : '.search',
+				  filter_external : '.search',
+				  // add a default type search to the first name column
+				  filter_defaultFilter: { 1 : '~{query}' },
+				  // include column filters
+				  filter_columnFilters: true,
+				  filter_placeholder: { search : 'Поиск...' }, // Полпись дляпоисковых полей
+				  filter_saveFilters : true,
+				  filter_reset: '.reset',
+				// output default: '{page}/{totalPages}'
+				// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+				pager_output: '{startRow} - {endRow} / {filteredRows} ({totalRows})', // '{page}/{totalPages}'
+				pager_removeRows: false,
+				// include child row content while filtering, if true
+				filter_childRows  : true,
+				// class name applied to filter row and each input
+				filter_cssFilter  : 'tablesorter-filter',
+				// search from beginning
+				filter_startsWith : false,
+				// Set this option to false to make the searches case sensitive 
+				filter_ignoreCase : true,
+				
+				editable_columns       : [4,10],       // or "0-2" (v2.14.2); point to the columns to make editable (zero-based index)
+				editable_enterToAccept : true,          // press enter to accept content, or click outside if false
+				editable_autoAccept    : true,          // accepts any changes made to the table cell automatically (v2.17.6)
+				editable_autoResort    : false,         // auto resort after the content has changed.
+				editable_validate      : null,          // return a valid string: function(text, original, columnIndex){ return text; }
+				editable_focused       : function(txt, columnIndex, $element) {
+				  // $element is the div, not the td
+				  // to get the td, use $element.closest('td')
+				  $element.addClass('focused');
+				},
+				editable_blur          : function(txt, columnIndex, $element) {
+				  // $element is the div, not the td
+				  // to get the td, use $element.closest('td')
+				  $element.removeClass('focused');
+				},
+				editable_selectAll     : function(txt, columnIndex, $element){
+				  // note $element is the div inside of the table cell, so use $element.closest('td') to get the cell
+				  // only select everthing within the element when the content starts with the letter "B"
+				  return /^b/i.test(txt) && columnIndex === 0;
+				},
+				editable_wrapContent   : '<div>',       // wrap all editable cell content... makes this widget work in IE, and with autocomplete
+				editable_trimContent   : true,          // trim content ( removes outer tabs & carriage returns )
+				editable_noEdit        : 'no-edit',     // class name of cell that is not editable
+				editable_editComplete  : 'editComplete' // event fired after the table content has been edited
+			}
+		})
+    // config event variable new in v2.17.6
+    .children('tbody').on('editComplete', 'td', function(event, config){
+      var $this = $(this),
+        newContent = $this.text(),
+        cellIndex = this.cellIndex, // there shouldn't be any colspans in the tbody
+        rowIndex = $this.closest('tr').attr('id'); // data-row-index stored in row id
+		pid=$this[0].parentElement.children[0].textContent.trim();
+		uid=$this[0].parentElement.children[2].dataset.uid.trim();
+		cName=$this[0].className;
+		if (cName=="PUOR_MONYE") {
+			set_payment (uid,pid,newContent,$this);
+		}
+		if (cName=="PUOR_COMMENT") {
+			$this.addClass( 'editable_updated' );
+			$.ajax({
+				type : 'POST',
+				url : 'function.php{SID}',
+				data : {
+						'cmd': "set_user_purchase_comment",
+						'user_id': uid,
+						'purchase_id': pid,
+						'comment': newContent
+				},
+				dataFilter: function (data, type) {
+						return data;
+				},
+				// Function is called when an answer arrives.
+				success : function(result, errors)
+				{
+					if ("ok" == result){
+						$this.removeClass( 'editable_updated' );
+					}
+					else
+					{
+						alert("Произошла ошибка при изменении комментария!\n" + errors);
+					}
+				}
+			}
+			);
+		}
+		
+		//cName=$this.className(),
+		//set_money( p_id, newContent);
+      /*
+      $.post("mysite.php", {
+        "row"     : rowIndex,
+        "cell"    : cellIndex,
+        "content" : newContent
+      });
+      */
+    });
+  $('button[data-column]').on('click', function(){
+    var $this = $(this),
+      totalColumns = $table[0].config.columns,
+      col = $this.data('column'), // zero-based index or "all"
+      filter = [];
+
+    // text to add to filter
+    //filter[ col === 'all' ? totalColumns : col ] = $this.text();
+    filter[ col === 'all' ? totalColumns : col ] = 'nahon';
+    $table.trigger('search', [ filter ]);
+    //$table.trigger('search', [['', '', 'nahon', '', '', '', '', '', '']]);
+	//$('table').trigger( 'search', [['', '', '', '', 'orange']] ); // find orange in any column
+    return false;
+  });
+  
+});
+
+
+
+
+
+
+</SCRIPT>
+<!-- choose a theme file -->
+<link rel="stylesheet" href="./js/tablesorter/css/theme.green.css">
+
+<!-- load jQuery and tablesorter scripts -->
+<script type="text/javascript" src="./js/tablesorter/jquery.tablesorter.js"></script>
+
+<!-- tablesorter widgets (optional) -->
+<script type="text/javascript" src="./js/tablesorter/jquery.tablesorter.widgets.js"></script>
+<script type="text/javascript" src="./js/tablesorter/widgets/widget-editable.js"></script>
+<script type="text/javascript" src="./js/tablesorter/widgets/widget-pager.js"></script>
+
+<link type="text/css" rel="stylesheet" href="{T_THEME_PATH}/rox_menu_test.css"/>
+<link type="text/css" rel="stylesheet" href="{T_THEME_PATH}/custom.css"/>
+
+<!-- INCLUDE org_footer.html -->
