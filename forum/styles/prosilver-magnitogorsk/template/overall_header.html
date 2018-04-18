@@ -429,9 +429,6 @@ return dom + "-" + month + "-" + date.getFullYear();
 					</div>
 				</div>
 			</li>
-<li class="item671">
-				<a class="item" href="" target="_blank" >к 14 февраля</a>
-			</li>
 				
                       
 			<!-- ENDIF -->
@@ -458,15 +455,6 @@ return dom + "-" + month + "-" + date.getFullYear();
     <b><a href="{U_USER_EC}" title="Мои заказы, которые можно забрать" target="_self">Мои заказы в ЕЦ</a></b>
     <b><a href="{U_SEARCH_NEW}" title="Список новых сообщений" target="_self">Новые сообщения</a></b>
 	<!-- ENDIF -->
-	<!-- IF S_USER_IS_EC_OPERATOR -->
-		<b><a href="input_ec.php" title="Приемка товара в ЕЦ" target="_self">Приемка</a></b>&nbsp;
-		<b><a href="output_ec.php" title="Выдача товара" target="_self">Выдача</a></b>&nbsp;
-		<b><a href="otchet_ec.php" title="Отчет по Оргам" target="_blank">Отчет по Оргам</a></b>&nbsp;
-		<b><a href="balance_ec.php" title="Баланс по ЕЦ" target="_self">Баланс по ЕЦ</a></b>&nbsp;
-		<b><a href="purchases_not_open.php" title="Брни, неоткрытые закупки" target="_self">Брони</a></b>&nbsp;
-		<b><a href="purchases_open_not_stop.php" title="Брни, неоткрытые закупки" target="_self">Набираемость</a></b>&nbsp;
-		<b><a href="searchproduct.php" title="Подбор заказов" target="_self">Подбор</a></b>&nbsp;
-	<!-- ENDIF -->
 	</p>
 </div>
 
@@ -476,17 +464,20 @@ return dom + "-" + month + "-" + date.getFullYear();
 <tr >
 <td>
 	<div id="grafik">
-		<font color=brown size=4 style=bold>График работы Центра выдачи заказов</font> <b><a href=http://www.spmgn.ru/forum/viewtopic.php?f=6&t=1517" title="для перехода в тему, перейдите по ссылке" target="_blank">Информация и вопросы в теме</a></b>
+		<font color=brown size=4 style=bold>График работы Центра выдачи заказов</font> <b><a href=http://www.spmgn.ru/forum/viewtopic.php?f=1&t=1517&start=2960#p502329 title="для перехода в тему, перейдите по ссылке" target="_blank">Информация и вопросы в теме</a></b>
 		
 		<br/>
-                <br/>		
-                <font color=brown size=3 style=bold> вторник - с 15 до 17;  среда - с 16 до 20;</font>
+<p>
+<br>
+<b>
+<font color=brown size=3>ежедневно с 10 до 18, адрес Советская 195;
+<br>
+</font> </b>
+</p>
+
+                
 		<p>
-                 <br>
-		<font color=brown size=3 style=bold>пятница - с 15 до 19; суббота  -  с 11 до 14; </font>
-		<br/>
-		<br/>
-		<font color=brown size=4 style=bold>тел. 8 922 698 09 82</font> <img src="http://www.icon100.com/up/4203/32/Viber.png" alt="доступен Viber"> <img src="http://www.icon100.com/up/3206/32/whats-app.png" alt="доступен WhatsApp">
+             	<font color=brown size=4 style=bold>тел. 8 922 698 09 82</font> <img src="http://www.icon100.com/up/4203/32/Viber.png" alt="доступен Viber"> <img src="http://www.icon100.com/up/3206/32/whats-app.png" alt="доступен WhatsApp">
 	</div>
 
 </td>
@@ -541,7 +532,8 @@ return dom + "-" + month + "-" + date.getFullYear();
 
 		
 				<!-- IF S_DOQ eq 1 --> &bull;  <a href="{U_DOQ}" title="{DOQ}">{DOQ}</a><!-- ENDIF -->
-				<!-- IF U_ACP --> &bull;  <a href="{U_ADMIN_ROOM}">{L_ADMIN_ROOM}</a><!-- ENDIF -->
+				<!-- IF U_ACP or S_USER_IS_SP_ADMIN --> &bull;  <a href="{U_ADMIN_ROOM}">{L_ADMIN_ROOM}</a> <!-- ENDIF -->	
+				
 </li>
 			</ul>
 			<!-- ENDIF -->

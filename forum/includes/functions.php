@@ -4695,6 +4695,7 @@ function page_header($page_title = '', $display_online_list = true, $item_id = 0
 		'U_ORGANIZER_ROOM' 		=> append_sid("{$phpbb_root_path}org.$phpEx"),
 		'U_ADMIN_ROOM' 			=> append_sid("{$phpbb_root_path}adm.$phpEx"),
 		'S_USER_IS_ORGANIZER' 	=> ($user->data['is_organizer']) ? true : false,
+		'S_USER_IS_SP_ADMIN' 	=> ($user->data['is_sp_admin']) ? true : false,
 //-SP
 		'S_USER_LOGGED_IN'		=> ($user->data['user_id'] != ANONYMOUS) ? true : false,
 		'S_AUTOLOGIN_ENABLED'	=> ($config['allow_autologin']) ? true : false,
@@ -4835,7 +4836,7 @@ function page_footer($run_cron = true)
 		'TRANSLATION_INFO'		=> (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['TRANSLATION_INFO'] : '',
 		'CREDIT_LINE'			=> $user->lang('POWERED_BY', '<a href="http://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Group'),
 
-		'U_ACP' => (($auth->acl_get('a_') || ( !$user->data['is_sp_admin'] ))&& !empty($user->data['is_registered'])) ? append_sid("{$phpbb_root_path}adm/index.$phpEx", false, true, $user->session_id) : '')
+		'U_ACP' => ($auth->acl_get('a_') && !empty($user->data['is_registered'])) ? append_sid("{$phpbb_root_path}adm/index.$phpEx", false, true, $user->session_id) : '')
 	);
 
 	// Call cron-type script
