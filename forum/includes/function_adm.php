@@ -30,7 +30,8 @@ $user->setup();
 if ($user->data['user_id'] == ANONYMOUS)
 	echo 'Вам необходимо <a href="ucp.php?mode=login">авторизоваться</a> для просмотры этой информации';
 else{
-if (!$auth->acl_get('a_'))
+
+if ((!$auth->acl_get('a_')) &&( !$user->data['is_sp_admin'] ))
 {
 	trigger_error('NO_ADMIN');
 }
